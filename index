@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VV DOUBLE 店長中心</title>
+
+<!-- Firebase compat 版（依 skill 規範，禁用 modular） -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<style>
+/* ============================================
+   主題系統 - CSS 變數
+   ============================================ */
+:root {
+  /* Theme A: 陽光黃（預設） */
+  --primary: #FFD93D;
+  --primary-dark: #1A1A1A;
+  --primary-light: #FFF8E0;
+  --primary-bg: #FFF8E7;
+  --primary-text-on-primary: #1A1A1A;
+  --primary-text-on-dark: #FFD93D;
+  --accent-orange: #FF6B35;
+  --accent-blue: #2D5BFF;
+  --accent-pink: #FFB5D1;
+
+  /* 通用色 */
+  --text-primary: #1A1A1A;
+  --text-secondary: #555555;
+  --text-tertiary: #888888;
+  --text-light: #BBBBBB;
+  --bg-white: #FFFFFF;
+  --bg-gray-50: #FAFAFA;
+  --bg-gray-100: #F5F5F5;
+  --border-light: #F0F0F0;
+  --border-medium: #E0E0E0;
+  --border-dark: #C0C0C0;
+
+  /* 狀態色 */
+  --success: #4CD964;
+  --success-bg: #EAF3DE;
+  --success-text: #1B5E20;
+  --warning: #FFB800;
+  --warning-bg: #FFFBEC;
+  --warning-text: #5C4A1A;
+  --danger: #FF6B35;
+  --danger-bg: #FFF5F2;
+  --danger-text: #7A2D1A;
+
+  /* 其他 */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 10px 40px rgba(0,0,0,0.15);
+  --transition: 0.2s ease;
+}
+
+/* Theme B: 薄荷藍 */
+[data-theme="mint"] {
+  --primary: #4ECDC4;
+  --primary-dark: #1A3A52;
+  --primary-light: #E8F8F6;
+  --primary-bg: #F0F9F8;
+  --primary-text-on-primary: #FFFFFF;
+  --primary-text-on-dark: #4ECDC4;
+  --accent-orange: #FF6B6B;
+  --accent-blue: #2D5BFF;
+  --accent-pink: #FFE66D;
+}
+
+/* Theme C: 糖果拼色 */
+[data-theme="candy"] {
+  --primary: #FFB5D1;
+  --primary-dark: #1A1A1A;
+  --primary-light: #FFE5F0;
+  --primary-bg: #FFFFFF;
+  --primary-text-on-primary: #1A1A1A;
+  --primary-text-on-dark: #FFB5D1;
+  --accent-orange: #FF6B35;
+  --accent-blue: #2D5BFF;
+  --accent-pink: #FFE5A0;
+}
+
+/* ============================================
+   全局樣式
+   ============================================ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  font-family: 'Microsoft JhengHei', 'PingFang TC', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  color: var(--text-primary);
+  background: var(--primary-bg);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button { font-family: inherit; cursor: pointer; }
+input, textarea, select { font-family: inherit; }
+
+/* ============================================
+   登入畫面
+   ============================================ */
+#loginScreen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: var(--primary-bg);
+}
+
+.login-card {
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  padding: 32px 28px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--primary-light);
+}
+
+.login-logo {
+  width: 56px;
+  height: 56px;
+  background: var(--primary-dark);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-text-on-dark);
+  font-size: 18px;
+  font-weight: 800;
+  margin: 0 auto 16px;
+}
+
+.login-title {
+  font-size: 20px;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.login-subtitle {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.login-step {
+  margin-bottom: 16px;
+}
+
+.login-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.login-input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  background: var(--bg-white);
+  transition: border-color var(--transition);
+}
+
+.login-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.login-button {
+  width: 100%;
+  padding: 12px;
+  background: var(--primary-dark);
+  color: var(--primary-text-on-dark);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 700;
+  margin-top: 8px;
+  transition: opacity var(--transition);
+}
+
+.login-button:hover:not(:disabled) { opacity: 0.85; }
+.login-button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.login-button.secondary {
+  background: var(--bg-white);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-medium);
+}
+
+.login-error {
+  font-size: 12px;
+  color: var(--danger);
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: var(--danger-bg);
+  border-radius: var(--radius-sm);
+  display: none;
+}
+
+.login-error.show { display: block; }
+
+.staff-list {
+  max-height: 280px;
+  overflow-y: auto;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  background: var(--bg-white);
+}
+
+.staff-option {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-light);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background var(--transition);
+}
+
+.staff-option:last-child { border-bottom: none; }
+.staff-option:hover { background: var(--primary-light); }
+
+.staff-option.selected {
+  background: var(--primary-light);
+  border-left: 3px solid var(--primary);
+}
+
+.staff-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--primary-text-on-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.staff-info { flex: 1; }
+.staff-name { font-size: 13px; font-weight: 600; }
+.staff-role { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+
+.staff-empty {
+  padding: 20px;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 13px;
+}
+
+.staff-add-trigger {
+  padding: 10px 14px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--primary-text-on-primary);
+  background: var(--primary-light);
+  border-top: 1px solid var(--border-light);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.staff-add-trigger:hover { background: var(--primary); }
+
+/* ============================================
+   主應用框架
+   ============================================ */
+#mainApp {
+  display: none;
+  min-height: 100vh;
+  background: var(--primary-bg);
+}
+
+.app-header {
+  background: var(--primary);
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+}
+
+.app-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.app-logo {
+  width: 32px;
+  height: 32px;
+  background: var(--primary-dark);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-text-on-dark);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.app-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--primary-text-on-primary);
+}
+
+.app-subtitle {
+  font-size: 11px;
+  color: var(--primary-text-on-primary);
+  opacity: 0.75;
+  font-weight: 500;
+}
+
+.app-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.08);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--transition);
+  position: relative;
+}
+
+.header-btn:hover { background: rgba(0,0,0,0.15); }
+.header-btn svg { width: 16px; height: 16px; stroke: var(--primary-text-on-primary); stroke-width: 2; fill: none; }
+
+.app-content {
+  padding: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ============================================
+   主題切換器
+   ============================================ */
+.theme-popup {
+  position: absolute;
+  top: 50px;
+  right: 16px;
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  width: 240px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-light);
+  display: none;
+  z-index: 200;
+}
+
+.theme-popup.show { display: block; }
+
+.theme-popup-title {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  font-weight: 700;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  margin-bottom: 6px;
+  background: var(--bg-white);
+  transition: all var(--transition);
+}
+
+.theme-option:last-child { margin-bottom: 0; }
+.theme-option:hover { border-color: var(--primary); }
+
+.theme-option.active {
+  background: var(--primary-light);
+  border-color: var(--primary);
+}
+
+.theme-swatches {
+  display: flex;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.theme-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+}
+
+.theme-info { flex: 1; }
+.theme-name { font-size: 12px; font-weight: 700; color: var(--text-primary); }
+.theme-desc { font-size: 10px; color: var(--text-tertiary); margin-top: 1px; }
+.theme-check svg { width: 14px; height: 14px; stroke: var(--text-primary); stroke-width: 2.5; fill: none; }
+.theme-check { display: none; }
+.theme-option.active .theme-check { display: block; }
+
+.theme-popup-footer {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-light);
+  font-size: 10px;
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+/* ============================================
+   首頁（暫存佔位，後續模組會填充）
+   ============================================ */
+.welcome-card {
+  background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  margin-bottom: 16px;
+}
+
+.welcome-text {
+  font-size: 14px;
+  color: var(--primary-text-on-primary);
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.welcome-text strong { font-weight: 800; }
+
+.placeholder-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.placeholder-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+.placeholder-card strong {
+  display: block;
+  color: var(--text-primary);
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+/* ============================================
+   員工管理畫面
+   ============================================ */
+.staff-mgmt-screen {
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  border: 1px solid var(--border-light);
+}
+
+.staff-mgmt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.staff-mgmt-title { font-size: 14px; font-weight: 800; }
+
+.btn-primary {
+  padding: 8px 14px;
+  background: var(--primary-dark);
+  color: var(--primary-text-on-dark);
+  border: none;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: opacity var(--transition);
+}
+
+.btn-primary:hover { opacity: 0.85; }
+.btn-primary svg { width: 12px; height: 12px; stroke: currentColor; stroke-width: 3; fill: none; }
+
+.btn-ghost {
+  padding: 6px 12px;
+  background: var(--bg-white);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 600;
+  transition: background var(--transition);
+}
+
+.btn-ghost:hover { background: var(--bg-gray-50); }
+
+.btn-danger {
+  padding: 6px 12px;
+  background: var(--bg-white);
+  color: var(--danger);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.btn-danger:hover { background: var(--danger-bg); }
+
+.staff-mgmt-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.staff-mgmt-item {
+  background: var(--bg-gray-50);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.staff-mgmt-item.inactive { opacity: 0.5; }
+
+.staff-mgmt-info { flex: 1; }
+.staff-mgmt-name { font-size: 13px; font-weight: 700; }
+.staff-mgmt-meta { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+
+/* ============================================
+   彈窗（CSS checkbox hack 為主，這裡用 JS 切換 class）
+   ============================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-overlay.show { display: flex; }
+
+.modal-box {
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 420px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-lg);
+}
+
+.modal-header {
+  background: var(--primary);
+  padding: 14px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-title { font-size: 14px; font-weight: 800; color: var(--primary-text-on-primary); }
+
+.modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close svg { width: 16px; height: 16px; stroke: var(--primary-text-on-primary); stroke-width: 2.5; fill: none; }
+
+.modal-body {
+  padding: 18px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-footer {
+  padding: 12px 18px;
+  border-top: 1px solid var(--border-light);
+  background: var(--bg-gray-50);
+  display: flex;
+  gap: 8px;
+}
+
+.form-group { margin-bottom: 14px; }
+.form-label { font-size: 11px; font-weight: 700; margin-bottom: 6px; display: block; }
+.form-required { color: var(--danger); }
+
+.form-input, .form-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  background: var(--bg-white);
+  transition: border-color var(--transition);
+}
+
+.form-input:focus, .form-select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+/* ============================================
+   通用元件
+   ============================================ */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.85);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.loading-overlay.show { display: flex; }
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border-medium);
+  border-top-color: var(--primary-dark);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--primary-dark);
+  color: var(--primary-text-on-dark);
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: var(--shadow-lg);
+  z-index: 10000;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.toast.error { background: var(--danger); color: white; }
+.toast.success { background: var(--success); color: white; }
+
+/* ============================================
+   響應式
+   ============================================ */
+@media (max-width: 600px) {
+  .app-content { padding: 12px; }
+  .placeholder-grid { grid-template-columns: 1fr; }
+  .modal-box { max-width: 100%; }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- ============================================
+     登入畫面
+     ============================================ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">VV</div>
+    <div class="login-title">店長中心</div>
+    <div class="login-subtitle">VV DOUBLE Store Manager Hub</div>
+
+    <!-- Step 1: 店帳號密碼 -->
+    <div id="loginStep1">
+      <div class="login-step">
+        <label class="login-label">店帳號</label>
+        <select class="login-input" id="loginStoreId">
+          <option value="">選擇你的店家...</option>
+          <option value="zhongxiao">台北忠孝旗艦</option>
+          <option value="tongyi">台北統一 3F</option>
+          <option value="taoyuan">桃園 ATT</option>
+          <option value="yizhong">台中一中旗艦</option>
+          <option value="xinyizhong">台中新一中</option>
+          <option value="xintiandi">台南新天地 4F</option>
+          <option value="xinjuejiang">高雄新堀江</option>
+          <option value="V">總部 V</option>
+        </select>
+      </div>
+      <div class="login-step">
+        <label class="login-label">密碼</label>
+        <input type="password" class="login-input" id="loginPassword" placeholder="請輸入密碼" autocomplete="current-password">
+      </div>
+      <div class="login-error" id="loginError"></div>
+      <button class="login-button" id="loginBtnStep1">下一步</button>
+    </div>
+
+    <!-- Step 2: 選值班人員（總部 V 跳過） -->
+    <div id="loginStep2" style="display: none;">
+      <div class="login-step">
+        <label class="login-label">選擇今天值班的我是誰</label>
+        <div class="staff-list" id="staffSelectList">
+          <!-- 動態載入 -->
+        </div>
+        <div class="staff-add-trigger" id="addStaffTrigger">+ 新增員工</div>
+      </div>
+      <button class="login-button" id="loginBtnStep2" disabled>進入店長中心</button>
+      <button class="login-button secondary" id="loginBtnBack" style="margin-top: 6px;">返回</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================
+     主應用
+     ============================================ -->
+<div id="mainApp">
+  <header class="app-header">
+    <div class="app-header-left">
+      <div class="app-logo">VV</div>
+      <div>
+        <div class="app-title" id="appTitle">店長中心</div>
+        <div class="app-subtitle" id="appSubtitle">值班：—</div>
+      </div>
+    </div>
+    <div class="app-header-right">
+      <!-- 員工管理 (只店長/V 顯示) -->
+      <button class="header-btn" id="staffMgmtBtn" title="員工管理">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      </button>
+
+      <!-- 主題切換 -->
+      <div style="position: relative;">
+        <button class="header-btn" id="themeToggleBtn" title="切換主題">
+          <svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 011.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+        </button>
+      </div>
+
+      <!-- 登出 -->
+      <button class="header-btn" id="logoutBtn" title="登出">
+        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- 主題切換彈窗 -->
+  <div class="theme-popup" id="themePopup">
+    <div class="theme-popup-title">選擇主題</div>
+
+    <div class="theme-option" data-theme="sunshine">
+      <div class="theme-swatches">
+        <div class="theme-swatch" style="background: #FFD93D;"></div>
+        <div class="theme-swatch" style="background: #FF6B35;"></div>
+        <div class="theme-swatch" style="background: #2D5BFF;"></div>
+      </div>
+      <div class="theme-info">
+        <div class="theme-name">陽光黃</div>
+        <div class="theme-desc">活力滿滿</div>
+      </div>
+      <div class="theme-check">
+        <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+    </div>
+
+    <div class="theme-option" data-theme="mint">
+      <div class="theme-swatches">
+        <div class="theme-swatch" style="background: #4ECDC4;"></div>
+        <div class="theme-swatch" style="background: #1A3A52;"></div>
+        <div class="theme-swatch" style="background: #FF6B6B;"></div>
+      </div>
+      <div class="theme-info">
+        <div class="theme-name">薄荷藍</div>
+        <div class="theme-desc">清新專業</div>
+      </div>
+      <div class="theme-check">
+        <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+    </div>
+
+    <div class="theme-option" data-theme="candy">
+      <div class="theme-swatches">
+        <div class="theme-swatch" style="background: #FFB5D1;"></div>
+        <div class="theme-swatch" style="background: #FFE5A0;"></div>
+        <div class="theme-swatch" style="background: #2D5BFF;"></div>
+      </div>
+      <div class="theme-info">
+        <div class="theme-name">糖果拼色</div>
+        <div class="theme-desc">繽紛俏皮</div>
+      </div>
+      <div class="theme-check">
+        <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+    </div>
+
+    <div class="theme-popup-footer">切換立即生效，僅影響你個人視角</div>
+  </div>
+
+  <main class="app-content">
+
+    <!-- 預設首頁（佔位，等之後模組填充） -->
+    <div id="homeScreen">
+      <div class="welcome-card">
+        <div class="welcome-text" id="welcomeText">
+          歡迎，<strong>—</strong> ✿<br>
+          這是 Phase 1.A 地基版本，後續模組將陸續上線。
+        </div>
+      </div>
+
+      <div class="placeholder-grid">
+        <div class="placeholder-card"><strong>每日紀錄</strong>Phase 1.B 即將上線</div>
+        <div class="placeholder-card"><strong>業績目標</strong>Phase 1.B 即將上線</div>
+        <div class="placeholder-card"><strong>待辦事項</strong>Phase 1.C 即將上線</div>
+        <div class="placeholder-card"><strong>排班表</strong>Phase 1.C 即將上線</div>
+        <div class="placeholder-card"><strong>公告系統</strong>Phase 1.C 即將上線</div>
+        <div class="placeholder-card"><strong>總部 Dashboard</strong>Phase 1.D 即將上線</div>
+      </div>
+
+      <div class="placeholder-card" style="grid-column: 1 / -1;">
+        <strong>✓ Phase 1.A 已完成功能</strong>
+        登入系統 · 員工名單管理 · 三主題切換 · Firebase 連線
+      </div>
+    </div>
+
+    <!-- 員工管理畫面（隱藏，點按鈕才顯示） -->
+    <div id="staffMgmtScreen" class="staff-mgmt-screen" style="display: none;">
+      <div class="staff-mgmt-header">
+        <div>
+          <div class="staff-mgmt-title">員工名單管理</div>
+          <div style="font-size: 11px; color: var(--text-tertiary); margin-top: 2px;" id="staffMgmtSubtitle">—</div>
+        </div>
+        <div style="display: flex; gap: 6px;">
+          <button class="btn-ghost" id="staffMgmtBackBtn">返回</button>
+          <button class="btn-primary" id="staffMgmtAddBtn">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            新增員工
+          </button>
+        </div>
+      </div>
+      <div class="staff-mgmt-list" id="staffMgmtList">
+        <!-- 動態載入 -->
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ============================================
+     新增員工彈窗（共用）
+     ============================================ -->
+<div class="modal-overlay" id="addStaffModal">
+  <div class="modal-box" style="max-width: 380px;">
+    <div class="modal-header">
+      <div class="modal-title">新增員工</div>
+      <button class="modal-close" id="addStaffCloseBtn">
+        <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">姓名 <span class="form-required">*</span></label>
+        <input type="text" class="form-input" id="newStaffName" placeholder="例：小婷" maxlength="20">
+      </div>
+      <div class="form-group">
+        <label class="form-label">職位 <span class="form-required">*</span></label>
+        <select class="form-select" id="newStaffRole">
+          <option value="店員">店員</option>
+          <option value="店長">店長</option>
+          <option value="副店長">副店長</option>
+          <option value="工讀生">工讀生</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" style="flex: 1;" id="addStaffCancelBtn">取消</button>
+      <button class="btn-primary" style="flex: 2; justify-content: center; padding: 10px;" id="addStaffConfirmBtn">確認新增</button>
+    </div>
+  </div>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+
+<!-- ============================================
+     JavaScript - 嚴格遵守 skill 規範
+     - 不使用 type="module"
+     - 用 addEventListener 而非 onclick=""
+     - Firebase compat 版
+     ============================================ -->
+<script>
+'use strict';
+
+// ============================================
+// 設定區（部署前需修改）
+// ============================================
+const FIREBASE_CONFIG = {
+  // ⚠️ 部署前請填入實際 Firebase 設定
+  apiKey: "YOUR_API_KEY",
+  authDomain: "vvdouble-store.firebaseapp.com",
+  databaseURL: "https://vvdouble-store-default-rtdb.firebaseio.com",
+  projectId: "vvdouble-store",
+  storageBucket: "vvdouble-store.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+// 8 個帳號的密碼設定（部署前請更換為隨機字串）
+// 格式：店ID + 隨機字串
+const STORE_PASSWORDS = {
+  zhongxiao: "zhongxiao-7K2P",
+  tongyi: "tongyi-3F9X",
+  taoyuan: "taoyuan-M8N4",
+  yizhong: "yizhong-5R2T",
+  xinyizhong: "xinyizhong-J6Q1",
+  xintiandi: "xintiandi-V7W3",
+  xinjuejiang: "xinjuejiang-B9D5",
+  V: "V-VVN-2026-MASTER"
+};
+
+// 店家中文名對照
+const STORE_NAMES = {
+  zhongxiao: "台北忠孝旗艦",
+  tongyi: "台北統一 3F",
+  taoyuan: "桃園 ATT",
+  yizhong: "台中一中旗艦",
+  xinyizhong: "台中新一中",
+  xintiandi: "台南新天地 4F",
+  xinjuejiang: "高雄新堀江",
+  V: "總部 V"
+};
+
+const STORE_ORDER = [
+  "zhongxiao", "tongyi", "taoyuan",
+  "yizhong", "xinyizhong",
+  "xintiandi", "xinjuejiang"
+];
+
+// ============================================
+// 全域狀態
+// ============================================
+const state = {
+  storeId: null,         // 當前登入的店 ID
+  isHQ: false,           // 是否為總部 V
+  currentStaff: null,    // 當前值班人員姓名
+  staffList: [],         // 該店員工列表（員工管理用）
+  selectedStaffId: null, // 登入流程中選中的員工 ID
+  theme: 'sunshine'      // 當前主題
+};
+
+// Firebase 實例（初始化後賦值）
+let db = null;
+
+// ============================================
+// 工具函數
+// ============================================
+
+/** 顯示 toast 訊息 */
+function showToast(message, type = '') {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.className = 'toast show' + (type ? ' ' + type : '');
+  setTimeout(() => {
+    toast.className = 'toast' + (type ? ' ' + type : '');
+  }, 2500);
+}
+
+/** 顯示/隱藏 loading */
+function setLoading(show) {
+  document.getElementById('loadingOverlay').classList.toggle('show', show);
+}
+
+/** 安全的 Firebase 寫入（含錯誤處理） */
+async function safeWrite(path, data) {
+  try {
+    if (!db) throw new Error('Database not initialized');
+    await db.ref(path).set(data);
+    return { success: true };
+  } catch (err) {
+    console.error('Firebase write error:', err);
+    showToast('儲存失敗：' + err.message, 'error');
+    return { success: false, error: err };
+  }
+}
+
+/** 安全的 Firebase 更新 */
+async function safeUpdate(path, data) {
+  try {
+    if (!db) throw new Error('Database not initialized');
+    await db.ref(path).update(data);
+    return { success: true };
+  } catch (err) {
+    console.error('Firebase update error:', err);
+    showToast('儲存失敗：' + err.message, 'error');
+    return { success: false, error: err };
+  }
+}
+
+/** 取頭像縮寫 */
+function getAvatarText(name) {
+  if (!name) return '?';
+  // 中文取最後一字、英文取首字母
+  return name.charAt(name.length - 1);
+}
+
+// ============================================
+// Firebase 初始化
+// ============================================
+function initFirebase() {
+  try {
+    // 檢查設定是否已填入
+    if (FIREBASE_CONFIG.apiKey === "YOUR_API_KEY") {
+      console.warn('⚠️ Firebase 設定尚未填入，將以離線模式運行（無法儲存資料）');
+      return false;
+    }
+    firebase.initializeApp(FIREBASE_CONFIG);
+    db = firebase.database();
+    console.log('✓ Firebase 連線成功');
+    return true;
+  } catch (err) {
+    console.error('✗ Firebase 初始化失敗:', err);
+    showToast('Firebase 連線失敗', 'error');
+    return false;
+  }
+}
+
+// ============================================
+// 主題系統
+// ============================================
+function applyTheme(themeName) {
+  if (themeName === 'sunshine') {
+    document.documentElement.removeAttribute('data-theme');
+  } else {
+    document.documentElement.setAttribute('data-theme', themeName);
+  }
+  state.theme = themeName;
+
+  // 更新 popup 中的選中狀態
+  document.querySelectorAll('.theme-option').forEach(el => {
+    el.classList.toggle('active', el.dataset.theme === themeName);
+  });
+
+  // 儲存到 sessionStorage（暫時的，正式做使用者偏好會寫 Firebase）
+  try { sessionStorage.setItem('vvds_theme', themeName); } catch(e) {}
+
+  // 若已登入，順便寫到 Firebase（個人偏好）
+  if (db && state.storeId && state.currentStaff) {
+    const path = state.isHQ
+      ? `/global/userPrefs/V/theme`
+      : `/stores/${state.storeId}/userPrefs/${state.currentStaff}/theme`;
+    db.ref(path).set(themeName).catch(err => {
+      console.warn('Theme preference save failed:', err);
+    });
+  }
+}
+
+function loadSavedTheme() {
+  // 優先順序：Firebase > sessionStorage > 預設
+  // (Firebase 載入會在登入後處理，這裡先用 sessionStorage)
+  try {
+    const saved = sessionStorage.getItem('vvds_theme');
+    if (saved && ['sunshine', 'mint', 'candy'].includes(saved)) {
+      applyTheme(saved);
+      return;
+    }
+  } catch(e) {}
+  applyTheme('sunshine');
+}
+
+async function loadUserThemeFromFirebase() {
+  if (!db || !state.storeId) return;
+  try {
+    const path = state.isHQ
+      ? `/global/userPrefs/V/theme`
+      : `/stores/${state.storeId}/userPrefs/${state.currentStaff}/theme`;
+    const snapshot = await db.ref(path).once('value');
+    const theme = snapshot.val();
+    if (theme && ['sunshine', 'mint', 'candy'].includes(theme)) {
+      applyTheme(theme);
+    }
+  } catch(err) {
+    console.warn('Theme preference load failed:', err);
+  }
+}
+
+// ============================================
+// 登入流程
+// ============================================
+function setupLoginScreen() {
+  const stepOneBtn = document.getElementById('loginBtnStep1');
+  const stepTwoBtn = document.getElementById('loginBtnStep2');
+  const backBtn = document.getElementById('loginBtnBack');
+  const passwordInput = document.getElementById('loginPassword');
+
+  // Enter 鍵提交
+  passwordInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') stepOneBtn.click();
+  });
+
+  stepOneBtn.addEventListener('click', handleLoginStep1);
+  stepTwoBtn.addEventListener('click', handleLoginStep2);
+  backBtn.addEventListener('click', handleLoginBack);
+}
+
+async function handleLoginStep1() {
+  const storeId = document.getElementById('loginStoreId').value;
+  const password = document.getElementById('loginPassword').value;
+  const errorEl = document.getElementById('loginError');
+
+  // 驗證
+  if (!storeId) {
+    errorEl.textContent = '請選擇店家';
+    errorEl.classList.add('show');
+    return;
+  }
+  if (!password) {
+    errorEl.textContent = '請輸入密碼';
+    errorEl.classList.add('show');
+    return;
+  }
+
+  // 密碼比對
+  const expectedPassword = STORE_PASSWORDS[storeId];
+  if (password !== expectedPassword) {
+    errorEl.textContent = '密碼錯誤';
+    errorEl.classList.add('show');
+    return;
+  }
+
+  errorEl.classList.remove('show');
+  state.storeId = storeId;
+  state.isHQ = (storeId === 'V');
+
+  // 總部 V 直接進入主畫面（不需選值班人員）
+  if (state.isHQ) {
+    state.currentStaff = 'VVN';
+    enterMainApp();
+    return;
+  }
+
+  // 店長端：載入員工列表，進入 Step 2
+  setLoading(true);
+  try {
+    await loadStaffListForLogin();
+    document.getElementById('loginStep1').style.display = 'none';
+    document.getElementById('loginStep2').style.display = 'block';
+  } catch (err) {
+    errorEl.textContent = '載入員工列表失敗：' + err.message;
+    errorEl.classList.add('show');
+  } finally {
+    setLoading(false);
+  }
+}
+
+async function loadStaffListForLogin() {
+  if (!db) {
+    // Firebase 未設定，顯示提示
+    renderStaffSelectList([]);
+    return;
+  }
+  const snapshot = await db.ref(`/stores/${state.storeId}/staff`).once('value');
+  const data = snapshot.val() || {};
+  state.staffList = Object.entries(data)
+    .map(([id, info]) => ({ id, ...info }))
+    .filter(s => s.active !== false);
+  renderStaffSelectList(state.staffList);
+}
+
+function renderStaffSelectList(list) {
+  const container = document.getElementById('staffSelectList');
+  const btn = document.getElementById('loginBtnStep2');
+
+  if (!list || list.length === 0) {
+    container.innerHTML = '<div class="staff-empty">尚未建立員工，點下方「新增員工」開始</div>';
+    btn.disabled = true;
+    return;
+  }
+
+  container.innerHTML = list.map(s => `
+    <div class="staff-option" data-id="${s.id}" data-name="${escapeHtml(s.name)}">
+      <div class="staff-avatar">${escapeHtml(getAvatarText(s.name))}</div>
+      <div class="staff-info">
+        <div class="staff-name">${escapeHtml(s.name)}</div>
+        <div class="staff-role">${escapeHtml(s.role || '店員')}</div>
+      </div>
+    </div>
+  `).join('');
+
+  // 綁定點選事件
+  container.querySelectorAll('.staff-option').forEach(el => {
+    el.addEventListener('click', () => {
+      container.querySelectorAll('.staff-option').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      state.selectedStaffId = el.dataset.id;
+      state.currentStaff = el.dataset.name;
+      btn.disabled = false;
+    });
+  });
+}
+
+function handleLoginStep2() {
+  if (!state.currentStaff) {
+    showToast('請先選擇值班人員', 'error');
+    return;
+  }
+  enterMainApp();
+}
+
+function handleLoginBack() {
+  document.getElementById('loginStep1').style.display = 'block';
+  document.getElementById('loginStep2').style.display = 'none';
+  state.selectedStaffId = null;
+  state.currentStaff = null;
+}
+
+function enterMainApp() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'block';
+
+  // 更新 header 資訊
+  document.getElementById('appTitle').textContent = STORE_NAMES[state.storeId] || '店長中心';
+  document.getElementById('appSubtitle').textContent = state.isHQ
+    ? `總部視角 · ${state.currentStaff}`
+    : `值班：${state.currentStaff}`;
+
+  // 更新歡迎詞
+  const welcomeEl = document.getElementById('welcomeText');
+  const hour = new Date().getHours();
+  let greet = '';
+  if (hour < 11) greet = '早安';
+  else if (hour < 14) greet = '午安';
+  else if (hour < 18) greet = '午後好';
+  else greet = '晚安';
+
+  welcomeEl.innerHTML = `${greet}，<strong>${escapeHtml(state.currentStaff)}</strong> ✿<br>這是 Phase 1.A 地基版本，後續模組將陸續上線。`;
+
+  // 載入個人主題偏好
+  loadUserThemeFromFirebase();
+
+  // 儲存登入狀態到 sessionStorage（refresh 後保持）
+  try {
+    sessionStorage.setItem('vvds_session', JSON.stringify({
+      storeId: state.storeId,
+      isHQ: state.isHQ,
+      currentStaff: state.currentStaff,
+      selectedStaffId: state.selectedStaffId
+    }));
+  } catch (e) {}
+}
+
+function tryRestoreSession() {
+  try {
+    const raw = sessionStorage.getItem('vvds_session');
+    if (!raw) return false;
+    const session = JSON.parse(raw);
+    if (!session.storeId || !session.currentStaff) return false;
+    state.storeId = session.storeId;
+    state.isHQ = session.isHQ;
+    state.currentStaff = session.currentStaff;
+    state.selectedStaffId = session.selectedStaffId;
+    enterMainApp();
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+function handleLogout() {
+  if (!confirm('確定要登出嗎？')) return;
+  try {
+    sessionStorage.removeItem('vvds_session');
+  } catch (e) {}
+  // 重置狀態
+  state.storeId = null;
+  state.isHQ = false;
+  state.currentStaff = null;
+  state.selectedStaffId = null;
+  state.staffList = [];
+
+  // 切回登入畫面
+  document.getElementById('mainApp').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginStep1').style.display = 'block';
+  document.getElementById('loginStep2').style.display = 'none';
+  document.getElementById('loginPassword').value = '';
+  document.getElementById('loginStoreId').value = '';
+}
+
+// ============================================
+// 員工管理
+// ============================================
+function setupStaffManagement() {
+  document.getElementById('staffMgmtBtn').addEventListener('click', openStaffMgmt);
+  document.getElementById('staffMgmtBackBtn').addEventListener('click', closeStaffMgmt);
+  document.getElementById('staffMgmtAddBtn').addEventListener('click', () => openAddStaffModal('mgmt'));
+  document.getElementById('addStaffTrigger').addEventListener('click', () => openAddStaffModal('login'));
+  document.getElementById('addStaffCloseBtn').addEventListener('click', closeAddStaffModal);
+  document.getElementById('addStaffCancelBtn').addEventListener('click', closeAddStaffModal);
+  document.getElementById('addStaffConfirmBtn').addEventListener('click', confirmAddStaff);
+}
+
+function openStaffMgmt() {
+  if (state.isHQ) {
+    showToast('總部視角的員工管理將在後續版本開放', '');
+    return;
+  }
+  document.getElementById('homeScreen').style.display = 'none';
+  document.getElementById('staffMgmtScreen').style.display = 'block';
+  document.getElementById('staffMgmtSubtitle').textContent = STORE_NAMES[state.storeId];
+  loadStaffMgmtList();
+}
+
+function closeStaffMgmt() {
+  document.getElementById('staffMgmtScreen').style.display = 'none';
+  document.getElementById('homeScreen').style.display = 'block';
+}
+
+async function loadStaffMgmtList() {
+  if (!db) {
+    document.getElementById('staffMgmtList').innerHTML =
+      '<div class="staff-empty" style="padding: 30px;">Firebase 尚未設定，無法載入員工列表</div>';
+    return;
+  }
+  try {
+    const snapshot = await db.ref(`/stores/${state.storeId}/staff`).once('value');
+    const data = snapshot.val() || {};
+    const list = Object.entries(data).map(([id, info]) => ({ id, ...info }));
+    renderStaffMgmtList(list);
+  } catch (err) {
+    showToast('載入失敗：' + err.message, 'error');
+  }
+}
+
+function renderStaffMgmtList(list) {
+  const container = document.getElementById('staffMgmtList');
+  if (!list || list.length === 0) {
+    container.innerHTML = '<div class="staff-empty" style="padding: 30px;">尚未新增員工，點右上角「新增員工」開始</div>';
+    return;
+  }
+
+  // 排序：在職在前，離職在後
+  list.sort((a, b) => {
+    const aActive = a.active !== false ? 1 : 0;
+    const bActive = b.active !== false ? 1 : 0;
+    return bActive - aActive;
+  });
+
+  container.innerHTML = list.map(s => {
+    const isActive = s.active !== false;
+    return `
+      <div class="staff-mgmt-item ${isActive ? '' : 'inactive'}">
+        <div class="staff-avatar">${escapeHtml(getAvatarText(s.name))}</div>
+        <div class="staff-mgmt-info">
+          <div class="staff-mgmt-name">${escapeHtml(s.name)} ${isActive ? '' : '<span style="font-size:10px;color:var(--text-tertiary);">(已停用)</span>'}</div>
+          <div class="staff-mgmt-meta">${escapeHtml(s.role || '店員')} · 加入於 ${formatDate(s.createdAt)}</div>
+        </div>
+        ${isActive
+          ? `<button class="btn-danger" data-action="deactivate" data-id="${s.id}">停用</button>`
+          : `<button class="btn-ghost" data-action="reactivate" data-id="${s.id}">重新啟用</button>`}
+      </div>
+    `;
+  }).join('');
+
+  // 綁定停用/啟用按鈕
+  container.querySelectorAll('button[data-action]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const action = btn.dataset.action;
+      const id = btn.dataset.id;
+      if (action === 'deactivate') deactivateStaff(id);
+      if (action === 'reactivate') reactivateStaff(id);
+    });
+  });
+}
+
+async function deactivateStaff(staffId) {
+  if (!confirm('確定要停用此員工嗎？\n（資料會保留，可隨時重新啟用，不會刪除歷史紀錄）')) return;
+  setLoading(true);
+  const result = await safeUpdate(`/stores/${state.storeId}/staff/${staffId}`, { active: false });
+  setLoading(false);
+  if (result.success) {
+    showToast('已停用', 'success');
+    loadStaffMgmtList();
+  }
+}
+
+async function reactivateStaff(staffId) {
+  setLoading(true);
+  const result = await safeUpdate(`/stores/${state.storeId}/staff/${staffId}`, { active: true });
+  setLoading(false);
+  if (result.success) {
+    showToast('已重新啟用', 'success');
+    loadStaffMgmtList();
+  }
+}
+
+// 共用：新增員工彈窗
+let addStaffOrigin = 'login'; // 'login' 或 'mgmt'
+
+function openAddStaffModal(origin) {
+  addStaffOrigin = origin;
+  document.getElementById('newStaffName').value = '';
+  document.getElementById('newStaffRole').value = '店員';
+  document.getElementById('addStaffModal').classList.add('show');
+  setTimeout(() => document.getElementById('newStaffName').focus(), 100);
+}
+
+function closeAddStaffModal() {
+  document.getElementById('addStaffModal').classList.remove('show');
+}
+
+async function confirmAddStaff() {
+  const name = document.getElementById('newStaffName').value.trim();
+  const role = document.getElementById('newStaffRole').value;
+
+  if (!name) {
+    showToast('請輸入姓名', 'error');
+    return;
+  }
+  if (name.length > 20) {
+    showToast('姓名過長（最多 20 字）', 'error');
+    return;
+  }
+
+  // 決定要新增到哪個店（登入流程 = 當前選的店；員工管理 = 當前登入店）
+  const targetStoreId = state.storeId;
+  if (!targetStoreId) {
+    showToast('店家狀態異常', 'error');
+    return;
+  }
+
+  if (!db) {
+    showToast('Firebase 尚未設定，無法新增', 'error');
+    return;
+  }
+
+  setLoading(true);
+  try {
+    const newRef = db.ref(`/stores/${targetStoreId}/staff`).push();
+    await newRef.set({
+      name,
+      role,
+      active: true,
+      createdAt: Date.now(),
+      createdBy: state.currentStaff || 'self-register'
+    });
+    showToast('新增成功', 'success');
+    closeAddStaffModal();
+
+    // 依來源刷新列表
+    if (addStaffOrigin === 'login') {
+      await loadStaffListForLogin();
+    } else {
+      await loadStaffMgmtList();
+    }
+  } catch (err) {
+    showToast('新增失敗：' + err.message, 'error');
+  } finally {
+    setLoading(false);
+  }
+}
+
+// ============================================
+// 主題切換器
+// ============================================
+function setupThemeSwitcher() {
+  const btn = document.getElementById('themeToggleBtn');
+  const popup = document.getElementById('themePopup');
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    popup.classList.toggle('show');
+  });
+
+  // 點外部關閉
+  document.addEventListener('click', (e) => {
+    if (!popup.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
+      popup.classList.remove('show');
+    }
+  });
+
+  // 主題選擇
+  document.querySelectorAll('.theme-option').forEach(el => {
+    el.addEventListener('click', () => {
+      const theme = el.dataset.theme;
+      applyTheme(theme);
+      popup.classList.remove('show');
+      showToast('已切換主題', 'success');
+    });
+  });
+}
+
+// ============================================
+// HTML 跳脫（防 XSS）
+// ============================================
+function escapeHtml(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function formatDate(timestamp) {
+  if (!timestamp) return '—';
+  const d = new Date(timestamp);
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${yyyy}/${mm}/${dd}`;
+}
+
+// ============================================
+// 登出按鈕
+// ============================================
+function setupLogoutButton() {
+  document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+}
+
+// ============================================
+// 初始化
+// ============================================
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('VV DOUBLE 店長中心 - Phase 1.A 啟動');
+
+  // 載入主題（Firebase 還沒登入前先用 sessionStorage）
+  loadSavedTheme();
+
+  // Firebase 初始化
+  initFirebase();
+
+  // 綁定事件
+  setupLoginScreen();
+  setupStaffManagement();
+  setupThemeSwitcher();
+  setupLogoutButton();
+
+  // 嘗試恢復登入狀態（refresh 後保持登入）
+  if (!tryRestoreSession()) {
+    // 沒有 session，顯示登入畫面
+    document.getElementById('loginScreen').style.display = 'flex';
+  }
+
+  console.log('✓ 初始化完成');
+});
+
+</script>
+</body>
+</html>
