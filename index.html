@@ -1282,6 +1282,666 @@ input, textarea, select { font-family: inherit; }
   .dtm-input { font-size: 9px; }
 }
 
+/* ============================================
+   ★ Phase 1.C 新增樣式 ★
+   ============================================ */
+
+/* ---------- 公告系統 ---------- */
+.announcement-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.announcement-tab {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--bg-white);
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+}
+
+.announcement-tab.active {
+  background: var(--primary-dark);
+  color: var(--primary-text-on-dark);
+  border-color: var(--primary-dark);
+}
+
+.announcement-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.announcement-card {
+  background: var(--bg-white);
+  border: 1px solid var(--primary-light);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  cursor: pointer;
+  transition: transform var(--transition);
+  position: relative;
+}
+
+.announcement-card:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+.announcement-card.unread { border-left: 3px solid var(--accent-orange); background: var(--warning-bg); }
+.announcement-card.urgent { border-color: var(--danger); }
+
+.announcement-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.announcement-type-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.announcement-type-badge.normal { background: var(--bg-gray-100); color: var(--text-secondary); }
+.announcement-type-badge.important { background: var(--warning-bg); color: var(--warning-text); border: 1px solid var(--warning); }
+.announcement-type-badge.urgent { background: var(--danger-bg); color: var(--danger-text); border: 1px solid var(--danger); }
+
+.announcement-scope-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  background: var(--primary-light);
+  color: var(--text-primary);
+}
+
+.announcement-meta {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  margin-left: auto;
+}
+
+.announcement-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.announcement-preview {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.announcement-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  font-size: 10px;
+  color: var(--text-tertiary);
+}
+
+/* 公告編輯器（V 端） */
+.announcement-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.scope-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.scope-option {
+  padding: 10px;
+  border: 1.5px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-align: center;
+  background: var(--bg-white);
+  transition: all var(--transition);
+}
+
+.scope-option.active {
+  background: var(--primary-light);
+  border-color: var(--primary);
+}
+
+.scope-option-title {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.scope-option-desc {
+  font-size: 10px;
+  color: var(--text-tertiary);
+}
+
+.store-checkboxes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  background: var(--bg-gray-50);
+  padding: 10px;
+  border-radius: var(--radius-md);
+  margin-top: 8px;
+}
+
+.store-checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: var(--bg-white);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.store-checkbox-item input { cursor: pointer; }
+
+.type-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.type-option {
+  padding: 8px;
+  border: 1.5px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-align: center;
+  background: var(--bg-white);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.type-option.active.normal { background: var(--bg-gray-100); border-color: var(--text-secondary); }
+.type-option.active.important { background: var(--warning-bg); border-color: var(--warning); color: var(--warning-text); }
+.type-option.active.urgent { background: var(--danger-bg); border-color: var(--danger); color: var(--danger-text); }
+
+/* ---------- 待辦事項 ---------- */
+.task-list-container { display: flex; flex-direction: column; gap: 6px; }
+
+.task-section-header {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 14px 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.task-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  cursor: pointer;
+}
+
+.task-card.overdue { border-color: #FFC4B5; background: var(--danger-bg); }
+.task-card.today { border-color: #FFE5A0; background: var(--warning-bg); }
+.task-card.completed { opacity: 0.55; background: var(--bg-gray-50); }
+
+.task-checkbox {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 2px solid var(--border-dark);
+  flex-shrink: 0;
+  cursor: pointer;
+  margin-top: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-white);
+  transition: all var(--transition);
+}
+
+.task-checkbox.checked {
+  background: var(--success);
+  border-color: var(--success);
+}
+
+.task-checkbox.checked svg {
+  width: 13px;
+  height: 13px;
+  stroke: white;
+  stroke-width: 3.5;
+  fill: none;
+}
+
+.task-checkbox:not(.checked) svg { display: none; }
+
+.task-content { flex: 1; }
+
+.task-title-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.task-title-text.completed {
+  text-decoration: line-through;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+.task-meta-row {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.task-priority-pill {
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.task-priority-pill.high { background: #FFD0C9; color: #7A2D1A; }
+.task-priority-pill.mid { background: #FFE5A0; color: #5C4A1A; }
+.task-priority-pill.low { background: #E0F0FF; color: #1A4566; }
+
+.task-cat-tag {
+  background: var(--bg-gray-100);
+  color: var(--text-secondary);
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.task-overdue-text { color: var(--danger); font-weight: 600; }
+
+/* 新增待辦彈窗 */
+.cat-chip-row, .priority-card-row, .date-quick-row {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.cat-chip {
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--bg-white);
+  border: 1.5px solid var(--border-medium);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.cat-chip.active { background: var(--warning-bg); border-color: var(--primary); color: var(--text-primary); }
+
+.date-quick {
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--bg-white);
+  border: 1px solid var(--border-medium);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.date-quick.active { background: var(--primary-dark); color: var(--primary-text-on-dark); border-color: var(--primary-dark); }
+
+.priority-card-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.priority-card-mini {
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border-light);
+  background: var(--bg-white);
+  cursor: pointer;
+  text-align: center;
+}
+
+.priority-card-mini.active { border-color: var(--primary); background: var(--warning-bg); }
+
+.priority-name { font-size: 12px; font-weight: 700; }
+.priority-desc { font-size: 9px; color: var(--text-tertiary); margin-top: 1px; }
+
+.assign-list { display: flex; flex-direction: column; gap: 5px; }
+
+.assign-item {
+  padding: 9px 12px;
+  border-radius: var(--radius-md);
+  background: var(--bg-white);
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.assign-item.selected { background: var(--warning-bg); border-color: var(--primary); }
+
+.assign-radio {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--border-dark);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.assign-item.selected .assign-radio {
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
+}
+
+.assign-item.selected .assign-radio svg {
+  width: 9px;
+  height: 9px;
+  stroke: var(--primary-text-on-dark);
+  stroke-width: 3;
+  fill: none;
+}
+
+.assign-item:not(.selected) .assign-radio svg { display: none; }
+
+.assign-name { font-size: 12px; font-weight: 700; }
+.assign-role { font-size: 10px; color: var(--text-secondary); }
+
+/* ---------- 待辦健康度（V 端）---------- */
+.health-help-box {
+  background: var(--success-bg);
+  border-left: 3px solid var(--success);
+  border-radius: 0 8px 8px 0;
+  padding: 10px 14px;
+  margin-bottom: 18px;
+}
+
+.health-help-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.health-help-text {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.health-section-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.health-section-title svg { width: 16px; height: 16px; stroke: var(--text-primary); stroke-width: 2; fill: none; }
+.health-section-title-text { font-size: 13px; font-weight: 800; color: var(--text-primary); }
+
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.bar-store-name {
+  font-size: 11px;
+  width: 64px;
+  font-weight: 600;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+
+.bar-container {
+  flex: 1;
+  height: 24px;
+  background: var(--warning-bg);
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  padding-right: 8px;
+  justify-content: flex-end;
+  font-size: 11px;
+  font-weight: 700;
+  color: white;
+  transition: width 0.3s ease;
+}
+
+.bar-fill.high { background: linear-gradient(90deg, #FF6B35, #FF8B5C); }
+.bar-fill.mid { background: linear-gradient(90deg, #FFA500, #FFC04D); }
+.bar-fill.low { background: linear-gradient(90deg, #FFD93D, #FFE066); color: #5C4A1A; }
+.bar-fill.lowest { background: linear-gradient(90deg, #4CD964, #6FE082); }
+
+.staff-heat-list { display: flex; flex-direction: column; gap: 6px; }
+
+.staff-heat-card {
+  background: var(--bg-white);
+  border: 1px solid var(--primary-light);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.staff-heat-card.heavy { background: var(--danger-bg); border-color: #FFC4B5; }
+
+.staff-heat-rank {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--primary-text-on-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.staff-heat-card.heavy .staff-heat-rank {
+  background: var(--danger);
+  color: white;
+}
+
+.staff-heat-info { flex: 1; }
+.staff-heat-name { font-size: 12px; font-weight: 700; color: var(--text-primary); }
+.staff-heat-store { font-size: 10px; color: var(--text-secondary); margin-top: 1px; }
+
+.staff-heat-count {
+  text-align: right;
+}
+
+.staff-heat-count-num {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.staff-heat-card.heavy .staff-heat-count-num {
+  color: var(--danger);
+}
+
+.staff-heat-count-label {
+  font-size: 9px;
+  color: var(--text-secondary);
+}
+
+/* ---------- 排班表 ---------- */
+.schedule-grid-container {
+  background: var(--bg-white);
+  border-radius: var(--radius-md);
+  padding: 10px;
+  border: 1px solid var(--primary-light);
+}
+
+.schedule-day-headers {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.schedule-day-header {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  text-align: center;
+  padding: 6px 2px;
+  background: var(--bg-gray-50);
+  border-radius: var(--radius-sm);
+}
+
+.schedule-day-header.weekend { background: var(--primary-light); color: var(--warning-text); }
+
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.schedule-cell {
+  background: var(--bg-white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 6px;
+  min-height: 80px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  transition: background var(--transition);
+}
+
+.schedule-cell:hover { background: var(--bg-gray-50); }
+.schedule-cell.empty { background: var(--bg-gray-50); cursor: default; opacity: 0.4; }
+.schedule-cell.empty:hover { background: var(--bg-gray-50); }
+.schedule-cell.weekend { background: var(--primary-bg); }
+.schedule-cell.today { background: var(--primary-light); border-color: var(--primary); border-width: 2px; }
+
+.schedule-day-num { font-size: 11px; font-weight: 700; color: var(--text-primary); }
+.schedule-day-num.weekend { color: var(--warning-text); }
+
+.shift-tag {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+.shift-tag.morning { background: #FFE5A0; color: #5C4A1A; }
+.shift-tag.evening { background: #D4C5F9; color: #2D1A66; }
+.shift-tag.fullday { background: #FFD0A0; color: #6B3500; }
+.shift-tag.off { background: #E0E0E0; color: #555; }
+
+.shift-staff-mini {
+  font-size: 10px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 排班編輯彈窗 */
+.shift-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.shift-option {
+  padding: 10px;
+  border: 2px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-align: center;
+  background: var(--bg-white);
+}
+
+.shift-option.active.morning { background: #FFE5A0; border-color: #B8860B; }
+.shift-option.active.evening { background: #D4C5F9; border-color: #5B3CC4; }
+.shift-option.active.fullday { background: #FFD0A0; border-color: #C66800; }
+.shift-option.active.off { background: #E0E0E0; border-color: #555; }
+
+.shift-option-name { font-size: 13px; font-weight: 700; }
+.shift-option-time { font-size: 10px; color: var(--text-secondary); margin-top: 2px; }
+
+.shift-staff-list { display: flex; flex-direction: column; gap: 5px; max-height: 200px; overflow-y: auto; }
+
+.shift-staff-item {
+  padding: 8px 12px;
+  background: var(--bg-white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.shift-staff-item.selected {
+  background: var(--warning-bg);
+  border-color: var(--primary);
+}
+
+/* 響應式：手機 */
+@media (max-width: 600px) {
+  .scope-options { grid-template-columns: 1fr; }
+  .store-checkboxes { grid-template-columns: 1fr; }
+  .type-options { grid-template-columns: 1fr; }
+  .schedule-cell { min-height: 60px; padding: 4px; }
+  .shift-tag { font-size: 9px; padding: 1px 4px; }
+  .shift-staff-mini { font-size: 9px; }
+  .shift-options { grid-template-columns: 1fr; }
+}
+
 </style>
 </head>
 
@@ -1781,6 +2441,204 @@ input, textarea, select { font-family: inherit; }
       </div>
     </div>
 
+    <!-- ★ Phase 1.C: 公告列表 ★ -->
+    <div id="announcementScreen" class="subscreen" style="display: none;">
+      <div class="subscreen-header">
+        <div class="subscreen-title-block">
+          <div class="subscreen-title">公告</div>
+          <div class="subscreen-subtitle" id="announcementSubtitle">—</div>
+        </div>
+        <div style="display: flex; gap: 6px;">
+          <button class="btn-back" data-screen="home">‹ 返回</button>
+          <button class="btn-primary" id="announcementCreateBtn" style="display: none;">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            發布公告
+          </button>
+        </div>
+      </div>
+
+      <div class="announcement-tabs" id="announcementTabs">
+        <div class="announcement-tab active" data-filter="all">全部</div>
+        <div class="announcement-tab" data-filter="unread" id="tabUnread">未讀</div>
+        <div class="announcement-tab" data-filter="urgent">重要/緊急</div>
+      </div>
+
+      <div class="announcement-list" id="announcementList">
+        <!-- 動態載入 -->
+      </div>
+    </div>
+
+    <!-- ★ Phase 1.C: 公告編輯器（V 端） ★ -->
+    <div id="announcementEditorScreen" class="subscreen" style="display: none;">
+      <div class="subscreen-header">
+        <div class="subscreen-title-block">
+          <div class="subscreen-title">發布公告</div>
+          <div class="subscreen-subtitle">總部 → 7 店或指定店家</div>
+        </div>
+        <button class="btn-back" data-screen="announcement">‹ 返回</button>
+      </div>
+
+      <div class="announcement-editor">
+        <div>
+          <label class="form-label">標題 <span class="form-required">*</span></label>
+          <input type="text" class="form-input" id="annTitle" placeholder="例：春季新檔上架通知" maxlength="50">
+        </div>
+
+        <div>
+          <label class="form-label">公告類型 <span class="form-required">*</span></label>
+          <div class="type-options">
+            <div class="type-option active normal" data-type="normal">
+              <div>📋 一般</div>
+              <div style="font-size: 9px; color: var(--text-tertiary); margin-top: 2px;">資訊分享</div>
+            </div>
+            <div class="type-option important" data-type="important">
+              <div>⚠️ 重要</div>
+              <div style="font-size: 9px; color: var(--warning-text); margin-top: 2px;">需要注意</div>
+            </div>
+            <div class="type-option urgent" data-type="urgent">
+              <div>🚨 緊急</div>
+              <div style="font-size: 9px; color: var(--danger-text); margin-top: 2px;">立刻處理</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="form-label">發送對象 <span class="form-required">*</span></label>
+          <div class="scope-options">
+            <div class="scope-option active" data-scope="global">
+              <div class="scope-option-title">📢 全站公告</div>
+              <div class="scope-option-desc">7 店都能看到</div>
+            </div>
+            <div class="scope-option" data-scope="specific">
+              <div class="scope-option-title">🎯 指定店家</div>
+              <div class="scope-option-desc">勾選 1-N 店</div>
+            </div>
+          </div>
+          <div class="store-checkboxes" id="annStoreCheckboxes" style="display: none;">
+            <!-- 動態渲染 -->
+          </div>
+        </div>
+
+        <div>
+          <label class="form-label">內容 <span class="form-required">*</span></label>
+          <textarea class="form-input" id="annContent" rows="8" style="min-height: 160px; resize: vertical;" placeholder="例：&#10;春季新檔將於 5/1 全店上架&#10;請各店：&#10;1. 4/29-30 完成新檔陳列&#10;2. 5/1 上午檢查商品標籤&#10;3. 配合 IG 春季主題拍攝"></textarea>
+        </div>
+
+        <div style="display: flex; gap: 8px; margin-top: 16px;">
+          <button class="btn-ghost" style="flex: 1;" id="annSaveDraftBtn">儲存草稿</button>
+          <button class="btn-primary" style="flex: 2; justify-content: center; padding: 12px;" id="annPublishBtn">
+            <svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            發布公告
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ★ Phase 1.C: 待辦列表 ★ -->
+    <div id="taskScreen" class="subscreen" style="display: none;">
+      <div class="subscreen-header">
+        <div class="subscreen-title-block">
+          <div class="subscreen-title">待辦事項</div>
+          <div class="subscreen-subtitle" id="taskSubtitle">—</div>
+        </div>
+        <div style="display: flex; gap: 6px;">
+          <button class="btn-back" data-screen="home">‹ 返回</button>
+          <button class="btn-primary" id="taskAddBtn">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            新增待辦
+          </button>
+        </div>
+      </div>
+
+      <div class="announcement-tabs" id="taskTabs">
+        <div class="announcement-tab active" data-filter="all">全部 <span id="taskCountAll">(0)</span></div>
+        <div class="announcement-tab" data-filter="pending">未完成 <span id="taskCountPending">(0)</span></div>
+        <div class="announcement-tab" data-filter="completed">已完成 <span id="taskCountCompleted">(0)</span></div>
+        <div class="announcement-tab" data-filter="overdue" style="color: var(--danger);">逾期 <span id="taskCountOverdue">(0)</span></div>
+      </div>
+
+      <div class="task-list-container" id="taskListContainer">
+        <!-- 動態載入 -->
+      </div>
+    </div>
+
+    <!-- ★ Phase 1.C: V 端 7 店待辦健康度 ★ -->
+    <div id="tasksHealthScreen" class="subscreen" style="display: none;">
+      <div class="subscreen-header">
+        <div class="subscreen-title-block">
+          <div class="subscreen-title">7 店待辦健康度</div>
+          <div class="subscreen-subtitle">總部視角 · 看誰扛太多、不是看誰拖延</div>
+        </div>
+        <button class="btn-back" data-screen="home">‹ 返回</button>
+      </div>
+
+      <div class="health-help-box">
+        <div class="health-help-title">
+          <svg style="width: 13px; height: 13px; stroke: var(--success); stroke-width: 2; fill: none; display: inline-block; vertical-align: middle; margin-right: 4px;" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          這個區塊的用意
+        </div>
+        <div class="health-help-text">
+          看誰扛太多、誰需要支援，不是看誰拖延。<br>
+          數字大的人，可能正在悄悄變成過勞，主動關心他一下。
+        </div>
+      </div>
+
+      <div style="margin-bottom: 22px;">
+        <div class="health-section-title">
+          <svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14"/></svg>
+          <div class="health-section-title-text">各店未完成待辦</div>
+        </div>
+        <div id="healthStoreBars">
+          <!-- 動態渲染 -->
+        </div>
+      </div>
+
+      <div>
+        <div class="health-section-title">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
+          <div class="health-section-title-text">個人待辦熱度（前 5 名）</div>
+        </div>
+        <div class="staff-heat-list" id="healthStaffList">
+          <!-- 動態渲染 -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ★ Phase 1.C: 排班表 ★ -->
+    <div id="scheduleScreen" class="subscreen" style="display: none;">
+      <div class="subscreen-header">
+        <div class="subscreen-title-block">
+          <div class="subscreen-title">排班表</div>
+          <div class="subscreen-subtitle" id="scheduleSubtitle">—</div>
+        </div>
+        <div style="display: flex; gap: 6px; align-items: center;">
+          <button class="btn-back" data-screen="home">‹ 返回</button>
+          <button class="btn-back" id="schedulePrevBtn">‹</button>
+          <span style="font-size: 13px; font-weight: 800;" id="scheduleMonth">—</span>
+          <button class="btn-back" id="scheduleNextBtn">›</button>
+        </div>
+      </div>
+
+      <div id="scheduleHQNotice" style="display: none; background: var(--warning-bg); padding: 10px 14px; border-radius: 8px; margin-bottom: 14px; font-size: 12px; color: var(--warning-text);">
+        🔍 總部僅檢視排班，編輯請洽該店店長
+      </div>
+
+      <div class="schedule-grid-container">
+        <div class="schedule-day-headers">
+          <div class="schedule-day-header">一</div>
+          <div class="schedule-day-header">二</div>
+          <div class="schedule-day-header">三</div>
+          <div class="schedule-day-header">四</div>
+          <div class="schedule-day-header">五</div>
+          <div class="schedule-day-header weekend">六</div>
+          <div class="schedule-day-header weekend">日</div>
+        </div>
+        <div class="schedule-grid" id="scheduleGrid">
+          <!-- 動態渲染 -->
+        </div>
+      </div>
+    </div>
+
   </main>
 </div>
 
@@ -1897,6 +2755,148 @@ input, textarea, select { font-family: inherit; }
       <div class="history-list" id="editHistoryList">
         <!-- 動態載入 -->
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ★ Phase 1.C: 公告詳情彈窗 ★ -->
+<div class="modal-overlay" id="annDetailModal">
+  <div class="modal-box" style="max-width: 480px;">
+    <div class="modal-header">
+      <div class="modal-title" id="annDetailTitle">公告</div>
+      <button class="modal-close" id="annDetailCloseBtn">
+        <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div id="annDetailMeta" style="display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;"></div>
+      <div id="annDetailContent" style="font-size: 13px; line-height: 1.7; color: var(--text-primary); white-space: pre-wrap;"></div>
+      <div id="annDetailFooter" style="margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border-light); font-size: 11px; color: var(--text-tertiary);"></div>
+
+      <!-- V 端可看已讀情況 -->
+      <div id="annDetailReadStats" style="display: none; margin-top: 16px; padding: 12px; background: var(--bg-gray-50); border-radius: 8px;">
+        <div style="font-size: 12px; font-weight: 700; margin-bottom: 8px;">已讀統計</div>
+        <div id="annDetailReadList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ★ Phase 1.C: 新增待辦彈窗 ★ -->
+<div class="modal-overlay" id="addTaskModal">
+  <div class="modal-box" style="max-width: 460px;">
+    <div class="modal-header">
+      <div class="modal-title">新增待辦</div>
+      <button class="modal-close" id="addTaskCloseBtn">
+        <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">內容 <span class="form-required">*</span></label>
+        <textarea class="form-input" id="newTaskContent" placeholder="例：通知 VIP 林小姐春裝到貨" rows="3" style="min-height: 60px; resize: vertical;"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">類別 <span class="form-required">*</span></label>
+        <div class="cat-chip-row" id="newTaskCatRow">
+          <span class="cat-chip" data-cat="客戶追蹤">客戶追蹤</span>
+          <span class="cat-chip active" data-cat="補貨">補貨</span>
+          <span class="cat-chip" data-cat="盤點">盤點</span>
+          <span class="cat-chip" data-cat="設備維修">設備維修</span>
+          <span class="cat-chip" data-cat="訓練">訓練</span>
+          <span class="cat-chip" data-cat="客訴">客訴</span>
+          <span class="cat-chip" data-cat="其他">其他</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">目標日期 <span class="form-required">*</span></label>
+        <div class="date-quick-row" style="margin-bottom: 8px;">
+          <span class="date-quick" data-quick="today">今天</span>
+          <span class="date-quick" data-quick="tomorrow">明天</span>
+          <span class="date-quick" data-quick="3days">3 天後</span>
+          <span class="date-quick" data-quick="weekend">本週末</span>
+          <span class="date-quick" data-quick="monthend">月底</span>
+        </div>
+        <input type="date" class="form-input" id="newTaskDate">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">優先度 <span class="form-required">*</span></label>
+        <div class="priority-card-row" id="newTaskPriorityRow">
+          <div class="priority-card-mini" data-priority="low">
+            <div class="priority-name" style="color: #1A4566;">低</div>
+            <div class="priority-desc">有空再做</div>
+          </div>
+          <div class="priority-card-mini active" data-priority="mid">
+            <div class="priority-name" style="color: #5C4A1A;">中</div>
+            <div class="priority-desc">記得處理</div>
+          </div>
+          <div class="priority-card-mini" data-priority="high">
+            <div class="priority-name" style="color: #7A2D1A;">高</div>
+            <div class="priority-desc">優先處理</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">指派給</label>
+        <div class="assign-list" id="newTaskAssignList">
+          <!-- 動態載入 -->
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" style="flex: 1;" id="addTaskCancelBtn">取消</button>
+      <button class="btn-primary" style="flex: 2; justify-content: center; padding: 11px;" id="addTaskConfirmBtn">新增待辦</button>
+    </div>
+  </div>
+</div>
+
+<!-- ★ Phase 1.C: 排班編輯彈窗 ★ -->
+<div class="modal-overlay" id="shiftEditModal">
+  <div class="modal-box" style="max-width: 420px;">
+    <div class="modal-header">
+      <div class="modal-title" id="shiftEditTitle">排班</div>
+      <button class="modal-close" id="shiftEditCloseBtn">
+        <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">班別</label>
+        <div class="shift-options" id="shiftOptions">
+          <div class="shift-option active morning" data-shift="morning">
+            <div class="shift-option-name">早班</div>
+            <div class="shift-option-time">11:00 - 18:00</div>
+          </div>
+          <div class="shift-option evening" data-shift="evening">
+            <div class="shift-option-name">晚班</div>
+            <div class="shift-option-time">14:00 - 22:00</div>
+          </div>
+          <div class="shift-option fullday" data-shift="fullday">
+            <div class="shift-option-name">全天</div>
+            <div class="shift-option-time">11:00 - 22:00</div>
+          </div>
+          <div class="shift-option off" data-shift="off">
+            <div class="shift-option-name">休假</div>
+            <div class="shift-option-time">公休</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" id="shiftStaffGroup">
+        <label class="form-label">值班員工</label>
+        <div class="shift-staff-list" id="shiftStaffList">
+          <!-- 動態載入 -->
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-danger" style="flex: 1;" id="shiftEditClearBtn">清空</button>
+      <button class="btn-ghost" style="flex: 1;" id="shiftEditCancelBtn">取消</button>
+      <button class="btn-primary" style="flex: 2; justify-content: center; padding: 11px;" id="shiftEditConfirmBtn">儲存</button>
     </div>
   </div>
 </div>
@@ -2630,7 +3630,13 @@ const SCREENS = {
   dailyTarget: 'dailyTargetScreen',
   dailyLog: 'dailyLogScreen',
   eventList: 'eventListScreen',
-  amendment: 'amendmentScreen'
+  amendment: 'amendmentScreen',
+  // Phase 1.C
+  announcement: 'announcementScreen',
+  announcementEditor: 'announcementEditorScreen',
+  task: 'taskScreen',
+  tasksHealth: 'tasksHealthScreen',
+  schedule: 'scheduleScreen'
 };
 
 function showScreen(screenName) {
@@ -2679,6 +3685,27 @@ const featureGridHTML = {
       action: () => openDailyTarget()
     },
     {
+      key: 'task',
+      icon: '<svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>',
+      title: '待辦事項',
+      desc: '管理跨日待辦清單',
+      action: () => openTaskList()
+    },
+    {
+      key: 'announcement',
+      icon: '<svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>',
+      title: '公告',
+      desc: '查看總部發布的公告',
+      action: () => openAnnouncementList()
+    },
+    {
+      key: 'schedule',
+      icon: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>',
+      title: '排班表',
+      desc: '本月員工班表',
+      action: () => openSchedule()
+    },
+    {
       key: 'event',
       icon: '<svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>',
       title: '事件紀錄',
@@ -2696,13 +3723,6 @@ const featureGridHTML = {
       action: () => openMonthlyTarget()
     },
     {
-      key: 'dailyLog',
-      icon: '<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 2v6h6"/></svg>',
-      title: '每日紀錄',
-      desc: '查看 7 店紀錄',
-      action: () => showToast('總部 Dashboard 將在 Phase 1.D 推出')
-    },
-    {
       key: 'amendment',
       icon: '<svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>',
       title: '補登審核',
@@ -2710,11 +3730,32 @@ const featureGridHTML = {
       action: () => openAmendmentReview()
     },
     {
-      key: 'event',
-      icon: '<svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>',
-      title: '事件紀錄',
-      desc: '查看 7 店事件（Phase 1.D）',
-      action: () => showToast('7 店事件總覽將在 Phase 1.D 推出')
+      key: 'announcement',
+      icon: '<svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/></svg>',
+      title: '公告',
+      desc: '發布全站或店家公告',
+      action: () => openAnnouncementList()
+    },
+    {
+      key: 'tasksHealth',
+      icon: '<svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
+      title: '待辦健康度',
+      desc: '看 7 店員工負荷',
+      action: () => openTasksHealth()
+    },
+    {
+      key: 'schedule',
+      icon: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>',
+      title: '排班表',
+      desc: '查看 7 店排班（檢視）',
+      action: () => openSchedule()
+    },
+    {
+      key: 'dashboard',
+      icon: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>',
+      title: '7 店 Dashboard',
+      desc: 'Phase 1.D 即將上線',
+      action: () => showToast('Phase 1.D 即將推出', '')
     }
   ]
 };
@@ -2728,6 +3769,9 @@ async function renderFeatureGrid() {
   // 檢查每日紀錄狀態（店長端）
   let dailyLogStatus = null;
   let amendmentCount = 0;
+  let unreadAnnCount = 0;
+  let overdueTaskCount = 0;
+  let pendingTaskCount = 0;
 
   if (db && !state.isHQ) {
     try {
@@ -2739,6 +3783,18 @@ async function renderFeatureGrid() {
       } else {
         dailyLogStatus = 'filled';
       }
+    } catch (e) {}
+
+    // 公告未讀
+    try {
+      unreadAnnCount = await getUnreadAnnouncementCount();
+    } catch (e) {}
+
+    // 待辦逾期/未完成
+    try {
+      const stats = await getTaskStats();
+      overdueTaskCount = stats.overdue;
+      pendingTaskCount = stats.pending;
     } catch (e) {}
   }
 
@@ -2768,6 +3824,20 @@ async function renderFeatureGrid() {
       badge = `<span class="feature-card-badge red">${amendmentCount}</span>`;
       urgent = ' urgent';
       descOverride = `${amendmentCount} 筆待審核`;
+    }
+    if (item.key === 'announcement' && !state.isHQ && unreadAnnCount > 0) {
+      badge = `<span class="feature-card-badge red">${unreadAnnCount}</span>`;
+      descOverride = `${unreadAnnCount} 則未讀公告`;
+    }
+    if (item.key === 'task' && !state.isHQ) {
+      if (overdueTaskCount > 0) {
+        badge = `<span class="feature-card-badge red">${overdueTaskCount}</span>`;
+        urgent = ' urgent';
+        descOverride = `${overdueTaskCount} 筆已逾期`;
+      } else if (pendingTaskCount > 0) {
+        badge = `<span class="feature-card-badge">${pendingTaskCount}</span>`;
+        descOverride = `${pendingTaskCount} 筆未完成`;
+      }
     }
 
     return `
@@ -3764,6 +4834,1030 @@ function initPhase1B() {
 }
 
 // ============================================
+// ★★★ Phase 1.C 新增邏輯 ★★★
+// ============================================
+
+// ---------- 公告系統 ----------
+
+let currentAnnFilter = 'all';
+let allAnnouncements = [];
+let userReadMap = {};
+
+async function getUnreadAnnouncementCount() {
+  if (!db || state.isHQ) return 0;
+  try {
+    const [globalSnap, storeSnap, readSnap] = await Promise.all([
+      db.ref('/global/announcements').once('value'),
+      db.ref(`/stores/${state.storeId}/announcements`).once('value'),
+      db.ref(`/stores/${state.storeId}/userReads/${state.currentStaff || 'unknown'}`).once('value')
+    ]);
+    const globalAnns = globalSnap.val() || {};
+    const storeAnns = storeSnap.val() || {};
+    const reads = readSnap.val() || {};
+    let count = 0;
+    Object.entries(globalAnns).forEach(([id, ann]) => {
+      if (ann && ann.published && !reads[id]) {
+        // 確認這條公告對當前店適用
+        if (ann.scope === 'global' || (ann.targetStores && ann.targetStores[state.storeId])) {
+          count++;
+        }
+      }
+    });
+    Object.entries(storeAnns).forEach(([id, ann]) => {
+      if (ann && ann.published && !reads[id]) count++;
+    });
+    return count;
+  } catch (e) {
+    return 0;
+  }
+}
+
+async function openAnnouncementList() {
+  showScreen('announcement');
+  document.getElementById('announcementSubtitle').textContent =
+    state.isHQ ? '管理 7 店公告' : `${STORE_NAMES[state.storeId]} · 收到的公告`;
+  document.getElementById('announcementCreateBtn').style.display = state.isHQ ? 'inline-flex' : 'none';
+  await loadAnnouncements();
+}
+
+async function loadAnnouncements() {
+  if (!db) return;
+  try {
+    const [globalSnap, storeSnap, readSnap] = await Promise.all([
+      db.ref('/global/announcements').once('value'),
+      state.isHQ ? Promise.resolve({ val: () => null }) : db.ref(`/stores/${state.storeId}/announcements`).once('value'),
+      state.isHQ ? Promise.resolve({ val: () => null }) : db.ref(`/stores/${state.storeId}/userReads/${state.currentStaff || 'unknown'}`).once('value')
+    ]);
+
+    const globalAnns = globalSnap.val() || {};
+    const storeAnns = storeSnap.val() || {};
+    userReadMap = readSnap.val() || {};
+
+    const list = [];
+    Object.entries(globalAnns).forEach(([id, ann]) => {
+      if (!ann) return;
+      // V 看全部，店長只看適用的
+      if (state.isHQ) {
+        list.push({ id, scopeType: 'global', ...ann });
+      } else if (ann.published && (ann.scope === 'global' || (ann.targetStores && ann.targetStores[state.storeId]))) {
+        list.push({ id, scopeType: 'global', ...ann });
+      }
+    });
+    Object.entries(storeAnns).forEach(([id, ann]) => {
+      if (!ann || !ann.published) return;
+      list.push({ id, scopeType: 'store', ...ann });
+    });
+
+    list.sort((a, b) => (b.publishedAt || 0) - (a.publishedAt || 0));
+    allAnnouncements = list;
+
+    // 更新未讀 tab 數量
+    if (!state.isHQ) {
+      const unread = list.filter(a => !userReadMap[a.id]).length;
+      const tabUnread = document.getElementById('tabUnread');
+      tabUnread.textContent = `未讀 (${unread})`;
+    }
+
+    renderAnnouncements();
+  } catch (err) {
+    showToast('載入公告失敗', 'error');
+  }
+}
+
+function renderAnnouncements() {
+  const container = document.getElementById('announcementList');
+  let filtered = allAnnouncements;
+
+  if (currentAnnFilter === 'unread' && !state.isHQ) {
+    filtered = filtered.filter(a => !userReadMap[a.id]);
+  } else if (currentAnnFilter === 'urgent') {
+    filtered = filtered.filter(a => a.type === 'important' || a.type === 'urgent');
+  }
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<div class="staff-empty" style="padding: 40px;">沒有符合條件的公告</div>';
+    return;
+  }
+
+  container.innerHTML = filtered.map(ann => {
+    const isUnread = !state.isHQ && !userReadMap[ann.id];
+    const typeBadge = ann.type === 'urgent' ? '<span class="announcement-type-badge urgent">🚨 緊急</span>'
+      : ann.type === 'important' ? '<span class="announcement-type-badge important">⚠️ 重要</span>'
+      : '<span class="announcement-type-badge normal">📋 一般</span>';
+
+    let scopeBadge = '';
+    if (ann.scopeType === 'global' && ann.scope === 'global') {
+      scopeBadge = '<span class="announcement-scope-badge">全站</span>';
+    } else if (ann.scope === 'specific') {
+      const count = ann.targetStores ? Object.keys(ann.targetStores).length : 0;
+      scopeBadge = `<span class="announcement-scope-badge">指定 ${count} 店</span>`;
+    }
+
+    const preview = (ann.content || '').substring(0, 100);
+
+    return `
+      <div class="announcement-card ${isUnread ? 'unread' : ''} ${ann.type === 'urgent' ? 'urgent' : ''}" data-id="${ann.id}" data-scope-type="${ann.scopeType}">
+        <div class="announcement-header">
+          ${typeBadge}
+          ${scopeBadge}
+          <span class="announcement-meta">${formatTimestamp(ann.publishedAt)}</span>
+        </div>
+        <div class="announcement-title">${escapeHtml(ann.title)}</div>
+        <div class="announcement-preview">${escapeHtml(preview)}${ann.content && ann.content.length > 100 ? '...' : ''}</div>
+        <div class="announcement-footer">
+          <span>發布人：${escapeHtml(ann.publishedBy || 'V')}</span>
+          ${state.isHQ && ann.readCount != null ? `<span>已讀 ${ann.readCount} 人</span>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  container.querySelectorAll('.announcement-card').forEach(card => {
+    card.addEventListener('click', () => openAnnouncementDetail(card.dataset.id, card.dataset.scopeType));
+  });
+}
+
+async function openAnnouncementDetail(id, scopeType) {
+  const ann = allAnnouncements.find(a => a.id === id && a.scopeType === scopeType);
+  if (!ann) return;
+
+  document.getElementById('annDetailTitle').textContent = ann.title;
+  const meta = document.getElementById('annDetailMeta');
+  const typeBadge = ann.type === 'urgent' ? '<span class="announcement-type-badge urgent">🚨 緊急</span>'
+    : ann.type === 'important' ? '<span class="announcement-type-badge important">⚠️ 重要</span>'
+    : '<span class="announcement-type-badge normal">📋 一般</span>';
+  meta.innerHTML = typeBadge;
+
+  document.getElementById('annDetailContent').textContent = ann.content || '';
+  document.getElementById('annDetailFooter').innerHTML = `
+    <div>發布人：${escapeHtml(ann.publishedBy || 'V')}</div>
+    <div>發布時間：${formatTimestamp(ann.publishedAt)}</div>
+    ${ann.scope === 'specific' && ann.targetStores ? '<div>指定店家：' + Object.keys(ann.targetStores).map(s => STORE_NAMES[s] || s).join('、') + '</div>' : ''}
+  `;
+
+  // 已讀統計（V 端可看）
+  const statsBox = document.getElementById('annDetailReadStats');
+  if (state.isHQ) {
+    statsBox.style.display = 'block';
+    const reads = ann.reads || {};
+    const totalReads = Object.keys(reads).length;
+    if (totalReads === 0) {
+      document.getElementById('annDetailReadList').innerHTML = '<div style="font-size: 11px; color: var(--text-tertiary);">目前無人已讀</div>';
+    } else {
+      // 算每店多少人讀過
+      const targetStores = ann.scope === 'global' ? STORE_ORDER : Object.keys(ann.targetStores || {});
+      const totalStaff = await preloadStaffCounts(targetStores);
+      const readByStore = {};
+      Object.values(reads).forEach(r => {
+        if (r && r.storeId) {
+          readByStore[r.storeId] = (readByStore[r.storeId] || 0) + 1;
+        }
+      });
+      document.getElementById('annDetailReadList').innerHTML = targetStores.map(sid => {
+        const read = readByStore[sid] || 0;
+        const total = totalStaff[sid] || 0;
+        const pct = total > 0 ? Math.round(read / total * 100) : 0;
+        return `<div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px;">
+          <span>${escapeHtml(STORE_NAMES[sid])}</span>
+          <span style="font-weight: 600;">${read} / ${total} (${pct}%)</span>
+        </div>`;
+      }).join('');
+    }
+  } else {
+    statsBox.style.display = 'none';
+  }
+
+  document.getElementById('annDetailModal').classList.add('show');
+
+  // 自動標記已讀（店長端）
+  if (!state.isHQ && !userReadMap[id]) {
+    try {
+      await db.ref(`/stores/${state.storeId}/userReads/${state.currentStaff || 'unknown'}/${id}`).set(true);
+      // 同時記錄到公告 reads
+      const path = scopeType === 'global'
+        ? `/global/announcements/${id}/reads/${state.storeId}_${state.currentStaff || 'unknown'}`
+        : `/stores/${state.storeId}/announcements/${id}/reads/${state.currentStaff || 'unknown'}`;
+      await db.ref(path).set({
+        storeId: state.storeId,
+        staff: state.currentStaff,
+        readAt: Date.now()
+      });
+      userReadMap[id] = true;
+      // 更新該卡片的 unread 樣式
+      const card = document.querySelector(`.announcement-card[data-id="${id}"]`);
+      if (card) card.classList.remove('unread');
+      // 更新主畫面紅點（延遲，等彈窗關閉後）
+    } catch (e) {
+      console.warn('mark read failed:', e);
+    }
+  }
+}
+
+async function preloadStaffCounts(storeIds) {
+  const result = {};
+  await Promise.all(storeIds.map(async sid => {
+    try {
+      const snap = await db.ref(`/stores/${sid}/staff`).once('value');
+      const data = snap.val() || {};
+      result[sid] = Object.values(data).filter(s => s && s.active !== false).length;
+    } catch (e) { result[sid] = 0; }
+  }));
+  return result;
+}
+
+function setupAnnouncementScreen() {
+  // tabs
+  document.querySelectorAll('#announcementTabs .announcement-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('#announcementTabs .announcement-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      currentAnnFilter = tab.dataset.filter;
+      renderAnnouncements();
+    });
+  });
+
+  // 發布按鈕
+  document.getElementById('announcementCreateBtn').addEventListener('click', openAnnouncementEditor);
+
+  // 詳情關閉
+  document.getElementById('annDetailCloseBtn').addEventListener('click', () => {
+    document.getElementById('annDetailModal').classList.remove('show');
+    // 主畫面紅點刷新
+    if (!state.isHQ) {
+      // 更新 tab 計數
+      const unread = allAnnouncements.filter(a => !userReadMap[a.id]).length;
+      const tabUnread = document.getElementById('tabUnread');
+      if (tabUnread) tabUnread.textContent = `未讀 (${unread})`;
+    }
+  });
+}
+
+// ---------- 公告編輯器 ----------
+
+let annEditorState = {
+  type: 'normal',
+  scope: 'global',
+  targetStores: {}
+};
+
+function openAnnouncementEditor() {
+  if (!state.isHQ) {
+    showToast('只有總部可發布公告', 'error');
+    return;
+  }
+  // 重置
+  annEditorState = { type: 'normal', scope: 'global', targetStores: {} };
+  document.getElementById('annTitle').value = '';
+  document.getElementById('annContent').value = '';
+  document.querySelectorAll('.type-option').forEach(t => t.classList.toggle('active', t.dataset.type === 'normal'));
+  document.querySelectorAll('.scope-option').forEach(s => s.classList.toggle('active', s.dataset.scope === 'global'));
+  document.getElementById('annStoreCheckboxes').style.display = 'none';
+  // 渲染店家複選框
+  document.getElementById('annStoreCheckboxes').innerHTML = STORE_ORDER.map(sid => `
+    <label class="store-checkbox-item">
+      <input type="checkbox" data-store="${sid}">
+      <span>${escapeHtml(STORE_NAMES[sid])}</span>
+    </label>
+  `).join('');
+  showScreen('announcementEditor');
+}
+
+function setupAnnouncementEditor() {
+  // 類型選擇
+  document.querySelectorAll('.type-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document.querySelectorAll('.type-option').forEach(o => o.classList.remove('active'));
+      opt.classList.add('active');
+      annEditorState.type = opt.dataset.type;
+    });
+  });
+
+  // 範圍選擇
+  document.querySelectorAll('.scope-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document.querySelectorAll('.scope-option').forEach(o => o.classList.remove('active'));
+      opt.classList.add('active');
+      annEditorState.scope = opt.dataset.scope;
+      document.getElementById('annStoreCheckboxes').style.display = annEditorState.scope === 'specific' ? 'grid' : 'none';
+    });
+  });
+
+  // 店家複選變化
+  document.getElementById('annStoreCheckboxes').addEventListener('change', (e) => {
+    if (e.target.type === 'checkbox') {
+      const sid = e.target.dataset.store;
+      if (e.target.checked) annEditorState.targetStores[sid] = true;
+      else delete annEditorState.targetStores[sid];
+    }
+  });
+
+  document.getElementById('annSaveDraftBtn').addEventListener('click', () => publishAnnouncement(false));
+  document.getElementById('annPublishBtn').addEventListener('click', () => publishAnnouncement(true));
+}
+
+async function publishAnnouncement(publish) {
+  const title = document.getElementById('annTitle').value.trim();
+  const content = document.getElementById('annContent').value.trim();
+
+  if (!title) { showToast('請填寫標題', 'error'); return; }
+  if (!content) { showToast('請填寫內容', 'error'); return; }
+  if (annEditorState.scope === 'specific' && Object.keys(annEditorState.targetStores).length === 0) {
+    showToast('請至少選一家店', 'error');
+    return;
+  }
+  if (publish && !confirm('確定發布公告嗎？\n發布後 7 店會立即看到。')) return;
+
+  setLoading(true);
+  try {
+    const ref = db.ref('/global/announcements').push();
+    await ref.set({
+      title,
+      content,
+      type: annEditorState.type,
+      scope: annEditorState.scope,
+      targetStores: annEditorState.scope === 'specific' ? annEditorState.targetStores : null,
+      published: publish,
+      publishedAt: publish ? Date.now() : null,
+      publishedBy: state.currentStaff || 'V',
+      createdAt: Date.now(),
+      reads: {}
+    });
+    showToast(publish ? '✓ 公告已發布' : '草稿已儲存', 'success');
+    setTimeout(() => showScreen('announcement'), 800);
+  } catch (err) {
+    showToast('發布失敗：' + err.message, 'error');
+  } finally {
+    setLoading(false);
+  }
+}
+
+// ---------- 待辦事項 ----------
+
+let currentTaskFilter = 'all';
+let allTasks = [];
+
+async function getTaskStats() {
+  if (!db || state.isHQ) return { overdue: 0, pending: 0 };
+  try {
+    const snap = await db.ref(`/stores/${state.storeId}/tasks`).once('value');
+    const data = snap.val() || {};
+    const today = getTodayString();
+    let overdue = 0;
+    let pending = 0;
+    Object.values(data).forEach(t => {
+      if (!t || t.completed) return;
+      pending++;
+      if (t.dueDate < today) overdue++;
+    });
+    return { overdue, pending };
+  } catch (e) {
+    return { overdue: 0, pending: 0 };
+  }
+}
+
+async function openTaskList() {
+  if (state.isHQ) {
+    showToast('總部請查看待辦健康度', '');
+    openTasksHealth();
+    return;
+  }
+  showScreen('task');
+  document.getElementById('taskSubtitle').textContent = `${STORE_NAMES[state.storeId]} · 值班：${state.currentStaff}`;
+  await loadTasks();
+}
+
+async function loadTasks() {
+  if (!db) return;
+  try {
+    const snap = await db.ref(`/stores/${state.storeId}/tasks`).once('value');
+    const data = snap.val() || {};
+    allTasks = Object.entries(data)
+      .map(([id, info]) => ({ id, ...info }))
+      .sort((a, b) => {
+        // 排序：未完成在前、按 dueDate 升序
+        if (a.completed !== b.completed) return a.completed ? 1 : -1;
+        return (a.dueDate || '').localeCompare(b.dueDate || '');
+      });
+    renderTasks();
+  } catch (err) {
+    showToast('載入待辦失敗', 'error');
+  }
+}
+
+function renderTasks() {
+  const container = document.getElementById('taskListContainer');
+  const today = getTodayString();
+
+  // 計數
+  const all = allTasks.length;
+  const completed = allTasks.filter(t => t.completed).length;
+  const pending = all - completed;
+  const overdue = allTasks.filter(t => !t.completed && t.dueDate < today).length;
+  document.getElementById('taskCountAll').textContent = `(${all})`;
+  document.getElementById('taskCountPending').textContent = `(${pending})`;
+  document.getElementById('taskCountCompleted').textContent = `(${completed})`;
+  document.getElementById('taskCountOverdue').textContent = `(${overdue})`;
+
+  // 過濾
+  let filtered = allTasks;
+  if (currentTaskFilter === 'pending') filtered = filtered.filter(t => !t.completed);
+  else if (currentTaskFilter === 'completed') filtered = filtered.filter(t => t.completed);
+  else if (currentTaskFilter === 'overdue') filtered = filtered.filter(t => !t.completed && t.dueDate < today);
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<div class="staff-empty" style="padding: 40px;">沒有符合條件的待辦</div>';
+    return;
+  }
+
+  // 分區
+  const groups = { overdue: [], today: [], future: [], completed: [] };
+  filtered.forEach(t => {
+    if (t.completed) groups.completed.push(t);
+    else if (t.dueDate < today) groups.overdue.push(t);
+    else if (t.dueDate === today) groups.today.push(t);
+    else groups.future.push(t);
+  });
+
+  let html = '';
+
+  if (groups.overdue.length > 0 && (currentTaskFilter === 'all' || currentTaskFilter === 'pending' || currentTaskFilter === 'overdue')) {
+    html += `<div class="task-section-header" style="color: var(--danger);">
+      <svg style="width:13px;height:13px;stroke:currentColor;stroke-width:2;fill:none;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      逾期 · ${groups.overdue.length} 筆
+    </div>`;
+    html += groups.overdue.map(t => taskCardHTML(t, 'overdue')).join('');
+  }
+  if (groups.today.length > 0 && (currentTaskFilter === 'all' || currentTaskFilter === 'pending')) {
+    html += `<div class="task-section-header">
+      <svg style="width:13px;height:13px;stroke:currentColor;stroke-width:2;fill:none;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      今日 · ${today} · ${groups.today.length} 筆
+    </div>`;
+    html += groups.today.map(t => taskCardHTML(t, 'today')).join('');
+  }
+  if (groups.future.length > 0 && (currentTaskFilter === 'all' || currentTaskFilter === 'pending')) {
+    html += `<div class="task-section-header">
+      <svg style="width:13px;height:13px;stroke:currentColor;stroke-width:2;fill:none;" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      未來 · ${groups.future.length} 筆
+    </div>`;
+    html += groups.future.map(t => taskCardHTML(t, 'future')).join('');
+  }
+  if (groups.completed.length > 0 && (currentTaskFilter === 'all' || currentTaskFilter === 'completed')) {
+    html += `<div class="task-section-header" style="color: var(--success-text);">
+      <svg style="width:13px;height:13px;stroke:currentColor;stroke-width:2;fill:none;" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+      已完成 · ${groups.completed.length} 筆
+    </div>`;
+    html += groups.completed.map(t => taskCardHTML(t, 'completed')).join('');
+  }
+
+  container.innerHTML = html || '<div class="staff-empty" style="padding: 40px;">沒有任務</div>';
+
+  // 綁定 checkbox
+  container.querySelectorAll('.task-checkbox').forEach(cb => {
+    cb.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const id = cb.dataset.id;
+      toggleTaskComplete(id);
+    });
+  });
+}
+
+function taskCardHTML(t, type) {
+  const today = getTodayString();
+  const isOverdue = !t.completed && t.dueDate < today;
+  const cardClass = t.completed ? 'completed' : (isOverdue ? 'overdue' : (t.dueDate === today ? 'today' : ''));
+  const priorityClass = t.priority === 'high' ? 'high' : t.priority === 'low' ? 'low' : 'mid';
+  const priorityLabel = t.priority === 'high' ? '高' : t.priority === 'low' ? '低' : '中';
+
+  let dueText = '';
+  if (t.completed) {
+    dueText = `${t.dueDate} 完成 · ${escapeHtml(t.completedBy || '?')}勾選`;
+  } else if (isOverdue) {
+    const days = Math.floor((new Date(today) - new Date(t.dueDate)) / 86400000);
+    dueText = `<span class="task-overdue-text">⚠ 逾期 ${days} 天（${t.dueDate}）</span>`;
+  } else if (t.dueDate === today) {
+    dueText = '今日截止';
+  } else {
+    const days = Math.floor((new Date(t.dueDate) - new Date(today)) / 86400000);
+    dueText = `${t.dueDate}（${days} 天後）`;
+  }
+
+  return `
+    <div class="task-card ${cardClass}">
+      <div class="task-checkbox ${t.completed ? 'checked' : ''}" data-id="${t.id}">
+        <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+      <div class="task-content">
+        <div class="task-title-text ${t.completed ? 'completed' : ''}">${escapeHtml(t.content)}</div>
+        <div class="task-meta-row">
+          ${t.completed ? '' : `<span class="task-priority-pill ${priorityClass}">${priorityLabel}</span>`}
+          <span class="task-cat-tag">${escapeHtml(t.category || '其他')}</span>
+          <span>${dueText}</span>
+          <span>指派：${escapeHtml(t.assignee || '未指定')}</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+async function toggleTaskComplete(taskId) {
+  if (!db) return;
+  const task = allTasks.find(t => t.id === taskId);
+  if (!task) return;
+  const newState = !task.completed;
+  try {
+    await db.ref(`/stores/${state.storeId}/tasks/${taskId}`).update({
+      completed: newState,
+      completedAt: newState ? Date.now() : null,
+      completedBy: newState ? state.currentStaff : null
+    });
+    showToast(newState ? '✓ 已完成' : '已取消完成', 'success');
+    await loadTasks();
+    if (newState) renderFeatureGrid();
+  } catch (err) {
+    showToast('操作失敗', 'error');
+  }
+}
+
+function setupTaskScreen() {
+  // tabs
+  document.querySelectorAll('#taskTabs .announcement-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('#taskTabs .announcement-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      currentTaskFilter = tab.dataset.filter;
+      renderTasks();
+    });
+  });
+
+  document.getElementById('taskAddBtn').addEventListener('click', openAddTaskModal);
+  document.getElementById('addTaskCloseBtn').addEventListener('click', closeAddTaskModal);
+  document.getElementById('addTaskCancelBtn').addEventListener('click', closeAddTaskModal);
+  document.getElementById('addTaskConfirmBtn').addEventListener('click', confirmAddTask);
+
+  // 類別 chips
+  document.querySelectorAll('#newTaskCatRow .cat-chip').forEach(c => {
+    c.addEventListener('click', () => {
+      document.querySelectorAll('#newTaskCatRow .cat-chip').forEach(x => x.classList.remove('active'));
+      c.classList.add('active');
+    });
+  });
+
+  // 優先度
+  document.querySelectorAll('#newTaskPriorityRow .priority-card-mini').forEach(p => {
+    p.addEventListener('click', () => {
+      document.querySelectorAll('#newTaskPriorityRow .priority-card-mini').forEach(x => x.classList.remove('active'));
+      p.classList.add('active');
+    });
+  });
+
+  // 快速日期
+  document.querySelectorAll('.date-quick-row .date-quick').forEach(q => {
+    q.addEventListener('click', () => {
+      document.querySelectorAll('.date-quick-row .date-quick').forEach(x => x.classList.remove('active'));
+      q.classList.add('active');
+      const today = new Date();
+      const target = new Date(today);
+      const which = q.dataset.quick;
+      if (which === 'today') {} 
+      else if (which === 'tomorrow') target.setDate(target.getDate() + 1);
+      else if (which === '3days') target.setDate(target.getDate() + 3);
+      else if (which === 'weekend') {
+        const dow = target.getDay();
+        target.setDate(target.getDate() + (dow === 0 ? 6 : 6 - dow));
+      } else if (which === 'monthend') {
+        target.setMonth(target.getMonth() + 1, 0);
+      }
+      const dateStr = `${target.getFullYear()}-${String(target.getMonth() + 1).padStart(2, '0')}-${String(target.getDate()).padStart(2, '0')}`;
+      document.getElementById('newTaskDate').value = dateStr;
+    });
+  });
+}
+
+async function openAddTaskModal() {
+  // 重置
+  document.getElementById('newTaskContent').value = '';
+  document.querySelectorAll('#newTaskCatRow .cat-chip').forEach(x => x.classList.toggle('active', x.dataset.cat === '補貨'));
+  document.querySelectorAll('#newTaskPriorityRow .priority-card-mini').forEach(x => x.classList.toggle('active', x.dataset.priority === 'mid'));
+  document.querySelectorAll('.date-quick-row .date-quick').forEach(x => x.classList.remove('active'));
+  // 預設明天
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  document.getElementById('newTaskDate').value = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')}`;
+  document.querySelectorAll('.date-quick-row .date-quick').forEach(x => x.classList.toggle('active', x.dataset.quick === 'tomorrow'));
+
+  // 載入員工列表
+  if (db) {
+    try {
+      const snap = await db.ref(`/stores/${state.storeId}/staff`).once('value');
+      const data = snap.val() || {};
+      const staff = Object.values(data).filter(s => s && s.active !== false);
+      const list = document.getElementById('newTaskAssignList');
+      list.innerHTML = staff.map((s, i) => `
+        <div class="assign-item ${i === 0 ? 'selected' : ''}" data-name="${escapeHtml(s.name)}">
+          <div class="assign-radio"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+          <div style="flex: 1;">
+            <div class="assign-name">${escapeHtml(s.name)}${s.name === state.currentStaff ? '（我自己）' : ''}</div>
+            <div class="assign-role">${escapeHtml(s.role || '店員')}</div>
+          </div>
+        </div>
+      `).join('') + `
+        <div class="assign-item" data-name="全店共同">
+          <div class="assign-radio"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+          <div style="flex: 1;">
+            <div class="assign-name">👥 全店共同</div>
+            <div class="assign-role">誰看到誰做</div>
+          </div>
+        </div>
+      `;
+
+      list.querySelectorAll('.assign-item').forEach(item => {
+        item.addEventListener('click', () => {
+          list.querySelectorAll('.assign-item').forEach(x => x.classList.remove('selected'));
+          item.classList.add('selected');
+        });
+      });
+    } catch (e) {}
+  }
+
+  document.getElementById('addTaskModal').classList.add('show');
+  setTimeout(() => document.getElementById('newTaskContent').focus(), 100);
+}
+
+function closeAddTaskModal() {
+  document.getElementById('addTaskModal').classList.remove('show');
+}
+
+async function confirmAddTask() {
+  const content = document.getElementById('newTaskContent').value.trim();
+  const category = document.querySelector('#newTaskCatRow .cat-chip.active')?.dataset.cat || '其他';
+  const priority = document.querySelector('#newTaskPriorityRow .priority-card-mini.active')?.dataset.priority || 'mid';
+  const dueDate = document.getElementById('newTaskDate').value;
+  const assignee = document.querySelector('#newTaskAssignList .assign-item.selected')?.dataset.name || state.currentStaff;
+
+  if (!content) { showToast('請填寫內容', 'error'); return; }
+  if (!dueDate) { showToast('請選擇目標日期', 'error'); return; }
+  if (!db) return;
+
+  setLoading(true);
+  try {
+    const ref = db.ref(`/stores/${state.storeId}/tasks`).push();
+    await ref.set({
+      content, category, priority, dueDate, assignee,
+      completed: false,
+      createdAt: Date.now(),
+      createdBy: state.currentStaff || '?'
+    });
+    showToast('✓ 已新增待辦', 'success');
+    closeAddTaskModal();
+    await loadTasks();
+    renderFeatureGrid();
+  } catch (err) {
+    showToast('新增失敗', 'error');
+  } finally {
+    setLoading(false);
+  }
+}
+
+// ---------- V 端：7 店待辦健康度 ----------
+
+async function openTasksHealth() {
+  if (!state.isHQ) {
+    showToast('此功能僅總部可用', 'error');
+    return;
+  }
+  showScreen('tasksHealth');
+  await loadTasksHealth();
+}
+
+async function loadTasksHealth() {
+  if (!db) return;
+  try {
+    const today = getTodayString();
+    const storeStats = {};
+    const staffStats = {};
+
+    await Promise.all(STORE_ORDER.map(async sid => {
+      const snap = await db.ref(`/stores/${sid}/tasks`).once('value');
+      const data = snap.val() || {};
+      let pending = 0;
+      Object.values(data).forEach(t => {
+        if (!t || t.completed) return;
+        pending++;
+        const assignee = t.assignee || '未指定';
+        if (assignee !== '全店共同' && assignee !== '未指定') {
+          const key = `${sid}__${assignee}`;
+          if (!staffStats[key]) staffStats[key] = { storeId: sid, name: assignee, count: 0 };
+          staffStats[key].count++;
+        }
+      });
+      storeStats[sid] = pending;
+    }));
+
+    // 取得每個 staff 的 role
+    const staffRoles = {};
+    await Promise.all(STORE_ORDER.map(async sid => {
+      const snap = await db.ref(`/stores/${sid}/staff`).once('value');
+      const data = snap.val() || {};
+      Object.values(data).forEach(s => {
+        if (s && s.name) staffRoles[`${sid}__${s.name}`] = s.role || '店員';
+      });
+    }));
+
+    renderHealthBars(storeStats);
+    renderStaffHeat(staffStats, staffRoles);
+  } catch (err) {
+    showToast('載入失敗', 'error');
+  }
+}
+
+function renderHealthBars(storeStats) {
+  const container = document.getElementById('healthStoreBars');
+  // 排序：多到少
+  const sorted = STORE_ORDER.map(sid => ({ sid, count: storeStats[sid] || 0 }))
+    .sort((a, b) => b.count - a.count);
+
+  const max = Math.max(...sorted.map(s => s.count), 1);
+
+  container.innerHTML = sorted.map(s => {
+    const pct = max > 0 ? Math.max((s.count / max) * 100, 5) : 5;
+    let cls = 'lowest';
+    if (s.count >= 10) cls = 'high';
+    else if (s.count >= 6) cls = 'mid';
+    else if (s.count >= 3) cls = 'low';
+
+    const shortName = (STORE_NAMES[s.sid] || s.sid).replace(/^台北|^台中|^台南|^高雄|^桃園/, '');
+
+    return `
+      <div class="bar-row">
+        <span class="bar-store-name">${escapeHtml(shortName)}</span>
+        <div class="bar-container">
+          <div class="bar-fill ${cls}" style="width: ${pct}%;">${s.count}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderStaffHeat(staffStats, staffRoles) {
+  const container = document.getElementById('healthStaffList');
+  const list = Object.values(staffStats).sort((a, b) => b.count - a.count).slice(0, 5);
+  if (list.length === 0) {
+    container.innerHTML = '<div class="staff-empty" style="padding: 30px;">尚無資料</div>';
+    return;
+  }
+  container.innerHTML = list.map((s, i) => {
+    const heavy = s.count >= 8;
+    const role = staffRoles[`${s.storeId}__${s.name}`] || '店員';
+    const shortStore = (STORE_NAMES[s.storeId] || s.storeId).replace(/^台北|^台中|^台南|^高雄|^桃園/, '');
+    return `
+      <div class="staff-heat-card ${heavy ? 'heavy' : ''}">
+        <div class="staff-heat-rank">${i + 1}</div>
+        <div class="staff-heat-info">
+          <div class="staff-heat-name">${escapeHtml(s.name)}</div>
+          <div class="staff-heat-store">${escapeHtml(shortStore)} · ${escapeHtml(role)}</div>
+        </div>
+        <div class="staff-heat-count">
+          <div class="staff-heat-count-num">${s.count}</div>
+          <div class="staff-heat-count-label">筆未完成</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ---------- 排班表 ----------
+
+let currentScheduleMonth = getCurrentYM();
+let currentScheduleStoreId = null;
+let scheduleData = {};
+let scheduleStaffList = [];
+let scheduleEditingDate = null;
+let scheduleEditingShift = 'morning';
+let scheduleEditingStaff = [];
+
+async function openSchedule() {
+  // V 端：先選一家店看；店長端：自動是自己店
+  currentScheduleStoreId = state.isHQ ? 'zhongxiao' : state.storeId;
+  currentScheduleMonth = getCurrentYM();
+  showScreen('schedule');
+  document.getElementById('scheduleSubtitle').textContent = STORE_NAMES[currentScheduleStoreId];
+  document.getElementById('scheduleHQNotice').style.display = state.isHQ ? 'block' : 'none';
+  await loadSchedule();
+}
+
+async function loadSchedule() {
+  if (!db) return;
+  document.getElementById('scheduleMonth').textContent = formatYM(currentScheduleMonth);
+  try {
+    const [scheduleSnap, staffSnap] = await Promise.all([
+      db.ref(`/stores/${currentScheduleStoreId}/schedule/${currentScheduleMonth}`).once('value'),
+      db.ref(`/stores/${currentScheduleStoreId}/staff`).once('value')
+    ]);
+    scheduleData = scheduleSnap.val() || {};
+    const staffData = staffSnap.val() || {};
+    scheduleStaffList = Object.entries(staffData)
+      .filter(([_, s]) => s && s.active !== false)
+      .map(([id, s]) => ({ id, name: s.name, role: s.role || '店員' }));
+
+    renderScheduleGrid();
+  } catch (err) {
+    showToast('載入排班失敗', 'error');
+  }
+}
+
+function renderScheduleGrid() {
+  const grid = document.getElementById('scheduleGrid');
+  const [year, month] = currentScheduleMonth.split('-').map(Number);
+  const daysInMonth = getDaysInMonth(year, month);
+  const firstWeekday = getWeekday(year, month, 1);
+  const offset = firstWeekday === 0 ? 6 : firstWeekday - 1;
+  const today = getTodayString();
+
+  let cells = '';
+  for (let i = 0; i < offset; i++) {
+    cells += '<div class="schedule-cell empty"></div>';
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    const weekday = getWeekday(year, month, d);
+    const isWeekend = (weekday === 0 || weekday === 6);
+    const isToday = dateStr === today;
+
+    const classes = ['schedule-cell'];
+    if (isToday) classes.push('today');
+    else if (isWeekend) classes.push('weekend');
+
+    const dayShifts = scheduleData[dateStr] || {};
+
+    let shiftHTML = '';
+    Object.entries(dayShifts).forEach(([shift, staffArr]) => {
+      if (!staffArr || (Array.isArray(staffArr) && staffArr.length === 0)) return;
+      const shiftLabel = { morning: '早', evening: '晚', fullday: '全', off: '休' }[shift] || shift;
+      shiftHTML += `<span class="shift-tag ${shift}">${shiftLabel}</span>`;
+      const names = (Array.isArray(staffArr) ? staffArr : []).join('、');
+      if (names) shiftHTML += `<div class="shift-staff-mini">${escapeHtml(names)}</div>`;
+    });
+
+    cells += `
+      <div class="${classes.join(' ')}" data-date="${dateStr}">
+        <div class="schedule-day-num ${isWeekend ? 'weekend' : ''}">${d}</div>
+        ${shiftHTML}
+      </div>
+    `;
+  }
+
+  grid.innerHTML = cells;
+
+  // 點擊每格
+  if (!state.isHQ) {
+    grid.querySelectorAll('.schedule-cell:not(.empty)').forEach(cell => {
+      cell.addEventListener('click', () => openShiftEdit(cell.dataset.date));
+    });
+  }
+}
+
+function openShiftEdit(date) {
+  if (!date) return;
+  scheduleEditingDate = date;
+  // 預設選早班
+  const dayShifts = scheduleData[date] || {};
+  // 找第一個有人的班別
+  const existingShifts = Object.entries(dayShifts).filter(([_, arr]) => arr && (Array.isArray(arr) ? arr.length > 0 : true));
+  if (existingShifts.length > 0) {
+    scheduleEditingShift = existingShifts[0][0];
+    scheduleEditingStaff = Array.isArray(existingShifts[0][1]) ? [...existingShifts[0][1]] : [];
+  } else {
+    scheduleEditingShift = 'morning';
+    scheduleEditingStaff = [];
+  }
+
+  document.getElementById('shiftEditTitle').textContent = `${date} 排班`;
+  renderShiftOptions();
+  renderShiftStaffList();
+  document.getElementById('shiftEditModal').classList.add('show');
+}
+
+function renderShiftOptions() {
+  document.querySelectorAll('#shiftOptions .shift-option').forEach(o => {
+    o.classList.toggle('active', o.dataset.shift === scheduleEditingShift);
+  });
+  // 休假時隱藏員工選擇
+  document.getElementById('shiftStaffGroup').style.display = scheduleEditingShift === 'off' ? 'none' : 'block';
+}
+
+function renderShiftStaffList() {
+  const container = document.getElementById('shiftStaffList');
+  if (scheduleStaffList.length === 0) {
+    container.innerHTML = '<div style="font-size: 11px; color: var(--text-tertiary); padding: 10px;">該店尚無員工</div>';
+    return;
+  }
+  container.innerHTML = scheduleStaffList.map(s => {
+    const selected = scheduleEditingStaff.includes(s.name);
+    return `
+      <div class="shift-staff-item ${selected ? 'selected' : ''}" data-name="${escapeHtml(s.name)}">
+        <div class="staff-avatar" style="width: 28px; height: 28px; font-size: 11px;">${escapeHtml(s.name.charAt(s.name.length - 1))}</div>
+        <div style="flex: 1;">
+          <div style="font-size: 12px; font-weight: 600;">${escapeHtml(s.name)}</div>
+          <div style="font-size: 10px; color: var(--text-tertiary);">${escapeHtml(s.role)}</div>
+        </div>
+        <div style="width: 16px; height: 16px; border-radius: 4px; border: 2px solid var(--border-dark); ${selected ? 'background: var(--success); border-color: var(--success);' : ''} display: flex; align-items: center; justify-content: center;">
+          ${selected ? '<svg style="width: 10px; height: 10px; stroke: white; stroke-width: 3.5; fill: none;" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>' : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  container.querySelectorAll('.shift-staff-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const name = item.dataset.name;
+      const idx = scheduleEditingStaff.indexOf(name);
+      if (idx >= 0) scheduleEditingStaff.splice(idx, 1);
+      else scheduleEditingStaff.push(name);
+      renderShiftStaffList();
+    });
+  });
+}
+
+function setupScheduleScreen() {
+  document.getElementById('schedulePrevBtn').addEventListener('click', async () => {
+    currentScheduleMonth = prevMonth(currentScheduleMonth);
+    await loadSchedule();
+  });
+  document.getElementById('scheduleNextBtn').addEventListener('click', async () => {
+    currentScheduleMonth = nextMonth(currentScheduleMonth);
+    await loadSchedule();
+  });
+
+  document.getElementById('shiftEditCloseBtn').addEventListener('click', closeShiftEdit);
+  document.getElementById('shiftEditCancelBtn').addEventListener('click', closeShiftEdit);
+  document.getElementById('shiftEditClearBtn').addEventListener('click', clearShift);
+  document.getElementById('shiftEditConfirmBtn').addEventListener('click', confirmShift);
+
+  document.querySelectorAll('#shiftOptions .shift-option').forEach(o => {
+    o.addEventListener('click', () => {
+      scheduleEditingShift = o.dataset.shift;
+      renderShiftOptions();
+    });
+  });
+}
+
+function closeShiftEdit() {
+  document.getElementById('shiftEditModal').classList.remove('show');
+}
+
+async function clearShift() {
+  if (!confirm(`清空 ${scheduleEditingDate} 全部排班？`)) return;
+  if (!db) return;
+  setLoading(true);
+  try {
+    await db.ref(`/stores/${state.storeId}/schedule/${currentScheduleMonth}/${scheduleEditingDate}`).remove();
+    showToast('已清空', 'success');
+    closeShiftEdit();
+    await loadSchedule();
+  } catch (err) {
+    showToast('操作失敗', 'error');
+  } finally {
+    setLoading(false);
+  }
+}
+
+async function confirmShift() {
+  if (!db) return;
+  if (scheduleEditingShift !== 'off' && scheduleEditingStaff.length === 0) {
+    showToast('請至少選一位員工，或選休假', 'error');
+    return;
+  }
+  setLoading(true);
+  try {
+    const updateData = {};
+    if (scheduleEditingShift === 'off') {
+      updateData[scheduleEditingShift] = ['公休'];
+    } else {
+      updateData[scheduleEditingShift] = scheduleEditingStaff;
+    }
+    await db.ref(`/stores/${state.storeId}/schedule/${currentScheduleMonth}/${scheduleEditingDate}`).update(updateData);
+    showToast('已儲存', 'success');
+    closeShiftEdit();
+    await loadSchedule();
+  } catch (err) {
+    showToast('儲存失敗', 'error');
+  } finally {
+    setLoading(false);
+  }
+}
+
+// ============================================
+// ★ Phase 1.C 模組初始化 ★
+// ============================================
+function initPhase1C() {
+  setupAnnouncementScreen();
+  setupAnnouncementEditor();
+  setupTaskScreen();
+  setupScheduleScreen();
+}
+
+// ============================================
 // 初始化
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
@@ -3783,6 +5877,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ★ Phase 1.B 初始化
   initPhase1B();
+
+  // ★ Phase 1.C 初始化
+  initPhase1C();
 
   // 嘗試恢復登入狀態（refresh 後保持登入）
   if (!tryRestoreSession()) {
