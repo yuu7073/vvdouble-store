@@ -2709,11 +2709,15 @@ input, textarea, select { font-family: inherit; }
           <div class="subscreen-title">月總目標設定</div>
           <div class="subscreen-subtitle" id="monthlyTargetSubtitle">—</div>
         </div>
-        <div style="display: flex; gap: 6px; align-items: center;">
+        <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
           <button class="btn-back" data-screen="home">‹ 返回</button>
           <button class="btn-back" id="monthlyTargetPrevBtn">‹</button>
           <span style="font-size: 13px; font-weight: 800;" id="monthlyTargetMonth">—</span>
           <button class="btn-back" id="monthlyTargetNextBtn">›</button>
+          <button id="monthlyTargetUnlockBtn" style="display: none; padding: 6px 12px; background: #FFF4E6; color: #5C4A1A; border: 1.5px solid #FFB800; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; display: none; align-items: center; gap: 4px;">
+            <svg style="width: 12px; height: 12px; stroke: currentColor; stroke-width: 2.5; fill: none;" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="1"/><path d="M7 11V7a5 5 0 019.9-1"/></svg>
+            解除鎖定
+          </button>
         </div>
       </div>
 
@@ -4849,6 +4853,16 @@ function renderMonthlyTargetRows(lastAchieved) {
   document.getElementById('monthlyTargetLockBtn').textContent = isLocked
     ? '已鎖定（編輯內容後再次儲存）' : '✓ 確認鎖定當月目標';
 
+  // 解鎖按鈕：只有 V + 鎖定中 才顯示
+  const unlockBtn = document.getElementById('monthlyTargetUnlockBtn');
+  if (unlockBtn) {
+    if (state.isHQ && isLocked) {
+      unlockBtn.style.display = 'inline-flex';
+    } else {
+      unlockBtn.style.display = 'none';
+    }
+  }
+
   // 更新倒數 banner
   updateMonthlyCountdownBanner();
   // 更新整體進度
@@ -5042,6 +5056,43 @@ function setupMonthlyTargetScreen() {
   });
   document.getElementById('monthlyTargetSaveDraftBtn').addEventListener('click', () => saveMonthlyTarget(false));
   document.getElementById('monthlyTargetLockBtn').addEventListener('click', () => saveMonthlyTarget(true));
+  document.getElementById('monthlyTargetUnlockBtn').addEventListener('click', unlockMonthlyTarget);
+}
+
+/** 解除月總目標鎖定（V 端限定） */
+async function unlockMonthlyTarget() {
+  if (!state.isHQ) {
+    showToast('只有總部可以解鎖', 'error');
+    return;
+  }
+  if (!db) return;
+  if (!monthlyTargetData._locked) {
+    showToast('目前未鎖定', '');
+    return;
+  }
+
+  const ymLabel = formatYM(currentTargetMonth);
+  const confirmed = confirm(
+    `確定解除 ${ymLabel} 月總目標的鎖定嗎？\n\n` +
+    `解除後可以重新編輯 7 店目標。\n` +
+    `編輯完成後，請記得再次按下「確認鎖定」。`
+  );
+  if (!confirmed) return;
+
+  setLoading(true);
+  try {
+    // 把 _locked 設為 false
+    await db.ref(`/global/monthlyTargets/${currentTargetMonth}/_locked`).set(false);
+    monthlyTargetData._locked = false;
+    showToast('✓ 已解除鎖定，可以重新編輯', 'success');
+    // 重新載入該月資料，讓所有 row 變回可編輯狀態
+    await loadMonthlyTargetForMonth(currentTargetMonth);
+  } catch (err) {
+    console.error('Unlock error:', err);
+    showToast('解鎖失敗：' + err.message, 'error');
+  } finally {
+    setLoading(false);
+  }
 }
 
 // ---------- 業績目標：店長端每日目標分配 ----------
