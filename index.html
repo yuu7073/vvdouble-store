@@ -2434,6 +2434,866 @@ input, textarea, select { font-family: inherit; }
   .rv-daily-progress-grid { grid-template-columns: 1fr; }
 }
 
+/* ============================================
+   ★ Phase 1.D 新增樣式（今日數字 + 週報）★
+   ============================================ */
+
+/* ---------- 今日數字頁 ---------- */
+
+.td-date-toggle {
+  display: flex;
+  background: var(--warning-bg);
+  border-radius: 8px;
+  padding: 3px;
+  margin-bottom: 12px;
+  gap: 3px;
+}
+
+.td-date-toggle-btn {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  background: transparent;
+  color: var(--warning-text);
+  border: none;
+  transition: all var(--transition);
+}
+
+.td-date-toggle-btn.active {
+  background: var(--bg-white);
+  color: var(--text-primary);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.td-toggle-sub {
+  font-size: 9px;
+  color: var(--text-tertiary);
+  font-weight: 500;
+  margin-top: 2px;
+  display: block;
+}
+
+.td-date-toggle-btn.active .td-toggle-sub {
+  color: #B8860B;
+}
+
+/* KPI 數字輸入卡 */
+.td-kpi-card {
+  background: var(--bg-white);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  border: 1px solid var(--primary-light);
+  margin-bottom: 8px;
+}
+
+.td-kpi-card.auto {
+  background: var(--warning-bg);
+}
+
+.td-kpi-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  gap: 10px;
+}
+
+.td-kpi-row:last-child { margin-bottom: 0; }
+
+.td-kpi-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 700;
+  flex: 1;
+}
+
+.td-kpi-input-wrap { width: 130px; }
+
+.td-kpi-input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1.5px solid var(--primary);
+  border-radius: 7px;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: right;
+  font-family: 'Consolas', monospace;
+  box-sizing: border-box;
+}
+
+.td-kpi-input:focus {
+  outline: none;
+  border-color: var(--primary-dark);
+}
+
+.td-kpi-readonly {
+  background: var(--bg-gray-50);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 800;
+  font-family: 'Consolas', monospace;
+  color: var(--text-primary);
+  text-align: right;
+}
+
+.td-kpi-rate-text {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.td-kpi-rate-text.high { color: var(--success-text); }
+.td-kpi-rate-text.mid { color: #B8860B; }
+.td-kpi-rate-text.low { color: var(--danger); }
+
+.td-section-label {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+/* 6 組勾選 + 補充欄 */
+.td-status-card {
+  background: var(--bg-white);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  border: 1px solid var(--primary-light);
+  margin-bottom: 8px;
+}
+
+.td-chip-block {
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed var(--border-light);
+}
+
+.td-chip-block:last-child {
+  border: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+.td-chip-label {
+  font-size: 11px;
+  color: var(--text-primary);
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.td-chip-row { margin-bottom: 8px; }
+
+.td-chip {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--bg-white);
+  border: 1.5px solid var(--border-medium);
+  color: var(--text-secondary);
+  cursor: pointer;
+  margin-right: 4px;
+  margin-bottom: 4px;
+  transition: all var(--transition);
+}
+
+.td-chip:hover {
+  border-color: var(--primary);
+}
+
+.td-chip.active {
+  background: var(--primary-dark);
+  color: var(--primary-text-on-dark);
+  border-color: var(--primary-dark);
+}
+
+.td-supplement-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.td-supplement-label {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.td-supplement-input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1.5px solid var(--border-light);
+  border-radius: 6px;
+  font-size: 11px;
+  font-family: inherit;
+  background: var(--bg-gray-50);
+  box-sizing: border-box;
+  transition: all var(--transition);
+}
+
+.td-supplement-input:focus {
+  outline: none;
+  background: var(--bg-white);
+  border-color: var(--primary);
+}
+
+/* 天氣自動帶入卡 */
+.td-weather-card {
+  background: linear-gradient(135deg, #FFF8E0 0%, #FFE5A0 100%);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.td-weather-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.td-weather-info { flex: 1; }
+
+.td-weather-label {
+  font-size: 10px;
+  color: var(--warning-text);
+  font-weight: 600;
+}
+
+.td-weather-detail {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-top: 2px;
+  font-family: 'Consolas', monospace;
+}
+
+.td-weather-meta {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  margin-top: 1px;
+}
+
+.td-weather-edit-btn {
+  font-size: 10px;
+  color: var(--text-secondary);
+  text-decoration: underline;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 4px 8px;
+}
+
+.td-weather-edit-btn:hover {
+  color: var(--text-primary);
+}
+
+.td-weather-loading {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+/* 大型自由欄 */
+.td-special-card {
+  background: var(--bg-white);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  border: 1px solid var(--primary-light);
+  margin-bottom: 8px;
+}
+
+.td-textarea-large {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1.5px solid var(--border-light);
+  border-radius: 7px;
+  font-size: 12px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 60px;
+  box-sizing: border-box;
+  line-height: 1.5;
+  transition: border-color var(--transition);
+}
+
+.td-textarea-large:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.td-special-hint {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  margin-top: 6px;
+}
+
+/* 提交按鈕區（黏在底部） */
+.td-submit-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+  position: sticky;
+  bottom: 16px;
+  background: var(--primary-bg);
+  padding: 12px 0;
+  z-index: 10;
+}
+
+.td-submit-meta {
+  text-align: center;
+  font-size: 10px;
+  color: var(--text-tertiary);
+  margin-top: 6px;
+}
+
+/* ---------- 店長週報頁 ---------- */
+
+.wr-week-nav {
+  display: flex;
+  background: var(--warning-bg);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 3px;
+  margin-bottom: 10px;
+}
+
+.wr-week-nav-btn {
+  flex: 1;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  background: transparent;
+  color: var(--warning-text);
+  border: none;
+}
+
+.wr-week-nav-btn.active {
+  background: var(--bg-white);
+  color: var(--text-primary);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.wr-nav-sub {
+  font-size: 9px;
+  color: var(--text-tertiary);
+  font-weight: 500;
+  margin-top: 2px;
+  display: block;
+}
+
+.wr-week-nav-btn.active .wr-nav-sub { color: #B8860B; }
+
+/* 狀態 banner */
+.wr-status-banner {
+  border-radius: 0 8px 8px 0;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.wr-status-banner.pending {
+  background: var(--warning-bg);
+  border-left: 3px solid var(--warning);
+}
+
+.wr-status-banner.overdue {
+  background: var(--danger-bg);
+  border-left: 3px solid var(--danger);
+}
+
+.wr-status-banner.submitted {
+  background: var(--success-bg);
+  border-left: 3px solid var(--success);
+}
+
+.wr-status-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 800;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.wr-status-icon.pending { background: var(--warning); }
+.wr-status-icon.overdue { background: var(--danger); }
+.wr-status-icon.submitted { background: var(--success); }
+
+.wr-status-text {
+  flex: 1;
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.wr-status-text strong { color: var(--text-primary); }
+
+/* 數字總覽 */
+.wr-num-overview-card {
+  background: var(--bg-white);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  border: 1px solid var(--primary-light);
+  margin-bottom: 8px;
+}
+
+.wr-num-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.wr-num-cell {
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+}
+
+.wr-num-cell.dark {
+  background: var(--primary-dark);
+  color: var(--primary-text-on-dark);
+}
+
+.wr-num-cell.warning {
+  background: var(--warning-bg);
+}
+
+.wr-num-cell.success {
+  background: var(--success-bg);
+}
+
+.wr-num-cell-label {
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.wr-num-cell.dark .wr-num-cell-label { opacity: 0.7; }
+.wr-num-cell.warning .wr-num-cell-label { color: var(--warning-text); }
+.wr-num-cell.success .wr-num-cell-label { color: var(--success-text); }
+
+.wr-num-cell-value {
+  font-size: 17px;
+  font-weight: 800;
+  font-family: 'Consolas', monospace;
+  margin-top: 3px;
+}
+
+.wr-num-cell.warning .wr-num-cell-value.up { color: var(--success-text); }
+.wr-num-cell.warning .wr-num-cell-value.down { color: var(--danger); }
+
+.wr-num-cell-sub {
+  font-size: 9px;
+  margin-top: 3px;
+}
+
+.wr-num-cell.dark .wr-num-cell-sub { opacity: 0.7; }
+.wr-num-cell.warning .wr-num-cell-sub { color: var(--warning-text); }
+.wr-num-cell.success .wr-num-cell-sub { color: var(--success-text); }
+
+/* 7 天分佈 */
+.wr-day-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  font-size: 11px;
+}
+
+.wr-day-name {
+  width: 30px;
+  color: var(--text-tertiary);
+  font-weight: 700;
+}
+
+.wr-day-bar-bg {
+  flex: 1;
+  background: var(--bg-gray-100);
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.wr-day-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.wr-day-bar-fill.high { background: var(--success); }
+.wr-day-bar-fill.mid { background: var(--primary); }
+.wr-day-bar-fill.low { background: #FFA500; }
+.wr-day-bar-fill.none { background: var(--border-light); }
+
+.wr-day-stat {
+  font-size: 10px;
+  color: var(--text-secondary);
+  min-width: 90px;
+  text-align: right;
+  font-family: 'Consolas', monospace;
+}
+
+/* 現場狀況歸納 */
+.wr-status-summary-card {
+  background: var(--warning-bg);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin-bottom: 8px;
+}
+
+.wr-status-summary-row {
+  margin-bottom: 6px;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.wr-status-summary-row:last-child { margin-bottom: 0; }
+
+.wr-status-summary-row strong { color: var(--warning-text); }
+
+.wr-stat-pill {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  margin-right: 4px;
+  margin-bottom: 4px;
+}
+
+.wr-stat-pill.warm { background: #FFD0A0; color: #6B3500; }
+.wr-stat-pill.normal { background: #FFE5A0; color: #5C4A1A; }
+.wr-stat-pill.cold { background: #E0E0E0; color: #555; }
+
+/* 事件清單 */
+.wr-events-card {
+  background: var(--bg-white);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  border: 1px solid var(--primary-light);
+  margin-bottom: 8px;
+}
+
+.wr-event-row {
+  padding: 6px 8px;
+  background: var(--warning-bg);
+  border-radius: 6px;
+  margin-bottom: 4px;
+  font-size: 11px;
+}
+
+.wr-event-row:last-child { margin-bottom: 0; }
+
+.wr-event-row strong { color: var(--text-primary); }
+
+/* 4 段店長洞察 */
+.wr-insight-section {
+  background: var(--bg-white);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  border: 1px solid var(--primary-light);
+  margin-bottom: 8px;
+}
+
+.wr-insight-section.highlighted {
+  border: 2px solid var(--warning);
+}
+
+.wr-insight-header {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: space-between;
+}
+
+.wr-insight-textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1.5px solid var(--border-light);
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 60px;
+  box-sizing: border-box;
+  line-height: 1.5;
+  transition: border-color var(--transition);
+}
+
+.wr-insight-textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.wr-insight-readonly {
+  background: var(--bg-gray-50);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: var(--text-primary);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+/* HQ 回覆區 */
+.wr-hq-reply-card {
+  background: var(--success-bg);
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-top: 8px;
+  border-left: 3px solid var(--success);
+}
+
+.wr-hq-reply-label {
+  font-size: 10px;
+  color: var(--success-text);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.wr-hq-reply-content {
+  font-size: 12px;
+  color: var(--text-primary);
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.wr-hq-reply-meta {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+}
+
+/* ---------- V 端：週報總覽 ---------- */
+
+.hwr-status-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.hwr-status-card {
+  background: var(--bg-white);
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+  border: 1px solid var(--primary-light);
+}
+
+.hwr-status-card.danger {
+  background: var(--danger-bg);
+  border-color: #F09595;
+}
+
+.hwr-status-card.success {
+  background: var(--success-bg);
+  border-color: #C0DD97;
+}
+
+.hwr-status-num {
+  font-size: 22px;
+  font-weight: 800;
+  font-family: 'Consolas', monospace;
+}
+
+.hwr-status-num.danger { color: var(--danger); }
+.hwr-status-num.success { color: var(--success-text); }
+.hwr-status-num.warning { color: #B8860B; }
+
+.hwr-status-label {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  font-weight: 600;
+}
+
+.hwr-store-row {
+  background: var(--bg-white);
+  border: 1px solid var(--primary-light);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.hwr-store-row:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.hwr-store-row.overdue {
+  background: var(--danger-bg);
+  border-color: #F09595;
+}
+
+.hwr-store-row.submitted {
+  background: #F8FBF4;
+  border-color: #C0DD97;
+}
+
+.hwr-store-row.draft {
+  background: var(--warning-bg);
+  border-color: var(--primary-light);
+}
+
+.hwr-store-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.hwr-store-info { flex: 1; min-width: 0; }
+
+.hwr-store-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.hwr-store-meta {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+.hwr-store-meta.overdue { color: var(--danger); font-weight: 700; }
+
+.hwr-store-stat {
+  font-size: 11px;
+  text-align: right;
+  font-family: 'Consolas', monospace;
+  font-weight: 700;
+}
+
+.hwr-store-status-pill {
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 700;
+  margin-left: 6px;
+  display: inline-block;
+}
+
+.hwr-store-status-pill.submitted { background: #C0DD97; color: var(--success-text); }
+.hwr-store-status-pill.draft { background: var(--primary-light); color: var(--warning-text); }
+.hwr-store-status-pill.overdue { background: #F09595; color: white; }
+.hwr-store-status-pill.msg { background: var(--primary-light); color: var(--warning-text); }
+
+/* 給總部的話聚焦區 */
+.hwr-msg-focus-card {
+  background: var(--bg-white);
+  border-radius: 12px;
+  padding: 14px;
+  border: 1px solid var(--primary-light);
+  margin-top: 14px;
+}
+
+.hwr-msg-focus-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.hwr-msg-box {
+  background: var(--warning-bg);
+  border-left: 2px solid var(--warning);
+  border-radius: 0 6px 6px 0;
+  padding: 8px 10px;
+  margin-bottom: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.hwr-msg-box:hover {
+  background: var(--primary-light);
+}
+
+.hwr-msg-box.replied {
+  border-left-color: var(--success);
+  background: var(--success-bg);
+}
+
+.hwr-msg-meta {
+  font-size: 9px;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+}
+
+/* HQ 詳情頁回覆輸入 */
+.hwr-reply-section {
+  border: 2px solid var(--warning);
+  background: var(--bg-white);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  margin-bottom: 8px;
+}
+
+.hwr-reply-message {
+  background: var(--warning-bg);
+  border-left: 3px solid var(--warning);
+  border-radius: 0 6px 6px 0;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: var(--text-primary);
+  line-height: 1.6;
+  margin-bottom: 8px;
+  white-space: pre-wrap;
+}
+
+.hwr-reply-input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1.5px solid var(--border-light);
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 50px;
+  box-sizing: border-box;
+}
+
+.hwr-reply-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+@media (max-width: 600px) {
+  .wr-num-grid { grid-template-columns: 1fr; }
+  .hwr-status-grid { grid-template-columns: 1fr; }
+  .hwr-store-row { flex-wrap: wrap; }
+  .hwr-store-stat { width: 100%; text-align: left; }
+}
+
 </style>
 </head>
 
@@ -2856,11 +3716,11 @@ input, textarea, select { font-family: inherit; }
       </div>
     </div>
 
-    <!-- ★ 每日紀錄表單 ★ -->
+    <!-- ★ 今日數字頁（Phase 1.D 取代舊每日紀錄）★ -->
     <div id="dailyLogScreen" class="subscreen daily-log-screen" style="display: none;">
       <div class="subscreen-header">
         <div class="subscreen-title-block">
-          <div class="subscreen-title">每日紀錄 · <span id="dailyLogDate">—</span></div>
+          <div class="subscreen-title">📊 今日數字</div>
           <div class="subscreen-subtitle" id="dailyLogSubtitle">—</div>
         </div>
         <div style="display: flex; gap: 6px; align-items: center;">
@@ -2872,122 +3732,196 @@ input, textarea, select { font-family: inherit; }
         </div>
       </div>
 
-      <!-- 鎖定狀態提示（隔天起鎖定） -->
+      <!-- 補填昨天切換 -->
+      <div class="td-date-toggle">
+        <button class="td-date-toggle-btn active" id="dailyLogTodayBtn">
+          📅 今天
+          <span class="td-toggle-sub" id="dailyLogTodayLabel">—</span>
+        </button>
+        <button class="td-date-toggle-btn" id="dailyLogYesterdayBtn">
+          ⏪ 補填昨天
+          <span class="td-toggle-sub" id="dailyLogYesterdayLabel">—</span>
+        </button>
+      </div>
+
+      <!-- 鎖定狀態提示（>= 2 天前才鎖定） -->
       <div class="locked-banner" id="dailyLogLockedBanner" style="display: none;">
         <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
         <div class="locked-banner-text">
-          <strong>此紀錄已鎖定</strong>（過了當日無法直接修改）。<br>
+          <strong>此紀錄已鎖定</strong>（過了補填期無法直接修改）。<br>
           若需要修正，請申請補登審核。
         </div>
         <button id="dailyLogAmendmentBtn">申請補登</button>
       </div>
 
-      <!-- KPI 五金剛 -->
-      <h3 style="font-size: 13px; font-weight: 800; margin: 0 0 10px;">📊 KPI 五金剛</h3>
-      <div class="kpi-five-grid">
-        <div class="kpi-card readonly">
-          <div class="kpi-card-label">月初鎖定目標</div>
-          <div class="kpi-card-value" id="kpiTargetValue">—</div>
+      <!-- 1. 數字 3 格 -->
+      <h3 style="font-size: 13px; font-weight: 800; margin: 0 0 10px;">▸ 今日數字（3 格）</h3>
+      <div class="td-kpi-card">
+        <div class="td-kpi-row">
+          <div class="td-kpi-label">業績（含稅）</div>
+          <div class="td-kpi-input-wrap">
+            <input type="number" class="td-kpi-input" id="kpiSalesInput" placeholder="0" min="0">
+          </div>
         </div>
-        <div class="kpi-card input">
-          <div class="kpi-card-label">今日業績（含稅）</div>
-          <input type="number" class="kpi-card-input" id="kpiSalesInput" placeholder="0" min="0">
+        <div class="td-kpi-row">
+          <div class="td-kpi-label">結帳人數</div>
+          <div class="td-kpi-input-wrap">
+            <input type="number" class="td-kpi-input" id="kpiCustomersInput" placeholder="0" min="0">
+          </div>
         </div>
-        <div class="kpi-card readonly">
-          <div class="kpi-card-label">達成率</div>
-          <div class="kpi-card-value" id="kpiRateValue">—</div>
-          <div class="kpi-card-rate" id="kpiRateLabel">—</div>
-        </div>
-        <div class="kpi-card input">
-          <div class="kpi-card-label">結帳人數</div>
-          <input type="number" class="kpi-card-input" id="kpiCustomersInput" placeholder="0" min="0">
-        </div>
-      </div>
-      <div class="kpi-five-grid" style="grid-template-columns: repeat(3, 1fr);">
-        <div class="kpi-card input">
-          <div class="kpi-card-label">件數</div>
-          <input type="number" class="kpi-card-input" id="kpiItemsInput" placeholder="0" min="0">
-        </div>
-        <div class="kpi-card readonly">
-          <div class="kpi-card-label">客單價</div>
-          <div class="kpi-card-value" id="kpiAvgValue">—</div>
-        </div>
-        <div class="kpi-card readonly">
-          <div class="kpi-card-label">UPT</div>
-          <div class="kpi-card-value" id="kpiUptValue">—</div>
+        <div class="td-kpi-row">
+          <div class="td-kpi-label">件數（不含贈品）</div>
+          <div class="td-kpi-input-wrap">
+            <input type="number" class="td-kpi-input" id="kpiItemsInput" placeholder="0" min="0">
+          </div>
         </div>
       </div>
 
-      <!-- 7 大區塊 -->
-      <h3 style="font-size: 13px; font-weight: 800; margin: 18px 0 10px;">📝 7 大區塊紀錄</h3>
-
-      <div class="section-block">
-        <div class="section-block-title">
-          <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 11h-6M22 14h-6"/></svg>
-          1. 重點客人（VIP / 回頭客 / 試穿未買）
+      <!-- 2. 自動算 3 格 -->
+      <div class="td-kpi-card auto">
+        <div class="td-section-label">▸ 自動算（不用填）</div>
+        <div class="td-kpi-row">
+          <div class="td-kpi-label">月初鎖定目標</div>
+          <div class="td-kpi-readonly" id="kpiTargetValue">—</div>
         </div>
-        <textarea class="section-textarea" id="logSection1" placeholder="例：林小姐（VIP）試穿春季洋裝 XL 太緊，建議引導 2L 款式"></textarea>
+        <div class="td-kpi-row">
+          <div class="td-kpi-label">達成率</div>
+          <div class="td-kpi-rate-text" id="kpiRateLabel">—</div>
+        </div>
+        <div class="td-kpi-row">
+          <div class="td-kpi-label">客單價</div>
+          <div class="td-kpi-readonly" id="kpiAvgValue">—</div>
+        </div>
+        <div class="td-kpi-row">
+          <div class="td-kpi-label">UPT</div>
+          <div class="td-kpi-readonly" id="kpiUptValue">—</div>
+        </div>
       </div>
 
-      <div class="section-block">
-        <div class="section-block-title">
-          <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><circle cx="7" cy="7" r="1"/></svg>
-          2. 商品狀況（缺貨、熱銷、試穿率高但成交率低）
+      <!-- 3. 天氣自動帶入 -->
+      <h3 style="font-size: 13px; font-weight: 800; margin: 16px 0 10px;">▸ 現場狀況（點選 + 補充）</h3>
+      <div class="td-weather-card" id="tdWeatherCard">
+        <div class="td-weather-icon" id="tdWeatherIcon">⏳</div>
+        <div class="td-weather-info">
+          <div class="td-weather-label">☁️ 今日天氣（自動偵測）</div>
+          <div class="td-weather-detail" id="tdWeatherDetail">載入中...</div>
+          <div class="td-weather-meta" id="tdWeatherMeta">取得位置資訊中</div>
         </div>
-        <textarea class="section-textarea" id="logSection2" placeholder="例：春季洋裝 0408 系列 XL 缺貨；M 號試穿多但成交少，可能版型問題"></textarea>
+        <button class="td-weather-edit-btn" id="tdWeatherEditBtn" style="display: none;">✏️ 修改</button>
       </div>
 
-      <div class="section-block">
-        <div class="section-block-title">
-          <svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14"/></svg>
-          3. 門市狀況（設備、環境、陳列、安全）
+      <!-- 天氣手動選擇（隱藏，點修改才顯示） -->
+      <div class="td-status-card" id="tdWeatherManual" style="display: none;">
+        <div class="td-chip-block" style="border: none; padding: 0; margin: 0;">
+          <div class="td-chip-label">手動選擇天氣</div>
+          <div class="td-chip-row" id="tdWeatherChips">
+            <span class="td-chip" data-weather="sunny">☀️ 晴</span>
+            <span class="td-chip" data-weather="cloudy">🌥️ 陰</span>
+            <span class="td-chip" data-weather="rainy">🌧️ 小雨</span>
+            <span class="td-chip" data-weather="storm">⛈️ 大雨</span>
+          </div>
+          <div class="td-supplement-row">
+            <span class="td-supplement-label">補充說明：</span>
+            <input class="td-supplement-input" id="tdWeatherSupp" placeholder="例：下午轉雨">
+          </div>
         </div>
-        <textarea class="section-textarea" id="logSection3" placeholder="例：試衣間 3 號掛勾鬆動，今日已用客 OK 但建議盡快維修"></textarea>
       </div>
 
-      <div class="section-block">
-        <div class="section-block-title">
-          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-          4. 員工狀況（出勤、狀態、訓練進度）
+      <!-- 4-8. 5 組勾選 + 補充欄 -->
+      <div class="td-status-card">
+        <!-- 人潮 -->
+        <div class="td-chip-block">
+          <div class="td-chip-label">👥 人潮</div>
+          <div class="td-chip-row" id="tdCrowdChips">
+            <span class="td-chip" data-crowd="cold">冷清</span>
+            <span class="td-chip" data-crowd="normal">普通</span>
+            <span class="td-chip" data-crowd="warm">熱絡</span>
+            <span class="td-chip" data-crowd="full">爆滿</span>
+          </div>
+          <div class="td-supplement-row">
+            <span class="td-supplement-label">補充說明：</span>
+            <input class="td-supplement-input" id="tdCrowdSupp" placeholder="例：下雨人少">
+          </div>
         </div>
-        <textarea class="section-textarea" id="logSection4" placeholder="例：阿明今日感冒提早下班，明日請假；新人美玲熟悉收銀流程中"></textarea>
+
+        <!-- 客群 -->
+        <div class="td-chip-block">
+          <div class="td-chip-label">🛍️ 客群</div>
+          <div class="td-chip-row" id="tdCustomerChips">
+            <span class="td-chip" data-customer="vip">VIP 較多</span>
+            <span class="td-chip" data-customer="new">新客較多</span>
+            <span class="td-chip" data-customer="return">回頭客多</span>
+            <span class="td-chip" data-customer="tourist">遊客較多</span>
+          </div>
+          <div class="td-supplement-row">
+            <span class="td-supplement-label">補充說明：</span>
+            <input class="td-supplement-input" id="tdCustomerSupp" placeholder="例：百貨活動帶人">
+          </div>
+        </div>
+
+        <!-- 熱銷類別 -->
+        <div class="td-chip-block">
+          <div class="td-chip-label">🔥 熱銷類別（可複選）</div>
+          <div class="td-chip-row" id="tdHotChips">
+            <span class="td-chip" data-hot="dress">洋裝</span>
+            <span class="td-chip" data-hot="top">上衣</span>
+            <span class="td-chip" data-hot="pants">褲裝</span>
+            <span class="td-chip" data-hot="outer">外套</span>
+            <span class="td-chip" data-hot="acc">配件</span>
+          </div>
+          <div class="td-supplement-row">
+            <span class="td-supplement-label">補充說明：</span>
+            <input class="td-supplement-input" id="tdHotSupp" placeholder="例：清倉折扣反應好">
+          </div>
+        </div>
+
+        <!-- 商品狀態 -->
+        <div class="td-chip-block">
+          <div class="td-chip-label">📦 商品狀態</div>
+          <div class="td-chip-row" id="tdStockChips">
+            <span class="td-chip" data-stock="ok">正常</span>
+            <span class="td-chip" data-stock="partial">部分缺貨</span>
+            <span class="td-chip" data-stock="hot-out">熱門商品斷貨</span>
+            <span class="td-chip" data-stock="new">新品到貨</span>
+          </div>
+          <div class="td-supplement-row">
+            <span class="td-supplement-label">補充說明：</span>
+            <input class="td-supplement-input" id="tdStockSupp" placeholder="例：哪個品項缺什麼尺寸">
+          </div>
+        </div>
+
+        <!-- 試穿轉換感 -->
+        <div class="td-chip-block">
+          <div class="td-chip-label">👗 試穿轉換感</div>
+          <div class="td-chip-row" id="tdTryChips">
+            <span class="td-chip" data-try="rare">幾乎沒人試穿</span>
+            <span class="td-chip" data-try="low">試穿多但成交低</span>
+            <span class="td-chip" data-try="normal">普通</span>
+            <span class="td-chip" data-try="good">轉換好</span>
+          </div>
+          <div class="td-supplement-row">
+            <span class="td-supplement-label">補充說明：</span>
+            <input class="td-supplement-input" id="tdTrySupp" placeholder="例：版型不合身">
+          </div>
+        </div>
       </div>
 
-      <div class="section-block">
-        <div class="section-block-title">
-          <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
-          5. 客訴／特殊事件
-        </div>
-        <textarea class="section-textarea" id="logSection5" placeholder="例：有客人反映 4L 春季洋裝品質有瑕疵，已換貨並道歉"></textarea>
-        <label style="display: flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 11px; cursor: pointer;">
-          <input type="checkbox" id="logSection5NotifyHQ"> 通知總部
-        </label>
-      </div>
-
-      <div class="section-block">
-        <div class="section-block-title">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-          6. 明日提醒事項（短期一日內）
-        </div>
-        <textarea class="section-textarea" id="logSection6" placeholder="例：明日記得收貨點數量、櫥窗新檔換陳列"></textarea>
-      </div>
-
-      <div class="section-block">
-        <div class="section-block-title">
-          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 2v6h6"/></svg>
-          7. 其他（感想、想法、自由發揮）
-        </div>
-        <textarea class="section-textarea" id="logSection7" placeholder="例：今天客人都在問春節折扣，可考慮提前預告"></textarea>
+      <!-- 9. 今日特別狀況回報（大欄位） -->
+      <div class="td-special-card">
+        <div class="td-section-label">▸ 今日特別狀況回報（選填）</div>
+        <textarea class="td-textarea-large" id="logSpecialNote" placeholder="缺貨、試穿很多但沒成交、特別發現、其他事項..."></textarea>
+        <div class="td-special-hint">💡 客訴或設備問題請改用「+ 新增事件」</div>
       </div>
 
       <!-- 提交按鈕 -->
-      <div class="daily-log-actions">
+      <div class="td-submit-actions">
         <button class="btn-ghost" style="flex: 1;" id="dailyLogSaveDraftBtn">儲存草稿</button>
         <button class="btn-primary" style="flex: 2; justify-content: center; padding: 12px;" id="dailyLogSubmitBtn">
           <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
-          提交今日紀錄
+          提交今日數字
         </button>
       </div>
+      <div class="td-submit-meta" id="dailyLogSubmitMeta">大概 2 分鐘搞定</div>
     </div>
 
     <!-- ★ 事件紀錄列表 ★ -->
@@ -3021,6 +3955,255 @@ input, textarea, select { font-family: inherit; }
       </div>
       <div class="amendment-list" id="amendmentList">
         <!-- 動態載入 -->
+      </div>
+    </div>
+
+    <!-- ★ Phase 1.D: 店長週報 ★ -->
+    <div id="weeklyReportScreen" class="subscreen" style="display: none;">
+      <div class="subscreen-header">
+        <div class="subscreen-title-block">
+          <div class="subscreen-title">📝 店長週報</div>
+          <div class="subscreen-subtitle" id="wrSubtitle">—</div>
+        </div>
+        <button class="btn-back" data-screen="home">‹ 返回</button>
+      </div>
+
+      <!-- 週切換 -->
+      <div class="wr-week-nav" id="wrWeekNav">
+        <button class="wr-week-nav-btn" data-week-offset="-1">
+          ‹ 上週
+          <span class="wr-nav-sub" id="wrPrevWeekLabel">—</span>
+        </button>
+        <button class="wr-week-nav-btn active" data-week-offset="0">
+          📍 本週
+          <span class="wr-nav-sub" id="wrCurrWeekLabel">—</span>
+        </button>
+        <button class="wr-week-nav-btn" data-week-offset="-2">
+          上上週
+          <span class="wr-nav-sub" id="wrPrevPrevWeekLabel">—</span>
+        </button>
+      </div>
+
+      <!-- 狀態 banner -->
+      <div class="wr-status-banner" id="wrStatusBanner" style="display: none;">
+        <div class="wr-status-icon" id="wrStatusIcon">!</div>
+        <div class="wr-status-text" id="wrStatusText">—</div>
+      </div>
+
+      <!-- 1. 自動：本週數字總覽 -->
+      <div class="wr-num-overview-card">
+        <div class="td-section-label">▸ 本週數字總覽（自動帶入）</div>
+        <div class="wr-num-grid">
+          <div class="wr-num-cell dark">
+            <div class="wr-num-cell-label">本週業績</div>
+            <div class="wr-num-cell-value" id="wrSalesTotal">—</div>
+            <div class="wr-num-cell-sub" id="wrAchieveRate">—</div>
+          </div>
+          <div class="wr-num-cell warning">
+            <div class="wr-num-cell-label">vs 上週</div>
+            <div class="wr-num-cell-value" id="wrVsLastWeek">—</div>
+            <div class="wr-num-cell-sub" id="wrDiffAmount">—</div>
+          </div>
+          <div class="wr-num-cell success">
+            <div class="wr-num-cell-label">客單價</div>
+            <div class="wr-num-cell-value" id="wrAvgPrice">—</div>
+            <div class="wr-num-cell-sub" id="wrAvgPriceMeta">—</div>
+          </div>
+        </div>
+        <div id="wrDailyDistribution"></div>
+      </div>
+
+      <!-- 2. 自動：現場狀況歸納 -->
+      <div class="wr-status-summary-card" id="wrStatusSummaryCard" style="display: none;">
+        <div class="td-section-label" style="color: var(--warning-text);">▸ 本週現場狀況歸納（自動）</div>
+        <div id="wrStatusSummaryContent"></div>
+      </div>
+
+      <!-- 3. 自動：本週事件 -->
+      <div class="wr-events-card" id="wrEventsCard" style="display: none;">
+        <div class="td-section-label">▸ 本週事件紀錄（自動）</div>
+        <div id="wrEventsList"></div>
+      </div>
+
+      <!-- 4. 店長補充洞察 -->
+      <div class="td-section-label" style="margin: 14px 0 6px;">▸ 店長補充洞察（4 段）</div>
+
+      <div class="wr-insight-section">
+        <div class="wr-insight-header">👥 本週員工狀態</div>
+        <textarea class="wr-insight-textarea" id="wrStaffStatus" placeholder="員工表現、訓練進度、需要關注的人..."></textarea>
+      </div>
+
+      <div class="wr-insight-section">
+        <div class="wr-insight-header">📈 趨勢觀察與洞察</div>
+        <textarea class="wr-insight-textarea" id="wrInsights" placeholder="從一週數字看出什麼？週末人潮、商品反應..."></textarea>
+      </div>
+
+      <div class="wr-insight-section">
+        <div class="wr-insight-header">🎯 下週重點與目標</div>
+        <textarea class="wr-insight-textarea" id="wrNextWeek" placeholder="下週要做什麼？教育訓練、補貨、活動..."></textarea>
+      </div>
+
+      <div class="wr-insight-section highlighted" id="wrMessageSection">
+        <div class="wr-insight-header">
+          <span>📮 給總部的話（V 會看到）</span>
+          <span style="font-size: 10px; color: var(--text-tertiary); font-weight: 600;" id="wrMessageStatus"></span>
+        </div>
+        <textarea class="wr-insight-textarea" id="wrMessageToHQ" placeholder="想反映的事、想要的支援、提案..."></textarea>
+        <!-- HQ 已回覆時顯示 -->
+        <div class="wr-hq-reply-card" id="wrHqReplyDisplay" style="display: none;">
+          <div class="wr-hq-reply-label">💬 V 的回覆</div>
+          <div class="wr-hq-reply-content" id="wrHqReplyContent"></div>
+          <div class="wr-hq-reply-meta" id="wrHqReplyMeta"></div>
+        </div>
+      </div>
+
+      <!-- 提交按鈕 -->
+      <div class="td-submit-actions">
+        <button class="btn-ghost" style="flex: 1;" id="wrSaveDraftBtn">儲存草稿</button>
+        <button class="btn-primary" style="flex: 2; justify-content: center; padding: 12px;" id="wrSubmitBtn">
+          <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+          提交週報
+        </button>
+      </div>
+      <div class="td-submit-meta">大概 15 分鐘搞定</div>
+    </div>
+
+    <!-- ★ Phase 1.D: V 端 7 店週報總覽 ★ -->
+    <div id="hqWeeklyOverviewScreen" class="subscreen" style="display: none;">
+      <div class="subscreen-header">
+        <div class="subscreen-title-block">
+          <div class="subscreen-title">📋 7 店週報總覽</div>
+          <div class="subscreen-subtitle">總部 V · 看 7 店週報狀態與內容</div>
+        </div>
+        <button class="btn-back" data-screen="home">‹ 返回</button>
+      </div>
+
+      <!-- 週切換 -->
+      <div class="wr-week-nav" id="hwrWeekNav">
+        <button class="wr-week-nav-btn" data-week-offset="-2">
+          ‹ 上上週
+          <span class="wr-nav-sub" id="hwrPrevPrevLabel">—</span>
+        </button>
+        <button class="wr-week-nav-btn active" data-week-offset="-1">
+          📍 上週
+          <span class="wr-nav-sub" id="hwrPrevLabel">—</span>
+        </button>
+        <button class="wr-week-nav-btn" data-week-offset="0">
+          本週 (進行中)
+          <span class="wr-nav-sub" id="hwrCurrLabel">—</span>
+        </button>
+      </div>
+
+      <!-- 提交狀態總覽 -->
+      <div class="hwr-status-grid">
+        <div class="hwr-status-card success">
+          <div class="hwr-status-num success" id="hwrCountSubmitted">0</div>
+          <div class="hwr-status-label">✓ 已提交</div>
+        </div>
+        <div class="hwr-status-card">
+          <div class="hwr-status-num warning" id="hwrCountDraft">0</div>
+          <div class="hwr-status-label">✏️ 草稿中</div>
+        </div>
+        <div class="hwr-status-card danger">
+          <div class="hwr-status-num danger" id="hwrCountOverdue">0</div>
+          <div class="hwr-status-label">⚠ 已逾期</div>
+        </div>
+      </div>
+
+      <!-- 截止提示 -->
+      <div id="hwrDeadlineHint" style="background: var(--warning-bg); border-left: 3px solid var(--warning); border-radius: 0 6px 6px 0; padding: 8px 12px; margin-bottom: 12px; font-size: 11px; color: var(--warning-text);">
+        —
+      </div>
+
+      <div class="td-section-label">▸ 各店狀態（點開看詳情）</div>
+      <div id="hwrStoreList">
+        <!-- 動態載入 -->
+      </div>
+
+      <!-- 給總部的話聚焦區 -->
+      <div class="hwr-msg-focus-card">
+        <div class="hwr-msg-focus-title" id="hwrMsgTitle">📮 本週給總部的話</div>
+        <div id="hwrMsgList"></div>
+      </div>
+    </div>
+
+    <!-- ★ Phase 1.D: V 端 單店週報詳情 ★ -->
+    <div id="hqStoreDetailScreen" class="subscreen" style="display: none;">
+      <div class="subscreen-header" style="display: flex; align-items: center; gap: 8px;">
+        <button class="btn-back" data-screen="hqWeeklyOverview">‹ 返回</button>
+        <div class="subscreen-title-block">
+          <div class="subscreen-title" id="hsdTitle">📋 —</div>
+          <div class="subscreen-subtitle" id="hsdSubtitle">—</div>
+        </div>
+        <span class="hwr-store-status-pill" id="hsdStatusPill" style="display: none;">—</span>
+      </div>
+
+      <!-- 數字總覽 -->
+      <div class="wr-num-overview-card">
+        <div class="td-section-label">▸ 本週數字總覽</div>
+        <div class="wr-num-grid">
+          <div class="wr-num-cell dark">
+            <div class="wr-num-cell-label">本週業績</div>
+            <div class="wr-num-cell-value" id="hsdSalesTotal">—</div>
+            <div class="wr-num-cell-sub" id="hsdAchieveRate">—</div>
+          </div>
+          <div class="wr-num-cell warning">
+            <div class="wr-num-cell-label">vs 上週</div>
+            <div class="wr-num-cell-value" id="hsdVsLastWeek">—</div>
+            <div class="wr-num-cell-sub" id="hsdDiffAmount">—</div>
+          </div>
+          <div class="wr-num-cell success">
+            <div class="wr-num-cell-label">客單價</div>
+            <div class="wr-num-cell-value" id="hsdAvgPrice">—</div>
+            <div class="wr-num-cell-sub" id="hsdAvgPriceMeta">—</div>
+          </div>
+        </div>
+        <div id="hsdDailyDistribution"></div>
+      </div>
+
+      <div class="wr-status-summary-card" id="hsdStatusSummaryCard" style="display: none;">
+        <div class="td-section-label" style="color: var(--warning-text);">▸ 本週現場狀況</div>
+        <div id="hsdStatusSummaryContent"></div>
+      </div>
+
+      <div class="wr-events-card" id="hsdEventsCard" style="display: none;">
+        <div class="td-section-label">▸ 本週事件</div>
+        <div id="hsdEventsList"></div>
+      </div>
+
+      <div class="td-section-label" style="margin: 14px 0 6px;">▸ 店長洞察</div>
+
+      <div class="wr-insight-section">
+        <div class="wr-insight-header">👥 員工狀態</div>
+        <div class="wr-insight-readonly" id="hsdStaffStatus">—</div>
+      </div>
+
+      <div class="wr-insight-section">
+        <div class="wr-insight-header">📈 趨勢觀察</div>
+        <div class="wr-insight-readonly" id="hsdInsights">—</div>
+      </div>
+
+      <div class="wr-insight-section">
+        <div class="wr-insight-header">🎯 下週重點</div>
+        <div class="wr-insight-readonly" id="hsdNextWeek">—</div>
+      </div>
+
+      <!-- 給總部的話 + 回覆區 -->
+      <div class="hwr-reply-section" id="hsdMessageSection" style="display: none;">
+        <div class="wr-insight-header" style="margin-bottom: 8px;">
+          <span>📮 給總部的話</span>
+          <span style="font-size: 10px; font-weight: 600;" id="hsdMessageStatus">待回應</span>
+        </div>
+        <div class="hwr-reply-message" id="hsdMessageContent">—</div>
+        <div id="hsdReplyArea">
+          <textarea class="hwr-reply-input" id="hsdReplyInput" placeholder="你的回覆（店長會在週報頁看到）..."></textarea>
+          <button class="btn-primary" style="padding: 8px 14px; font-size: 12px; margin-top: 6px;" id="hsdReplySendBtn">送出回覆</button>
+        </div>
+        <div class="wr-hq-reply-card" id="hsdReplyDisplay" style="display: none;">
+          <div class="wr-hq-reply-label">💬 V 已回覆</div>
+          <div class="wr-hq-reply-content" id="hsdReplyContent"></div>
+          <div class="wr-hq-reply-meta" id="hsdReplyMeta"></div>
+        </div>
       </div>
     </div>
 
@@ -4219,7 +5402,11 @@ const SCREENS = {
   announcementEditor: 'announcementEditorScreen',
   task: 'taskScreen',
   tasksHealth: 'tasksHealthScreen',
-  schedule: 'scheduleScreen'
+  schedule: 'scheduleScreen',
+  // Phase 1.D
+  weeklyReport: 'weeklyReportScreen',
+  hqWeeklyOverview: 'hqWeeklyOverviewScreen',
+  hqStoreDetail: 'hqStoreDetailScreen'
 };
 
 function showScreen(screenName) {
@@ -4256,9 +5443,16 @@ const featureGridHTML = {
     {
       key: 'dailyLog',
       icon: '<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>',
-      title: '每日紀錄',
-      desc: '填寫今日 KPI 與 7 大區塊',
+      title: '今日數字',
+      desc: '填寫今日 KPI 與現場狀況',
       action: () => openDailyLog()
+    },
+    {
+      key: 'weeklyReport',
+      icon: '<svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>',
+      title: '店長週報',
+      desc: '每週彙整與洞察',
+      action: () => openWeeklyReport()
     },
     {
       key: 'dailyTarget',
@@ -4299,6 +5493,13 @@ const featureGridHTML = {
   // 總部 V
   hq: [
     {
+      key: 'hqWeeklyOverview',
+      icon: '<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 2v6h6"/></svg>',
+      title: '7 店週報總覽',
+      desc: '看 7 店週報狀態與內容',
+      action: () => openHqWeeklyOverview()
+    },
+    {
       key: 'monthlyTarget',
       icon: '<svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/></svg>',
       title: '月總目標設定',
@@ -4332,13 +5533,6 @@ const featureGridHTML = {
       title: '排班表',
       desc: '查看 7 店排班（檢視）',
       action: () => openSchedule()
-    },
-    {
-      key: 'dashboard',
-      icon: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>',
-      title: '7 店 Dashboard',
-      desc: 'Phase 1.D 即將上線',
-      action: () => showToast('Phase 1.D 即將推出', '')
     }
   ]
 };
@@ -4355,6 +5549,10 @@ async function renderFeatureGrid() {
   let unreadAnnCount = 0;
   let overdueTaskCount = 0;
   let pendingTaskCount = 0;
+  // Phase 1.D：週報狀態
+  let weeklyReportStatus = null;  // 'submitted' | 'draft' | 'pending' | 'overdue'
+  let hqWeeklyOverdueCount = 0;
+  let hqWeeklyPendingCount = 0;
 
   if (db && !state.isHQ) {
     try {
@@ -4379,6 +5577,11 @@ async function renderFeatureGrid() {
       overdueTaskCount = stats.overdue;
       pendingTaskCount = stats.pending;
     } catch (e) {}
+
+    // 週報狀態（店長端）：上週的週報是否已交
+    try {
+      weeklyReportStatus = await getWeeklyReportStatusForStore(state.storeId);
+    } catch (e) {}
   }
 
   if (db && state.isHQ) {
@@ -4386,6 +5589,13 @@ async function renderFeatureGrid() {
       const snap = await db.ref('/global/amendments').once('value');
       const data = snap.val() || {};
       amendmentCount = Object.values(data).filter(a => a.status === 'pending').length;
+    } catch (e) {}
+
+    // 7 店週報狀態（V 端）
+    try {
+      const stats = await getHqWeeklyOverviewStats();
+      hqWeeklyOverdueCount = stats.overdue;
+      hqWeeklyPendingCount = stats.draft + stats.notStarted;
     } catch (e) {}
   }
 
@@ -4398,7 +5608,7 @@ async function renderFeatureGrid() {
       if (dailyLogStatus === 'unfilled') {
         badge = '<span class="feature-card-badge red">未填</span>';
         urgent = ' urgent';
-        descOverride = '今日紀錄尚未提交';
+        descOverride = '今日數字尚未提交';
       } else if (dailyLogStatus === 'filled') {
         badge = '<span class="feature-card-badge green">已填</span>';
       }
@@ -4420,6 +5630,34 @@ async function renderFeatureGrid() {
       } else if (pendingTaskCount > 0) {
         badge = `<span class="feature-card-badge">${pendingTaskCount}</span>`;
         descOverride = `${pendingTaskCount} 筆未完成`;
+      }
+    }
+    // Phase 1.D：店長週報紅點
+    if (item.key === 'weeklyReport' && !state.isHQ) {
+      if (weeklyReportStatus === 'overdue') {
+        badge = '<span class="feature-card-badge red">已逾期</span>';
+        urgent = ' urgent';
+        descOverride = '上週週報已逾期，請盡快補交';
+      } else if (weeklyReportStatus === 'pending') {
+        badge = '<span class="feature-card-badge red">未交</span>';
+        urgent = ' urgent';
+        descOverride = '上週週報尚未提交';
+      } else if (weeklyReportStatus === 'draft') {
+        badge = '<span class="feature-card-badge">草稿中</span>';
+        descOverride = '草稿已存，記得提交';
+      } else if (weeklyReportStatus === 'submitted') {
+        badge = '<span class="feature-card-badge green">已交</span>';
+      }
+    }
+    // V 端：7 店週報總覽紅點
+    if (item.key === 'hqWeeklyOverview' && state.isHQ) {
+      if (hqWeeklyOverdueCount > 0) {
+        badge = `<span class="feature-card-badge red">${hqWeeklyOverdueCount} 逾期</span>`;
+        urgent = ' urgent';
+        descOverride = `${hqWeeklyOverdueCount} 店逾期 · ${hqWeeklyPendingCount} 店未交`;
+      } else if (hqWeeklyPendingCount > 0) {
+        badge = `<span class="feature-card-badge">${hqWeeklyPendingCount}</span>`;
+        descOverride = `${hqWeeklyPendingCount} 店尚未提交`;
       }
     }
 
@@ -5398,10 +6636,104 @@ function setupDailyTargetScreen() {
   document.getElementById('dailyTargetSaveBtn').addEventListener('click', saveDailyTarget);
 }
 
-// ---------- 每日紀錄表單 ----------
+// ---------- Phase 1.D：今日數字 + 天氣 API ----------
 
 let currentDailyLog = null;
 let currentDailyLogDate = null;
+let dailyLogManualWeather = false; // 是否手動修改天氣
+
+// 7 店所在城市的經緯度（給天氣 API 用）
+const STORE_GEO = {
+  zhongxiao: { lat: 25.041, lng: 121.564, city: '台北' },
+  tongyi: { lat: 25.046, lng: 121.516, city: '台北' },
+  taoyuan: { lat: 24.993, lng: 121.301, city: '桃園' },
+  yizhong: { lat: 24.146, lng: 120.685, city: '台中' },
+  xinyizhong: { lat: 24.150, lng: 120.683, city: '台中' },
+  xintiandi: { lat: 22.992, lng: 120.213, city: '台南' },
+  xinjuejiang: { lat: 22.624, lng: 120.302, city: '高雄' }
+};
+
+/** Open-Meteo weather code → emoji + 文字
+ *  ref: https://open-meteo.com/en/docs */
+function weatherCodeToInfo(code) {
+  if (code == null) return { key: 'unknown', emoji: '❓', text: '未知' };
+  if (code === 0 || code === 1) return { key: 'sunny', emoji: '☀️', text: '晴' };
+  if (code === 2) return { key: 'cloudy', emoji: '🌤️', text: '局部多雲' };
+  if (code === 3) return { key: 'cloudy', emoji: '🌥️', text: '陰' };
+  if (code >= 45 && code <= 48) return { key: 'cloudy', emoji: '🌫️', text: '霧' };
+  if (code >= 51 && code <= 57) return { key: 'rainy', emoji: '🌦️', text: '毛毛雨' };
+  if (code >= 61 && code <= 65) return { key: 'rainy', emoji: '🌧️', text: '小雨' };
+  if (code >= 66 && code <= 67) return { key: 'rainy', emoji: '🌧️', text: '凍雨' };
+  if (code >= 71 && code <= 77) return { key: 'storm', emoji: '🌨️', text: '雪' };
+  if (code >= 80 && code <= 82) return { key: 'rainy', emoji: '🌧️', text: '陣雨' };
+  if (code >= 95 && code <= 99) return { key: 'storm', emoji: '⛈️', text: '雷雨' };
+  return { key: 'cloudy', emoji: '🌥️', text: '多雲' };
+}
+
+/** 抓取今日該店天氣 */
+async function fetchStoreWeather(storeId, dateStr) {
+  const geo = STORE_GEO[storeId];
+  if (!geo) return null;
+
+  // Open-Meteo API：免費、無 key、合法商用
+  // 取當天 daily 資料：weathercode + temperature_2m_max + temperature_2m_min
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${geo.lat}&longitude=${geo.lng}` +
+    `&daily=weathercode,temperature_2m_max,temperature_2m_min` +
+    `&timezone=Asia/Taipei&start_date=${dateStr}&end_date=${dateStr}`;
+
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error('weather API ' + resp.status);
+    const data = await resp.json();
+    if (!data.daily) return null;
+    const code = data.daily.weathercode[0];
+    const tmax = Math.round(data.daily.temperature_2m_max[0]);
+    const tmin = Math.round(data.daily.temperature_2m_min[0]);
+    const info = weatherCodeToInfo(code);
+    return {
+      key: info.key,
+      emoji: info.emoji,
+      text: info.text,
+      tempMax: tmax,
+      tempMin: tmin,
+      city: geo.city,
+      autoFetched: true
+    };
+  } catch (e) {
+    console.warn('fetchStoreWeather error:', e);
+    return null;
+  }
+}
+
+/** 把天氣資料顯示到卡片上 */
+function renderWeatherCard(weather) {
+  const iconEl = document.getElementById('tdWeatherIcon');
+  const detailEl = document.getElementById('tdWeatherDetail');
+  const metaEl = document.getElementById('tdWeatherMeta');
+  const editBtn = document.getElementById('tdWeatherEditBtn');
+  const card = document.getElementById('tdWeatherCard');
+
+  if (!weather) {
+    iconEl.textContent = '❌';
+    detailEl.textContent = '無法取得天氣';
+    metaEl.textContent = '請手動選擇';
+    editBtn.style.display = 'none';
+    card.style.display = 'flex';
+    document.getElementById('tdWeatherManual').style.display = 'block';
+    return;
+  }
+
+  iconEl.textContent = weather.emoji;
+  let detail = `${weather.emoji} ${weather.text}`;
+  if (weather.tempMax != null && weather.tempMin != null) {
+    detail += `　${weather.tempMin}°C ~ ${weather.tempMax}°C`;
+  }
+  detailEl.textContent = detail;
+  metaEl.textContent = weather.autoFetched
+    ? `${weather.city || ''} · 自動偵測（Open-Meteo）`
+    : `${weather.city || ''} · 手動選擇`;
+  editBtn.style.display = weather.autoFetched ? 'inline-block' : 'none';
+}
 
 async function openDailyLog(date) {
   if (state.isHQ) {
@@ -5416,22 +6748,49 @@ async function openDailyLog(date) {
 async function loadDailyLog(date) {
   if (!db) return;
 
-  document.getElementById('dailyLogDate').textContent = date;
-  document.getElementById('dailyLogSubtitle').textContent = STORE_NAMES[state.storeId];
+  document.getElementById('dailyLogSubtitle').textContent =
+    `${STORE_NAMES[state.storeId]} · 值班：${state.currentStaff || '?'}`;
 
+  // 補填昨天切換顯示
   const today = getTodayString();
-  const isLocked = date < today;
+  const yesterday = (() => {
+    const d = new Date();
+    d.setDate(d.getDate() - 1);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  })();
 
+  const todayWd = ['日', '一', '二', '三', '四', '五', '六'][new Date().getDay()];
+  const yesterdayWd = ['日', '一', '二', '三', '四', '五', '六'][(new Date().getDay() + 6) % 7];
+  document.getElementById('dailyLogTodayLabel').textContent = `${today.substring(5)} (${todayWd})`;
+  document.getElementById('dailyLogYesterdayLabel').textContent = `${yesterday.substring(5)} (${yesterdayWd})`;
+
+  // 切換按鈕的 active 狀態
+  document.getElementById('dailyLogTodayBtn').classList.toggle('active', date === today);
+  document.getElementById('dailyLogYesterdayBtn').classList.toggle('active', date === yesterday);
+
+  // 鎖定邏輯：>= 2 天前才鎖定（今天 + 昨天都可填）
+  const isLocked = date < yesterday;
   document.getElementById('dailyLogLockedBanner').style.display = isLocked ? 'flex' : 'none';
 
   // 設定欄位 readonly
   ['kpiSalesInput', 'kpiCustomersInput', 'kpiItemsInput'].forEach(id => {
-    document.getElementById(id).readOnly = isLocked;
+    const el = document.getElementById(id);
+    if (el) el.readOnly = isLocked;
   });
-  document.querySelectorAll('.section-textarea').forEach(t => t.readOnly = isLocked);
-  document.getElementById('logSection5NotifyHQ').disabled = isLocked;
+  document.querySelectorAll('#dailyLogScreen .td-supplement-input, #dailyLogScreen .td-textarea-large')
+    .forEach(t => t.readOnly = isLocked);
+  document.querySelectorAll('#dailyLogScreen .td-chip').forEach(c => {
+    c.style.pointerEvents = isLocked ? 'none' : '';
+    c.style.opacity = isLocked ? '0.6' : '1';
+  });
   document.getElementById('dailyLogSubmitBtn').disabled = isLocked;
   document.getElementById('dailyLogSaveDraftBtn').disabled = isLocked;
+
+  // 重置 chip
+  resetAllChips();
+  // 重置 manual flag
+  dailyLogManualWeather = false;
+  document.getElementById('tdWeatherManual').style.display = 'none';
 
   try {
     const [logSnap, targetSnap] = await Promise.all([
@@ -5446,19 +6805,30 @@ async function loadDailyLog(date) {
     // 帶入目標值
     document.getElementById('kpiTargetValue').textContent = todayTarget > 0 ? formatMoney(todayTarget) : '—';
 
-    // 帶入既有值
+    // 帶入既有 KPI
     document.getElementById('kpiSalesInput').value = currentDailyLog.sales || '';
     document.getElementById('kpiCustomersInput').value = currentDailyLog.customers || '';
     document.getElementById('kpiItemsInput').value = currentDailyLog.items || '';
 
-    document.getElementById('logSection1').value = currentDailyLog.section1 || '';
-    document.getElementById('logSection2').value = currentDailyLog.section2 || '';
-    document.getElementById('logSection3').value = currentDailyLog.section3 || '';
-    document.getElementById('logSection4').value = currentDailyLog.section4 || '';
-    document.getElementById('logSection5').value = currentDailyLog.section5 || '';
-    document.getElementById('logSection5NotifyHQ').checked = !!currentDailyLog.section5NotifyHQ;
-    document.getElementById('logSection6').value = currentDailyLog.section6 || '';
-    document.getElementById('logSection7').value = currentDailyLog.section7 || '';
+    // 帶入既有勾選
+    if (currentDailyLog.crowd) selectChip('tdCrowdChips', 'crowd', currentDailyLog.crowd);
+    if (currentDailyLog.customerType) selectChip('tdCustomerChips', 'customer', currentDailyLog.customerType);
+    if (Array.isArray(currentDailyLog.hotCategories)) {
+      currentDailyLog.hotCategories.forEach(h => selectChip('tdHotChips', 'hot', h, true));
+    }
+    if (currentDailyLog.stockStatus) selectChip('tdStockChips', 'stock', currentDailyLog.stockStatus);
+    if (currentDailyLog.tryConversion) selectChip('tdTryChips', 'try', currentDailyLog.tryConversion);
+
+    // 補充欄
+    document.getElementById('tdCrowdSupp').value = currentDailyLog.crowdSupp || '';
+    document.getElementById('tdCustomerSupp').value = currentDailyLog.customerSupp || '';
+    document.getElementById('tdHotSupp').value = currentDailyLog.hotSupp || '';
+    document.getElementById('tdStockSupp').value = currentDailyLog.stockSupp || '';
+    document.getElementById('tdTrySupp').value = currentDailyLog.trySupp || '';
+    document.getElementById('tdWeatherSupp').value = currentDailyLog.weatherSupp || '';
+
+    // 特別狀況
+    document.getElementById('logSpecialNote').value = currentDailyLog.specialNote || '';
 
     updateKpiCalculations();
 
@@ -5471,11 +6841,62 @@ async function loadDailyLog(date) {
       document.getElementById('dailyLogHistoryBtn').style.display = 'none';
     }
 
-    // 儲存當前 target 到 closure 內方便 KPI 計算
     currentDailyLog._currentTarget = todayTarget;
+
+    // 載入天氣
+    await loadWeatherForDailyLog(date);
+
   } catch (err) {
+    console.error('loadDailyLog error', err);
     showToast('載入失敗', 'error');
   }
+}
+
+async function loadWeatherForDailyLog(date) {
+  // 既有資料優先
+  if (currentDailyLog && currentDailyLog.weather) {
+    const w = currentDailyLog.weather;
+    renderWeatherCard(w);
+    if (!w.autoFetched) {
+      // 是手動填的，顯示手動區
+      dailyLogManualWeather = true;
+      document.getElementById('tdWeatherManual').style.display = 'block';
+      // 反選對應 chip
+      document.querySelectorAll('#tdWeatherChips .td-chip').forEach(c => {
+        c.classList.toggle('active', c.dataset.weather === w.key);
+      });
+    }
+    return;
+  }
+
+  // 沒既有資料，去 API 抓
+  document.getElementById('tdWeatherDetail').textContent = '載入中...';
+  document.getElementById('tdWeatherIcon').textContent = '⏳';
+  const weather = await fetchStoreWeather(state.storeId, date);
+  renderWeatherCard(weather);
+}
+
+function resetAllChips() {
+  document.querySelectorAll('#dailyLogScreen .td-chip').forEach(c => c.classList.remove('active'));
+}
+
+function selectChip(containerId, dataAttr, value, multi = false) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  if (!multi) {
+    container.querySelectorAll('.td-chip').forEach(c => c.classList.remove('active'));
+  }
+  const chip = container.querySelector(`.td-chip[data-${dataAttr}="${value}"]`);
+  if (chip) chip.classList.add('active');
+}
+
+function getSelectedChip(containerId, dataAttr) {
+  const chip = document.querySelector(`#${containerId} .td-chip.active`);
+  return chip ? chip.dataset[dataAttr] : null;
+}
+
+function getSelectedChipsMulti(containerId, dataAttr) {
+  return Array.from(document.querySelectorAll(`#${containerId} .td-chip.active`)).map(c => c.dataset[dataAttr]);
 }
 
 function updateKpiCalculations() {
@@ -5484,50 +6905,71 @@ function updateKpiCalculations() {
   const items = parseFloat(document.getElementById('kpiItemsInput').value) || 0;
   const target = (currentDailyLog && currentDailyLog._currentTarget) || 0;
 
-  // 達成率
-  const rateEl = document.getElementById('kpiRateValue');
   const rateLabelEl = document.getElementById('kpiRateLabel');
   if (target > 0) {
     const rate = (sales / target * 100);
-    rateEl.textContent = rate.toFixed(0) + '%';
     rateLabelEl.classList.remove('high', 'mid', 'low');
     if (rate >= 100) {
-      rateLabelEl.textContent = '✓ 達標';
+      rateLabelEl.textContent = `${rate.toFixed(0)}% ✓ 達標`;
       rateLabelEl.classList.add('high');
     } else if (rate >= 80) {
-      rateLabelEl.textContent = '接近達標';
+      rateLabelEl.textContent = `${rate.toFixed(0)}% 接近達標`;
       rateLabelEl.classList.add('mid');
     } else {
-      rateLabelEl.textContent = '需努力';
+      rateLabelEl.textContent = `${rate.toFixed(0)}% 需努力`;
       rateLabelEl.classList.add('low');
     }
   } else {
-    rateEl.textContent = '—';
-    rateLabelEl.textContent = '無目標';
+    rateLabelEl.textContent = '—';
+    rateLabelEl.classList.remove('high', 'mid', 'low');
   }
 
-  // 客單價
   document.getElementById('kpiAvgValue').textContent =
     customers > 0 ? formatMoney(Math.round(sales / customers)) : '—';
 
-  // UPT
   document.getElementById('kpiUptValue').textContent =
     customers > 0 ? (items / customers).toFixed(1) : '—';
 }
 
 function collectDailyLogData() {
+  // 收集天氣資料
+  let weather = null;
+  if (dailyLogManualWeather) {
+    const key = getSelectedChip('tdWeatherChips', 'weather');
+    if (key) {
+      const map = {
+        sunny: { emoji: '☀️', text: '晴' },
+        cloudy: { emoji: '🌥️', text: '陰' },
+        rainy: { emoji: '🌧️', text: '小雨' },
+        storm: { emoji: '⛈️', text: '大雨/颱風' }
+      };
+      weather = { key, ...(map[key] || {}), autoFetched: false };
+    }
+  } else if (currentDailyLog && currentDailyLog.weather) {
+    weather = currentDailyLog.weather;
+  }
+
   return {
+    // KPI
     sales: parseFloat(document.getElementById('kpiSalesInput').value) || 0,
     customers: parseFloat(document.getElementById('kpiCustomersInput').value) || 0,
     items: parseFloat(document.getElementById('kpiItemsInput').value) || 0,
-    section1: document.getElementById('logSection1').value.trim(),
-    section2: document.getElementById('logSection2').value.trim(),
-    section3: document.getElementById('logSection3').value.trim(),
-    section4: document.getElementById('logSection4').value.trim(),
-    section5: document.getElementById('logSection5').value.trim(),
-    section5NotifyHQ: document.getElementById('logSection5NotifyHQ').checked,
-    section6: document.getElementById('logSection6').value.trim(),
-    section7: document.getElementById('logSection7').value.trim()
+    // 天氣
+    weather,
+    weatherSupp: document.getElementById('tdWeatherSupp').value.trim(),
+    // 5 組勾選
+    crowd: getSelectedChip('tdCrowdChips', 'crowd'),
+    crowdSupp: document.getElementById('tdCrowdSupp').value.trim(),
+    customerType: getSelectedChip('tdCustomerChips', 'customer'),
+    customerSupp: document.getElementById('tdCustomerSupp').value.trim(),
+    hotCategories: getSelectedChipsMulti('tdHotChips', 'hot'),
+    hotSupp: document.getElementById('tdHotSupp').value.trim(),
+    stockStatus: getSelectedChip('tdStockChips', 'stock'),
+    stockSupp: document.getElementById('tdStockSupp').value.trim(),
+    tryConversion: getSelectedChip('tdTryChips', 'try'),
+    trySupp: document.getElementById('tdTrySupp').value.trim(),
+    // 特別狀況
+    specialNote: document.getElementById('logSpecialNote').value.trim()
   };
 }
 
@@ -5537,10 +6979,9 @@ async function saveDailyLog(submit) {
 
   const newData = collectDailyLogData();
 
-  // 如果是更新，記錄 history
+  // 記錄 history
   const history = (currentDailyLog && currentDailyLog._history) || [];
   if (currentDailyLog && (currentDailyLog.submitted || currentDailyLog._lastModified)) {
-    // 算出有變動的欄位（簡化：只記錄誰改、何時改）
     history.push({
       at: Date.now(),
       by: state.currentStaff,
@@ -5554,16 +6995,21 @@ async function saveDailyLog(submit) {
     _lastModified: Date.now(),
     _modifiedBy: state.currentStaff,
     _history: history,
-    _firstSubmittedAt: (currentDailyLog && currentDailyLog._firstSubmittedAt) || (submit ? Date.now() : null)
+    _firstSubmittedAt: (currentDailyLog && currentDailyLog._firstSubmittedAt) || (submit ? Date.now() : null),
+    _firstSubmittedBy: (currentDailyLog && currentDailyLog._firstSubmittedBy) || (submit ? state.currentStaff : null)
   };
+
+  // Firebase 不接受 undefined，過濾掉
+  Object.keys(dataToSave).forEach(k => {
+    if (dataToSave[k] === undefined) dataToSave[k] = null;
+  });
 
   setLoading(true);
   try {
     await db.ref(`/stores/${state.storeId}/dailyLogs/${date}`).set(dataToSave);
     currentDailyLog = dataToSave;
-    showToast(submit ? '✓ 已提交今日紀錄' : '草稿已儲存', 'success');
+    showToast(submit ? '✓ 已提交今日數字' : '草稿已儲存', 'success');
 
-    // 編輯次數更新
     const editCount = (dataToSave._history || []).length;
     if (editCount > 0) {
       document.getElementById('dailyLogHistoryBtn').style.display = 'inline-flex';
@@ -5571,7 +7017,6 @@ async function saveDailyLog(submit) {
     }
 
     if (submit) {
-      // 提交後返回首頁
       setTimeout(() => showScreen('home'), 800);
     }
   } catch (err) {
@@ -5587,9 +7032,52 @@ function setupDailyLogScreen() {
     document.getElementById(id).addEventListener('input', updateKpiCalculations);
   });
 
+  // 補填昨天切換
+  document.getElementById('dailyLogTodayBtn').addEventListener('click', () => {
+    const today = getTodayString();
+    if (currentDailyLogDate !== today) {
+      currentDailyLogDate = today;
+      loadDailyLog(today);
+    }
+  });
+  document.getElementById('dailyLogYesterdayBtn').addEventListener('click', () => {
+    const d = new Date();
+    d.setDate(d.getDate() - 1);
+    const yesterday = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    if (currentDailyLogDate !== yesterday) {
+      currentDailyLogDate = yesterday;
+      loadDailyLog(yesterday);
+    }
+  });
+
+  // chip 點擊：單選類別
+  ['tdCrowdChips', 'tdCustomerChips', 'tdStockChips', 'tdTryChips', 'tdWeatherChips'].forEach(id => {
+    document.getElementById(id).addEventListener('click', (e) => {
+      const chip = e.target.closest('.td-chip');
+      if (!chip) return;
+      // 單選：先清掉同組所有 active
+      document.querySelectorAll(`#${id} .td-chip`).forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+    });
+  });
+
+  // chip 點擊：多選類別（熱銷）
+  document.getElementById('tdHotChips').addEventListener('click', (e) => {
+    const chip = e.target.closest('.td-chip');
+    if (!chip) return;
+    chip.classList.toggle('active');
+  });
+
+  // 天氣修改按鈕
+  document.getElementById('tdWeatherEditBtn').addEventListener('click', () => {
+    dailyLogManualWeather = true;
+    document.getElementById('tdWeatherManual').style.display = 'block';
+    document.getElementById('tdWeatherEditBtn').style.display = 'none';
+  });
+
   document.getElementById('dailyLogSaveDraftBtn').addEventListener('click', () => saveDailyLog(false));
   document.getElementById('dailyLogSubmitBtn').addEventListener('click', () => {
-    if (!confirm('確定提交今日紀錄嗎？\n（提交後仍可在當日內無限修改）')) return;
+    if (!confirm('確定提交今日數字嗎？\n（提交後仍可在當日內無限修改）')) return;
     saveDailyLog(true);
   });
 
@@ -6895,6 +8383,1094 @@ function initPhase1C() {
   setupTaskScreen();
   setupScheduleScreen();
 }
+// ============================================
+// ★★★ Phase 1.D 新增邏輯：店長週報 + V 端總覽 ★★★
+// ============================================
+
+// ---------- 週區間工具 ----------
+
+/** 取得指定日期所在週的「週一」日期（YYYY-MM-DD）
+ *  我們的週起點是週一 */
+function getMondayOfWeek(date) {
+  const d = new Date(date);
+  const day = d.getDay(); // 0=Sun
+  const diff = day === 0 ? -6 : 1 - day; // 週一為起點
+  d.setDate(d.getDate() + diff);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+/** 從週一字串得到週日字串 */
+function getSundayOfWeek(monday) {
+  const d = new Date(monday);
+  d.setDate(d.getDate() + 6);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+/** 把 YYYY-MM-DD 週一轉成 YYYY-Www 鍵（用 ISO 週數） */
+function getWeekKey(monday) {
+  // 不用 ISO，因為我們週一起點不一定 ISO；用週一日期當 key
+  // 例：2026-04-21 → "2026-W04-21"
+  return monday;
+}
+
+/** 取得本週週一字串 */
+function getCurrentMonday() {
+  return getMondayOfWeek(new Date());
+}
+
+/** 把週一字串往前/後推 N 週 */
+function shiftWeek(monday, weekOffset) {
+  const d = new Date(monday);
+  d.setDate(d.getDate() + weekOffset * 7);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+/** 格式化週標籤：「4/21 - 4/27」 */
+function formatWeekLabel(monday) {
+  const sunday = getSundayOfWeek(monday);
+  const m1 = monday.split('-');
+  const m2 = sunday.split('-');
+  return `${parseInt(m1[1])}/${parseInt(m1[2])} - ${parseInt(m2[1])}/${parseInt(m2[2])}`;
+}
+
+/** 取得週報截止日（該週日 + 3 天 = 下週三 23:59） */
+function getWeekDeadline(monday) {
+  const d = new Date(getSundayOfWeek(monday));
+  d.setDate(d.getDate() + 3);
+  d.setHours(23, 59, 59, 999);
+  return d;
+}
+
+/** 計算週報狀態
+ *  return: 'submitted' | 'draft' | 'pending' | 'overdue' | 'in-progress' (本週進行中)
+ */
+function getReportStatus(reportData, monday) {
+  const now = new Date();
+  const sunday = new Date(getSundayOfWeek(monday));
+  sunday.setHours(23, 59, 59, 999);
+  const deadline = getWeekDeadline(monday);
+
+  // 該週還在進行中（週日還沒過）
+  if (now < sunday) {
+    if (reportData && reportData.submitted) return 'submitted';
+    if (reportData && (reportData.staffStatus || reportData.insights || reportData.nextWeekFocus || reportData.messageToHQ)) return 'draft';
+    return 'in-progress';
+  }
+
+  // 該週已結束
+  if (reportData && reportData.submitted) return 'submitted';
+  if (reportData && (reportData.staffStatus || reportData.insights || reportData.nextWeekFocus || reportData.messageToHQ)) {
+    // 草稿、看是否逾期
+    if (now > deadline) return 'overdue';
+    return 'draft';
+  }
+  // 完全沒寫
+  if (now > deadline) return 'overdue';
+  return 'pending';
+}
+
+/** 取得店長端的週報狀態（看上週、判斷是否需提示） */
+async function getWeeklyReportStatusForStore(storeId) {
+  if (!db) return null;
+  const lastMonday = shiftWeek(getCurrentMonday(), -1);
+  try {
+    const snap = await db.ref(`/stores/${storeId}/weeklyReports/${lastMonday}`).once('value');
+    const data = snap.val();
+    return getReportStatus(data, lastMonday);
+  } catch (e) {
+    return null;
+  }
+}
+
+/** 取得 V 端 7 店週報統計（看上週） */
+async function getHqWeeklyOverviewStats() {
+  if (!db) return { submitted: 0, draft: 0, notStarted: 0, overdue: 0 };
+  const lastMonday = shiftWeek(getCurrentMonday(), -1);
+  let submitted = 0, draft = 0, notStarted = 0, overdue = 0;
+
+  await Promise.all(STORE_ORDER.map(async sid => {
+    try {
+      const snap = await db.ref(`/stores/${sid}/weeklyReports/${lastMonday}`).once('value');
+      const data = snap.val();
+      const status = getReportStatus(data, lastMonday);
+      if (status === 'submitted') submitted++;
+      else if (status === 'draft') draft++;
+      else if (status === 'overdue') overdue++;
+      else if (status === 'pending') notStarted++;
+    } catch (e) {}
+  }));
+
+  return { submitted, draft, notStarted, overdue };
+}
+
+// ---------- 店長週報主邏輯 ----------
+
+let currentWeeklyMonday = null;
+let currentWeeklyData = null;
+
+async function openWeeklyReport() {
+  if (state.isHQ) {
+    showToast('總部請使用「7 店週報總覽」', '');
+    openHqWeeklyOverview();
+    return;
+  }
+  // 預設打開「上週」（如果上週週報未交、優先顯示上週）
+  currentWeeklyMonday = shiftWeek(getCurrentMonday(), -1);
+  showScreen('weeklyReport');
+  document.getElementById('wrSubtitle').textContent =
+    `${STORE_NAMES[state.storeId]} · 店長：${state.currentStaff || '?'}`;
+  await loadWeeklyReport();
+}
+
+async function loadWeeklyReport() {
+  if (!db) return;
+
+  // 更新週標籤
+  const currMon = getCurrentMonday();
+  document.getElementById('wrPrevWeekLabel').textContent = formatWeekLabel(shiftWeek(currMon, -1));
+  document.getElementById('wrCurrWeekLabel').textContent = formatWeekLabel(currMon);
+  document.getElementById('wrPrevPrevWeekLabel').textContent = formatWeekLabel(shiftWeek(currMon, -2));
+
+  // 切換按鈕 active：找出 currentWeeklyMonday 對應哪個 offset
+  const offset = Math.round((new Date(currentWeeklyMonday) - new Date(currMon)) / 86400000 / 7);
+  document.querySelectorAll('#wrWeekNav .wr-week-nav-btn').forEach(btn => {
+    btn.classList.toggle('active', parseInt(btn.dataset.weekOffset) === offset);
+  });
+
+  try {
+    // 讀週報、本週日記、本週事件、上週業績（用來算 vs 上週）
+    const sunday = getSundayOfWeek(currentWeeklyMonday);
+    const lastMonday = shiftWeek(currentWeeklyMonday, -1);
+    const lastSunday = getSundayOfWeek(lastMonday);
+
+    const [reportSnap, logsSnap, eventsSnap, monthlyTargetSnap] = await Promise.all([
+      db.ref(`/stores/${state.storeId}/weeklyReports/${currentWeeklyMonday}`).once('value'),
+      db.ref(`/stores/${state.storeId}/dailyLogs`).once('value'),
+      db.ref(`/stores/${state.storeId}/events`).once('value'),
+      db.ref(`/global/monthlyTargets/${currentWeeklyMonday.substring(0, 7)}/${state.storeId}`).once('value')
+    ]);
+
+    currentWeeklyData = reportSnap.val() || {};
+    const allLogs = logsSnap.val() || {};
+    const allEvents = eventsSnap.val() || {};
+    const monthTarget = monthlyTargetSnap.val() || 0;
+
+    // 過濾出本週、上週的紀錄
+    const thisWeekLogs = {};
+    const lastWeekLogs = {};
+    Object.entries(allLogs).forEach(([date, log]) => {
+      if (date >= currentWeeklyMonday && date <= sunday) thisWeekLogs[date] = log;
+      else if (date >= lastMonday && date <= lastSunday) lastWeekLogs[date] = log;
+    });
+
+    // 過濾本週事件
+    const thisWeekEvents = Object.values(allEvents).filter(e => {
+      if (!e || !e.createdAt) return false;
+      const eventDate = new Date(e.createdAt);
+      const m = new Date(currentWeeklyMonday);
+      const s = new Date(sunday);
+      s.setHours(23, 59, 59, 999);
+      return eventDate >= m && eventDate <= s;
+    });
+
+    // 算數字
+    renderWeeklyNumbers(thisWeekLogs, lastWeekLogs, monthTarget);
+    renderWeeklyDailyDistribution(thisWeekLogs, monthTarget);
+    renderWeeklyStatusSummary(thisWeekLogs);
+    renderWeeklyEvents(thisWeekEvents);
+
+    // 顯示狀態 banner
+    const status = getReportStatus(currentWeeklyData, currentWeeklyMonday);
+    renderWeeklyStatusBanner(status);
+
+    // 載入店長洞察 textarea
+    document.getElementById('wrStaffStatus').value = currentWeeklyData.staffStatus || '';
+    document.getElementById('wrInsights').value = currentWeeklyData.insights || '';
+    document.getElementById('wrNextWeek').value = currentWeeklyData.nextWeekFocus || '';
+    document.getElementById('wrMessageToHQ').value = currentWeeklyData.messageToHQ || '';
+
+    // V 已回覆？
+    if (currentWeeklyData.hqReply) {
+      document.getElementById('wrHqReplyDisplay').style.display = 'block';
+      document.getElementById('wrHqReplyContent').textContent = currentWeeklyData.hqReply;
+      document.getElementById('wrHqReplyMeta').textContent =
+        `${currentWeeklyData.hqReplyBy || 'V'} · ${formatTimestamp(currentWeeklyData.hqRepliedAt)}`;
+    } else {
+      document.getElementById('wrHqReplyDisplay').style.display = 'none';
+    }
+
+    // 鎖定狀態：已提交 → readonly
+    const isSubmitted = currentWeeklyData.submitted;
+    ['wrStaffStatus', 'wrInsights', 'wrNextWeek', 'wrMessageToHQ'].forEach(id => {
+      document.getElementById(id).readOnly = isSubmitted;
+    });
+    document.getElementById('wrSubmitBtn').textContent = isSubmitted ? '✓ 已提交（如需修改請聯絡 V）' : '✓ 提交週報';
+    document.getElementById('wrSubmitBtn').disabled = isSubmitted;
+    document.getElementById('wrSaveDraftBtn').disabled = isSubmitted;
+
+  } catch (err) {
+    console.error('loadWeeklyReport error:', err);
+    showToast('載入週報失敗', 'error');
+  }
+}
+
+function renderWeeklyStatusBanner(status) {
+  const banner = document.getElementById('wrStatusBanner');
+  const icon = document.getElementById('wrStatusIcon');
+  const text = document.getElementById('wrStatusText');
+
+  banner.style.display = 'flex';
+  banner.classList.remove('pending', 'overdue', 'submitted');
+  icon.classList.remove('pending', 'overdue', 'submitted');
+
+  const deadline = getWeekDeadline(currentWeeklyMonday);
+  const now = new Date();
+  const hoursLeft = Math.round((deadline - now) / 3600000);
+  const daysLeft = Math.floor(hoursLeft / 24);
+  const hoursOnly = hoursLeft % 24;
+
+  if (status === 'submitted') {
+    banner.classList.add('submitted');
+    icon.classList.add('submitted');
+    icon.textContent = '✓';
+    const submittedAt = currentWeeklyData._firstSubmittedAt
+      ? formatTimestamp(currentWeeklyData._firstSubmittedAt)
+      : '?';
+    text.innerHTML = `<strong>已提交</strong>　${submittedAt}　${currentWeeklyData._firstSubmittedBy ? '由 ' + escapeHtml(currentWeeklyData._firstSubmittedBy) + ' 提交' : ''}`;
+  } else if (status === 'overdue') {
+    banner.classList.add('overdue');
+    icon.classList.add('overdue');
+    icon.textContent = '!';
+    const overDays = Math.floor((now - deadline) / 86400000);
+    text.innerHTML = `<strong>已逾期</strong>　已超過截止 <strong>${overDays} 天</strong>，請盡快補交`;
+  } else if (status === 'pending' || status === 'draft') {
+    banner.classList.add('pending');
+    icon.classList.add('pending');
+    icon.textContent = status === 'draft' ? '✏' : '!';
+    if (hoursLeft > 0) {
+      text.innerHTML = `<strong>${status === 'draft' ? '草稿中' : '待提交'}</strong>　距週三 23:59 截止還有 <strong>${daysLeft} 天 ${hoursOnly} 小時</strong>`;
+    } else {
+      text.innerHTML = `<strong>${status === 'draft' ? '草稿中' : '待提交'}</strong>　已過截止時間`;
+    }
+  } else if (status === 'in-progress') {
+    banner.classList.add('pending');
+    icon.classList.add('pending');
+    icon.textContent = 'i';
+    text.innerHTML = `<strong>本週進行中</strong>　可先儲存草稿，週日結束後再正式提交`;
+  }
+}
+
+function renderWeeklyNumbers(thisWeekLogs, lastWeekLogs, monthTarget) {
+  let thisSales = 0, thisCustomers = 0, thisItems = 0;
+  let lastSales = 0;
+  let thisDayCount = 0;
+
+  Object.values(thisWeekLogs).forEach(log => {
+    if (log && log.sales) {
+      thisSales += Number(log.sales);
+      thisCustomers += Number(log.customers || 0);
+      thisItems += Number(log.items || 0);
+      thisDayCount++;
+    }
+  });
+  Object.values(lastWeekLogs).forEach(log => {
+    if (log && log.sales) lastSales += Number(log.sales);
+  });
+
+  // 業績總計
+  document.getElementById('wrSalesTotal').textContent = formatMoney(thisSales);
+
+  // 達成率（若月目標 > 0，依本週比例算）
+  if (monthTarget > 0) {
+    const [year, month] = currentWeeklyMonday.split('-').map(Number);
+    const daysInMonth = getDaysInMonth(year, month);
+    // 本週對應的月目標份額：7 / daysInMonth * monthTarget
+    const weekTarget = (monthTarget / daysInMonth) * 7;
+    const rate = weekTarget > 0 ? (thisSales / weekTarget * 100) : 0;
+    document.getElementById('wrAchieveRate').textContent = `達成 ${rate.toFixed(0)}%`;
+  } else {
+    document.getElementById('wrAchieveRate').textContent = '無目標';
+  }
+
+  // vs 上週
+  const vsEl = document.getElementById('wrVsLastWeek');
+  const diffEl = document.getElementById('wrDiffAmount');
+  vsEl.classList.remove('up', 'down');
+  if (lastSales > 0) {
+    const diff = ((thisSales - lastSales) / lastSales * 100);
+    if (diff >= 0) {
+      vsEl.classList.add('up');
+      vsEl.textContent = `↑ +${diff.toFixed(0)}%`;
+      diffEl.textContent = `超出 ${formatMoney(thisSales - lastSales)}`;
+    } else {
+      vsEl.classList.add('down');
+      vsEl.textContent = `↓ ${diff.toFixed(0)}%`;
+      diffEl.textContent = `差距 ${formatMoney(Math.abs(thisSales - lastSales))}`;
+    }
+  } else {
+    vsEl.textContent = '—';
+    diffEl.textContent = '無上週資料';
+  }
+
+  // 客單價
+  const avg = thisCustomers > 0 ? Math.round(thisSales / thisCustomers) : 0;
+  document.getElementById('wrAvgPrice').textContent = avg > 0 ? formatMoney(avg) : '—';
+  // 算上週客單價
+  let lastAvg = 0;
+  let lastCustomers = 0;
+  Object.values(lastWeekLogs).forEach(log => {
+    if (log) lastCustomers += Number(log.customers || 0);
+  });
+  if (lastCustomers > 0) lastAvg = Math.round(lastSales / lastCustomers);
+
+  if (avg > 0 && lastAvg > 0) {
+    if (avg > lastAvg) {
+      document.getElementById('wrAvgPriceMeta').textContent = '↑ 高於上週';
+    } else if (avg < lastAvg) {
+      document.getElementById('wrAvgPriceMeta').textContent = '↓ 低於上週';
+    } else {
+      document.getElementById('wrAvgPriceMeta').textContent = '同上週';
+    }
+  } else {
+    document.getElementById('wrAvgPriceMeta').textContent = '—';
+  }
+}
+
+function renderWeeklyDailyDistribution(thisWeekLogs, monthTarget) {
+  // 7 天的長條圖（週一到週日）
+  const container = document.getElementById('wrDailyDistribution');
+  const dayNames = ['一', '二', '三', '四', '五', '六', '日'];
+
+  // 計算每天的目標（依月目標平均）
+  let dayTarget = 0;
+  if (monthTarget > 0) {
+    const [year, month] = currentWeeklyMonday.split('-').map(Number);
+    const daysInMonth = getDaysInMonth(year, month);
+    dayTarget = monthTarget / daysInMonth;
+  }
+
+  let html = '';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(currentWeeklyMonday);
+    d.setDate(d.getDate() + i);
+    const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    const log = thisWeekLogs[dateStr];
+    const sales = log && log.sales ? Number(log.sales) : 0;
+    const rate = dayTarget > 0 ? (sales / dayTarget * 100) : 0;
+
+    let cls = 'none';
+    if (sales === 0) cls = 'none';
+    else if (rate >= 100) cls = 'high';
+    else if (rate >= 80) cls = 'mid';
+    else cls = 'low';
+
+    const widthPct = dayTarget > 0 ? Math.min(rate, 110) : (sales > 0 ? 50 : 0);
+    const statText = sales > 0 ? `$${Math.round(sales/1000)}K · ${rate.toFixed(0)}%` : '無紀錄';
+
+    html += `
+      <div class="wr-day-row">
+        <div class="wr-day-name">${dayNames[i]}</div>
+        <div class="wr-day-bar-bg"><div class="wr-day-bar-fill ${cls}" style="width: ${widthPct}%;"></div></div>
+        <div class="wr-day-stat">${statText}</div>
+      </div>
+    `;
+  }
+  container.innerHTML = html;
+}
+
+function renderWeeklyStatusSummary(thisWeekLogs) {
+  const card = document.getElementById('wrStatusSummaryCard');
+  const content = document.getElementById('wrStatusSummaryContent');
+
+  // 統計
+  const crowdCount = { cold: 0, normal: 0, warm: 0, full: 0 };
+  const customerCount = { vip: 0, new: 0, return: 0, tourist: 0 };
+  const hotCount = { dress: 0, top: 0, pants: 0, outer: 0, acc: 0 };
+  let total = 0;
+
+  Object.values(thisWeekLogs).forEach(log => {
+    if (!log) return;
+    if (log.crowd) crowdCount[log.crowd] = (crowdCount[log.crowd] || 0) + 1;
+    if (log.customerType) customerCount[log.customerType] = (customerCount[log.customerType] || 0) + 1;
+    if (Array.isArray(log.hotCategories)) {
+      log.hotCategories.forEach(h => { hotCount[h] = (hotCount[h] || 0) + 1; });
+    }
+    total++;
+  });
+
+  if (total === 0) {
+    card.style.display = 'none';
+    return;
+  }
+
+  card.style.display = 'block';
+
+  // 人潮
+  let crowdHTML = '';
+  if (crowdCount.warm + crowdCount.full > 0) {
+    crowdHTML += `<span class="wr-stat-pill warm">熱絡 ${crowdCount.warm + crowdCount.full} 天</span>`;
+  }
+  if (crowdCount.normal > 0) {
+    crowdHTML += `<span class="wr-stat-pill normal">普通 ${crowdCount.normal} 天</span>`;
+  }
+  if (crowdCount.cold > 0) {
+    crowdHTML += `<span class="wr-stat-pill cold">冷清 ${crowdCount.cold} 天</span>`;
+  }
+
+  // 客群
+  const customerLabels = { vip: 'VIP', new: '新客', return: '回頭客', tourist: '遊客' };
+  const customerArr = Object.entries(customerCount)
+    .filter(([_, v]) => v > 0)
+    .sort((a, b) => b[1] - a[1])
+    .map(([k, v]) => `${customerLabels[k]} ${v} 天`);
+
+  // 熱銷
+  const hotLabels = { dress: '洋裝', top: '上衣', pants: '褲裝', outer: '外套', acc: '配件' };
+  const hotArr = Object.entries(hotCount)
+    .filter(([_, v]) => v > 0)
+    .sort((a, b) => b[1] - a[1])
+    .map(([k, v]) => `${hotLabels[k]} ${v} 天`);
+
+  content.innerHTML = `
+    ${crowdHTML ? `<div class="wr-status-summary-row"><strong>人潮：</strong>${crowdHTML}</div>` : ''}
+    ${customerArr.length ? `<div class="wr-status-summary-row"><strong>客群：</strong>${customerArr.join('、')}</div>` : ''}
+    ${hotArr.length ? `<div class="wr-status-summary-row"><strong>熱銷：</strong>${hotArr.join('、')}</div>` : ''}
+  `;
+}
+
+function renderWeeklyEvents(events) {
+  const card = document.getElementById('wrEventsCard');
+  const list = document.getElementById('wrEventsList');
+
+  if (!events || events.length === 0) {
+    card.style.display = 'none';
+    return;
+  }
+
+  card.style.display = 'block';
+
+  // 依類別歸納
+  const byCategory = {};
+  events.forEach(e => {
+    if (!byCategory[e.category]) byCategory[e.category] = [];
+    byCategory[e.category].push(e);
+  });
+
+  list.innerHTML = Object.entries(byCategory).map(([cat, items]) => {
+    const samples = items.slice(0, 2).map(i => i.content.substring(0, 30)).join('、');
+    return `
+      <div class="wr-event-row"><strong>${escapeHtml(cat)} ×${items.length}</strong>　${escapeHtml(samples)}${items.length > 2 ? '...' : ''}</div>
+    `;
+  }).join('');
+}
+
+async function saveWeeklyReport(submit) {
+  if (!db) return;
+
+  const data = {
+    staffStatus: document.getElementById('wrStaffStatus').value.trim(),
+    insights: document.getElementById('wrInsights').value.trim(),
+    nextWeekFocus: document.getElementById('wrNextWeek').value.trim(),
+    messageToHQ: document.getElementById('wrMessageToHQ').value.trim()
+  };
+
+  if (submit) {
+    // 提交時必須 4 段都填了（給總部的話可選）
+    if (!data.staffStatus || !data.insights || !data.nextWeekFocus) {
+      showToast('提交前請填寫前 3 段（員工狀態、趨勢觀察、下週重點）', 'error');
+      return;
+    }
+    if (!confirm(`確定提交 ${formatWeekLabel(currentWeeklyMonday)} 週報嗎？\n（提交後無法直接修改，需聯絡 V）`)) return;
+  }
+
+  setLoading(true);
+  try {
+    const dataToSave = {
+      ...data,
+      submitted: submit || (currentWeeklyData && currentWeeklyData.submitted) || false,
+      _lastModified: Date.now(),
+      _modifiedBy: state.currentStaff,
+      _firstSubmittedAt: (currentWeeklyData && currentWeeklyData._firstSubmittedAt) ||
+                        (submit ? Date.now() : null),
+      _firstSubmittedBy: (currentWeeklyData && currentWeeklyData._firstSubmittedBy) ||
+                         (submit ? state.currentStaff : null),
+      // 保留 hqReply
+      hqReply: (currentWeeklyData && currentWeeklyData.hqReply) || null,
+      hqReplyBy: (currentWeeklyData && currentWeeklyData.hqReplyBy) || null,
+      hqRepliedAt: (currentWeeklyData && currentWeeklyData.hqRepliedAt) || null
+    };
+
+    Object.keys(dataToSave).forEach(k => {
+      if (dataToSave[k] === undefined) dataToSave[k] = null;
+    });
+
+    await db.ref(`/stores/${state.storeId}/weeklyReports/${currentWeeklyMonday}`).set(dataToSave);
+    currentWeeklyData = dataToSave;
+    showToast(submit ? '✓ 已提交週報' : '草稿已儲存', 'success');
+
+    if (submit) {
+      setTimeout(() => showScreen('home'), 800);
+    } else {
+      // 重新載入以更新 banner
+      await loadWeeklyReport();
+    }
+  } catch (err) {
+    showToast('儲存失敗：' + err.message, 'error');
+  } finally {
+    setLoading(false);
+  }
+}
+
+function setupWeeklyReportScreen() {
+  // 週切換
+  document.querySelectorAll('#wrWeekNav .wr-week-nav-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const offset = parseInt(btn.dataset.weekOffset);
+      currentWeeklyMonday = shiftWeek(getCurrentMonday(), offset);
+      await loadWeeklyReport();
+    });
+  });
+
+  // 儲存草稿、提交
+  document.getElementById('wrSaveDraftBtn').addEventListener('click', () => saveWeeklyReport(false));
+  document.getElementById('wrSubmitBtn').addEventListener('click', () => saveWeeklyReport(true));
+}
+
+// ---------- V 端：7 店週報總覽 ----------
+
+let currentHwrMonday = null;
+
+async function openHqWeeklyOverview() {
+  if (!state.isHQ) {
+    showToast('此功能僅總部可用', 'error');
+    return;
+  }
+  // 預設打開「上週」
+  currentHwrMonday = shiftWeek(getCurrentMonday(), -1);
+  showScreen('hqWeeklyOverview');
+  await loadHqWeeklyOverview();
+}
+
+async function loadHqWeeklyOverview() {
+  if (!db) return;
+
+  const currMon = getCurrentMonday();
+  document.getElementById('hwrPrevPrevLabel').textContent = formatWeekLabel(shiftWeek(currMon, -2));
+  document.getElementById('hwrPrevLabel').textContent = formatWeekLabel(shiftWeek(currMon, -1));
+  document.getElementById('hwrCurrLabel').textContent = formatWeekLabel(currMon);
+
+  const offset = Math.round((new Date(currentHwrMonday) - new Date(currMon)) / 86400000 / 7);
+  document.querySelectorAll('#hwrWeekNav .wr-week-nav-btn').forEach(btn => {
+    btn.classList.toggle('active', parseInt(btn.dataset.weekOffset) === offset);
+  });
+
+  // 截止提示
+  const deadline = getWeekDeadline(currentHwrMonday);
+  const now = new Date();
+  const hint = document.getElementById('hwrDeadlineHint');
+  if (now < deadline) {
+    const hoursLeft = Math.round((deadline - now) / 3600000);
+    const days = Math.floor(hoursLeft / 24);
+    const hours = hoursLeft % 24;
+    hint.innerHTML = `📌 ${formatWeekLabel(currentHwrMonday)} 週報截止：<strong>下週三 23:59</strong>　還剩 ${days} 天 ${hours} 小時`;
+  } else {
+    hint.innerHTML = `📌 ${formatWeekLabel(currentHwrMonday)} 週報已過截止時間`;
+  }
+
+  try {
+    // 讀 7 店週報、本週 / 上週業績
+    const lastWeekMonday = shiftWeek(currentHwrMonday, -1);
+
+    const storeData = await Promise.all(STORE_ORDER.map(async sid => {
+      const [reportSnap, logsSnap, monthlyTargetSnap] = await Promise.all([
+        db.ref(`/stores/${sid}/weeklyReports/${currentHwrMonday}`).once('value'),
+        db.ref(`/stores/${sid}/dailyLogs`).once('value'),
+        db.ref(`/global/monthlyTargets/${currentHwrMonday.substring(0, 7)}/${sid}`).once('value')
+      ]);
+      const allLogs = logsSnap.val() || {};
+      const sunday = getSundayOfWeek(currentHwrMonday);
+      const lastSunday = getSundayOfWeek(lastWeekMonday);
+      let thisSales = 0, lastSales = 0;
+      Object.entries(allLogs).forEach(([date, log]) => {
+        if (!log || !log.sales) return;
+        if (date >= currentHwrMonday && date <= sunday) thisSales += Number(log.sales);
+        else if (date >= lastWeekMonday && date <= lastSunday) lastSales += Number(log.sales);
+      });
+      const monthTarget = monthlyTargetSnap.val() || 0;
+      const [year, month] = currentHwrMonday.split('-').map(Number);
+      const daysInMonth = getDaysInMonth(year, month);
+      const weekTarget = monthTarget > 0 ? (monthTarget / daysInMonth) * 7 : 0;
+
+      return {
+        storeId: sid,
+        report: reportSnap.val(),
+        thisSales, lastSales,
+        weekTarget,
+        achieveRate: weekTarget > 0 ? (thisSales / weekTarget * 100) : 0,
+        diffPct: lastSales > 0 ? ((thisSales - lastSales) / lastSales * 100) : null
+      };
+    }));
+
+    // 統計
+    let submitted = 0, draft = 0, overdue = 0, notStarted = 0;
+    storeData.forEach(s => {
+      const status = getReportStatus(s.report, currentHwrMonday);
+      if (status === 'submitted') submitted++;
+      else if (status === 'draft' || status === 'in-progress') draft++;
+      else if (status === 'overdue') overdue++;
+      else if (status === 'pending') notStarted++;
+    });
+    document.getElementById('hwrCountSubmitted').textContent = submitted;
+    document.getElementById('hwrCountDraft').textContent = draft + notStarted;
+    document.getElementById('hwrCountOverdue').textContent = overdue;
+
+    // 7 店列表
+    renderHqStoreList(storeData);
+
+    // 給總部的話聚焦區
+    renderHqMessages(storeData);
+
+  } catch (err) {
+    console.error('loadHqWeeklyOverview error:', err);
+    showToast('載入失敗', 'error');
+  }
+}
+
+function renderHqStoreList(storeData) {
+  const container = document.getElementById('hwrStoreList');
+
+  // 排序：逾期 → 草稿/未開始 → 已交（依達成率排序）
+  const order = { overdue: 0, pending: 1, 'in-progress': 1, draft: 2, submitted: 3 };
+  storeData.sort((a, b) => {
+    const sa = getReportStatus(a.report, currentHwrMonday);
+    const sb = getReportStatus(b.report, currentHwrMonday);
+    return (order[sa] - order[sb]) || (b.achieveRate - a.achieveRate);
+  });
+
+  container.innerHTML = storeData.map(s => {
+    const status = getReportStatus(s.report, currentHwrMonday);
+    let dotColor = '#888';
+    let rowClass = '';
+    let pillHTML = '';
+
+    if (status === 'submitted') {
+      dotColor = '#4CD964';
+      rowClass = 'submitted';
+      pillHTML = '<span class="hwr-store-status-pill submitted">✓ 已提交</span>';
+    } else if (status === 'draft' || status === 'in-progress') {
+      dotColor = '#FFB800';
+      rowClass = 'draft';
+      pillHTML = `<span class="hwr-store-status-pill draft">${status === 'draft' ? '✏️ 草稿中' : '進行中'}</span>`;
+    } else if (status === 'overdue') {
+      dotColor = '#FF6B35';
+      rowClass = 'overdue';
+      pillHTML = '<span class="hwr-store-status-pill overdue">⚠ 已逾期</span>';
+    } else {
+      dotColor = '#FFB800';
+      rowClass = 'draft';
+      pillHTML = '<span class="hwr-store-status-pill draft">未開始</span>';
+    }
+
+    // 訊息提示
+    if (s.report && s.report.messageToHQ && !s.report.hqReply) {
+      pillHTML += '<span class="hwr-store-status-pill msg">📮 訊息</span>';
+    }
+
+    // 元資料文字
+    let metaText = '';
+    if (status === 'submitted') {
+      metaText = `${escapeHtml(s.report._firstSubmittedBy || '?')} · ${formatTimestamp(s.report._firstSubmittedAt)} 提交`;
+      if (s.weekTarget > 0) metaText += ` · 達成 ${s.achieveRate.toFixed(0)}%`;
+    } else if (status === 'overdue') {
+      const overDays = Math.floor((Date.now() - getWeekDeadline(currentHwrMonday)) / 86400000);
+      metaText = `已逾期 ${overDays} 天`;
+    } else if (status === 'draft') {
+      metaText = `${escapeHtml(s.report._modifiedBy || '?')} · ${formatTimestamp(s.report._lastModified)} 最後編輯`;
+    } else if (status === 'in-progress') {
+      metaText = '本週進行中';
+    } else {
+      metaText = '尚未開始';
+    }
+
+    // 業績與 vs 上週
+    let stat = `$${Math.round(s.thisSales/1000)}K`;
+    if (s.diffPct !== null) {
+      stat += `<br><span style="color: ${s.diffPct >= 0 ? 'var(--success-text)' : 'var(--danger)'};">${s.diffPct >= 0 ? '↑ +' : '↓ '}${s.diffPct.toFixed(0)}%</span>`;
+    } else {
+      stat += '<br><span style="color: var(--text-tertiary);">—</span>';
+    }
+
+    return `
+      <div class="hwr-store-row ${rowClass}" data-store="${s.storeId}">
+        <div class="hwr-store-dot" style="background: ${dotColor};"></div>
+        <div class="hwr-store-info">
+          <div class="hwr-store-name">${escapeHtml(STORE_NAMES[s.storeId])} ${pillHTML}</div>
+          <div class="hwr-store-meta ${status === 'overdue' ? 'overdue' : ''}">${metaText}</div>
+        </div>
+        <div class="hwr-store-stat">${stat}</div>
+        <span style="color: #888; font-size: 11px;">›</span>
+      </div>
+    `;
+  }).join('');
+
+  container.querySelectorAll('.hwr-store-row').forEach(row => {
+    row.addEventListener('click', () => openHqStoreDetail(row.dataset.store));
+  });
+}
+
+function renderHqMessages(storeData) {
+  const list = document.getElementById('hwrMsgList');
+  const messages = storeData.filter(s => s.report && s.report.messageToHQ);
+  const unreplied = messages.filter(s => !s.report.hqReply);
+
+  document.getElementById('hwrMsgTitle').textContent =
+    unreplied.length > 0
+      ? `📮 ${formatWeekLabel(currentHwrMonday)} 給總部的話（${unreplied.length} 則待回應）`
+      : `📮 ${formatWeekLabel(currentHwrMonday)} 給總部的話`;
+
+  if (messages.length === 0) {
+    list.innerHTML = '<div style="font-size: 11px; color: var(--text-tertiary); text-align: center; padding: 20px;">本週尚無訊息</div>';
+    return;
+  }
+
+  list.innerHTML = messages.map(s => {
+    const replied = !!s.report.hqReply;
+    return `
+      <div class="hwr-msg-box ${replied ? 'replied' : ''}" data-store="${s.storeId}">
+        <strong>${escapeHtml(STORE_NAMES[s.storeId])} · ${escapeHtml(s.report._firstSubmittedBy || '?')}</strong>　${escapeHtml(s.report.messageToHQ.substring(0, 60))}${s.report.messageToHQ.length > 60 ? '...' : ''}
+        <div class="hwr-msg-meta">${replied ? '✓ 已回覆' : '點擊回覆 ›'}</div>
+      </div>
+    `;
+  }).join('');
+
+  list.querySelectorAll('.hwr-msg-box').forEach(box => {
+    box.addEventListener('click', () => openHqStoreDetail(box.dataset.store));
+  });
+}
+
+function setupHqWeeklyOverviewScreen() {
+  document.querySelectorAll('#hwrWeekNav .wr-week-nav-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const offset = parseInt(btn.dataset.weekOffset);
+      currentHwrMonday = shiftWeek(getCurrentMonday(), offset);
+      await loadHqWeeklyOverview();
+    });
+  });
+}
+
+// ---------- V 端：單店週報詳情 ----------
+
+let currentHsdStoreId = null;
+
+async function openHqStoreDetail(storeId) {
+  if (!state.isHQ) return;
+  currentHsdStoreId = storeId;
+  showScreen('hqStoreDetail');
+  await loadHqStoreDetail();
+}
+
+async function loadHqStoreDetail() {
+  if (!db) return;
+  const sid = currentHsdStoreId;
+
+  document.getElementById('hsdTitle').textContent = `📋 ${STORE_NAMES[sid]} · ${formatWeekLabel(currentHwrMonday)}`;
+
+  try {
+    const sunday = getSundayOfWeek(currentHwrMonday);
+    const lastWeekMonday = shiftWeek(currentHwrMonday, -1);
+    const lastSunday = getSundayOfWeek(lastWeekMonday);
+
+    const [reportSnap, logsSnap, eventsSnap, monthlyTargetSnap] = await Promise.all([
+      db.ref(`/stores/${sid}/weeklyReports/${currentHwrMonday}`).once('value'),
+      db.ref(`/stores/${sid}/dailyLogs`).once('value'),
+      db.ref(`/stores/${sid}/events`).once('value'),
+      db.ref(`/global/monthlyTargets/${currentHwrMonday.substring(0, 7)}/${sid}`).once('value')
+    ]);
+
+    const report = reportSnap.val() || {};
+    const allLogs = logsSnap.val() || {};
+    const allEvents = eventsSnap.val() || {};
+    const monthTarget = monthlyTargetSnap.val() || 0;
+
+    const thisWeekLogs = {};
+    const lastWeekLogs = {};
+    Object.entries(allLogs).forEach(([date, log]) => {
+      if (date >= currentHwrMonday && date <= sunday) thisWeekLogs[date] = log;
+      else if (date >= lastWeekMonday && date <= lastSunday) lastWeekLogs[date] = log;
+    });
+
+    const thisWeekEvents = Object.values(allEvents).filter(e => {
+      if (!e || !e.createdAt) return false;
+      const eventDate = new Date(e.createdAt);
+      const m = new Date(currentHwrMonday);
+      const s = new Date(sunday); s.setHours(23, 59, 59, 999);
+      return eventDate >= m && eventDate <= s;
+    });
+
+    // 狀態 pill
+    const status = getReportStatus(report, currentHwrMonday);
+    const pill = document.getElementById('hsdStatusPill');
+    pill.style.display = 'inline-block';
+    pill.classList.remove('submitted', 'draft', 'overdue');
+    if (status === 'submitted') {
+      pill.classList.add('submitted');
+      pill.textContent = '✓ 已提交';
+    } else if (status === 'overdue') {
+      pill.classList.add('overdue');
+      pill.textContent = '⚠ 已逾期';
+    } else {
+      pill.classList.add('draft');
+      pill.textContent = status === 'draft' ? '✏️ 草稿中' : (status === 'in-progress' ? '進行中' : '未開始');
+    }
+
+    // subtitle
+    document.getElementById('hsdSubtitle').textContent =
+      report._firstSubmittedBy
+        ? `店長：${report._firstSubmittedBy} · ${formatTimestamp(report._firstSubmittedAt)} 提交`
+        : `店長：${state.currentStaff || '?'}`;
+
+    // 數字
+    renderHqDetailNumbers(thisWeekLogs, lastWeekLogs, monthTarget);
+    renderHqDetailDistribution(thisWeekLogs, monthTarget);
+    renderHqDetailStatusSummary(thisWeekLogs);
+    renderHqDetailEvents(thisWeekEvents);
+
+    // 店長洞察
+    document.getElementById('hsdStaffStatus').textContent = report.staffStatus || '尚未填寫';
+    document.getElementById('hsdInsights').textContent = report.insights || '尚未填寫';
+    document.getElementById('hsdNextWeek').textContent = report.nextWeekFocus || '尚未填寫';
+
+    // 給總部的話 + 回覆
+    const msgSection = document.getElementById('hsdMessageSection');
+    if (report.messageToHQ) {
+      msgSection.style.display = 'block';
+      document.getElementById('hsdMessageContent').textContent = report.messageToHQ;
+      const statusEl = document.getElementById('hsdMessageStatus');
+
+      if (report.hqReply) {
+        // 已回覆
+        statusEl.textContent = '✓ 已回覆';
+        statusEl.style.color = 'var(--success-text)';
+        document.getElementById('hsdReplyArea').style.display = 'none';
+        document.getElementById('hsdReplyDisplay').style.display = 'block';
+        document.getElementById('hsdReplyContent').textContent = report.hqReply;
+        document.getElementById('hsdReplyMeta').textContent =
+          `${report.hqReplyBy || 'V'} · ${formatTimestamp(report.hqRepliedAt)}`;
+      } else {
+        statusEl.textContent = '待回應';
+        statusEl.style.color = 'var(--warning-text)';
+        document.getElementById('hsdReplyArea').style.display = 'block';
+        document.getElementById('hsdReplyDisplay').style.display = 'none';
+        document.getElementById('hsdReplyInput').value = '';
+      }
+    } else {
+      msgSection.style.display = 'none';
+    }
+
+  } catch (err) {
+    console.error('loadHqStoreDetail error:', err);
+    showToast('載入失敗', 'error');
+  }
+}
+
+function renderHqDetailNumbers(thisWeekLogs, lastWeekLogs, monthTarget) {
+  let thisSales = 0, thisCustomers = 0, lastSales = 0, lastCustomers = 0;
+  Object.values(thisWeekLogs).forEach(log => {
+    if (log && log.sales) {
+      thisSales += Number(log.sales);
+      thisCustomers += Number(log.customers || 0);
+    }
+  });
+  Object.values(lastWeekLogs).forEach(log => {
+    if (log && log.sales) {
+      lastSales += Number(log.sales);
+      lastCustomers += Number(log.customers || 0);
+    }
+  });
+
+  document.getElementById('hsdSalesTotal').textContent = formatMoney(thisSales);
+
+  if (monthTarget > 0) {
+    const [year, month] = currentHwrMonday.split('-').map(Number);
+    const daysInMonth = getDaysInMonth(year, month);
+    const weekTarget = (monthTarget / daysInMonth) * 7;
+    const rate = weekTarget > 0 ? (thisSales / weekTarget * 100) : 0;
+    document.getElementById('hsdAchieveRate').textContent = `達成 ${rate.toFixed(0)}%`;
+  } else {
+    document.getElementById('hsdAchieveRate').textContent = '無目標';
+  }
+
+  const vsEl = document.getElementById('hsdVsLastWeek');
+  const diffEl = document.getElementById('hsdDiffAmount');
+  vsEl.classList.remove('up', 'down');
+  if (lastSales > 0) {
+    const diff = ((thisSales - lastSales) / lastSales * 100);
+    if (diff >= 0) {
+      vsEl.classList.add('up');
+      vsEl.textContent = `↑ +${diff.toFixed(0)}%`;
+      diffEl.textContent = `超出 ${formatMoney(thisSales - lastSales)}`;
+    } else {
+      vsEl.classList.add('down');
+      vsEl.textContent = `↓ ${diff.toFixed(0)}%`;
+      diffEl.textContent = `差距 ${formatMoney(Math.abs(thisSales - lastSales))}`;
+    }
+  } else {
+    vsEl.textContent = '—';
+    diffEl.textContent = '無上週資料';
+  }
+
+  const avg = thisCustomers > 0 ? Math.round(thisSales / thisCustomers) : 0;
+  document.getElementById('hsdAvgPrice').textContent = avg > 0 ? formatMoney(avg) : '—';
+  let lastAvg = lastCustomers > 0 ? Math.round(lastSales / lastCustomers) : 0;
+  if (avg > 0 && lastAvg > 0) {
+    if (avg > lastAvg) document.getElementById('hsdAvgPriceMeta').textContent = '↑ 高於上週';
+    else if (avg < lastAvg) document.getElementById('hsdAvgPriceMeta').textContent = '↓ 低於上週';
+    else document.getElementById('hsdAvgPriceMeta').textContent = '同上週';
+  } else {
+    document.getElementById('hsdAvgPriceMeta').textContent = '—';
+  }
+}
+
+function renderHqDetailDistribution(thisWeekLogs, monthTarget) {
+  const container = document.getElementById('hsdDailyDistribution');
+  const dayNames = ['一', '二', '三', '四', '五', '六', '日'];
+
+  let dayTarget = 0;
+  if (monthTarget > 0) {
+    const [year, month] = currentHwrMonday.split('-').map(Number);
+    const daysInMonth = getDaysInMonth(year, month);
+    dayTarget = monthTarget / daysInMonth;
+  }
+
+  let html = '';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(currentHwrMonday);
+    d.setDate(d.getDate() + i);
+    const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    const log = thisWeekLogs[dateStr];
+    const sales = log && log.sales ? Number(log.sales) : 0;
+    const rate = dayTarget > 0 ? (sales / dayTarget * 100) : 0;
+
+    let cls = 'none';
+    if (sales === 0) cls = 'none';
+    else if (rate >= 100) cls = 'high';
+    else if (rate >= 80) cls = 'mid';
+    else cls = 'low';
+
+    const widthPct = dayTarget > 0 ? Math.min(rate, 110) : (sales > 0 ? 50 : 0);
+    const statText = sales > 0 ? `$${Math.round(sales/1000)}K · ${rate.toFixed(0)}%` : '無紀錄';
+
+    html += `
+      <div class="wr-day-row">
+        <div class="wr-day-name">${dayNames[i]}</div>
+        <div class="wr-day-bar-bg"><div class="wr-day-bar-fill ${cls}" style="width: ${widthPct}%;"></div></div>
+        <div class="wr-day-stat">${statText}</div>
+      </div>
+    `;
+  }
+  container.innerHTML = html;
+}
+
+function renderHqDetailStatusSummary(thisWeekLogs) {
+  const card = document.getElementById('hsdStatusSummaryCard');
+  const content = document.getElementById('hsdStatusSummaryContent');
+
+  const crowdCount = { cold: 0, normal: 0, warm: 0, full: 0 };
+  const customerCount = { vip: 0, new: 0, return: 0, tourist: 0 };
+  const hotCount = { dress: 0, top: 0, pants: 0, outer: 0, acc: 0 };
+  let total = 0;
+
+  Object.values(thisWeekLogs).forEach(log => {
+    if (!log) return;
+    if (log.crowd) crowdCount[log.crowd] = (crowdCount[log.crowd] || 0) + 1;
+    if (log.customerType) customerCount[log.customerType] = (customerCount[log.customerType] || 0) + 1;
+    if (Array.isArray(log.hotCategories)) {
+      log.hotCategories.forEach(h => { hotCount[h] = (hotCount[h] || 0) + 1; });
+    }
+    total++;
+  });
+
+  if (total === 0) {
+    card.style.display = 'none';
+    return;
+  }
+  card.style.display = 'block';
+
+  let crowdHTML = '';
+  if (crowdCount.warm + crowdCount.full > 0) crowdHTML += `<span class="wr-stat-pill warm">熱絡 ${crowdCount.warm + crowdCount.full} 天</span>`;
+  if (crowdCount.normal > 0) crowdHTML += `<span class="wr-stat-pill normal">普通 ${crowdCount.normal} 天</span>`;
+  if (crowdCount.cold > 0) crowdHTML += `<span class="wr-stat-pill cold">冷清 ${crowdCount.cold} 天</span>`;
+
+  const customerLabels = { vip: 'VIP', new: '新客', return: '回頭客', tourist: '遊客' };
+  const customerArr = Object.entries(customerCount).filter(([_, v]) => v > 0).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${customerLabels[k]} ${v} 天`);
+
+  const hotLabels = { dress: '洋裝', top: '上衣', pants: '褲裝', outer: '外套', acc: '配件' };
+  const hotArr = Object.entries(hotCount).filter(([_, v]) => v > 0).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${hotLabels[k]} ${v} 天`);
+
+  content.innerHTML = `
+    ${crowdHTML ? `<div class="wr-status-summary-row"><strong>人潮：</strong>${crowdHTML}</div>` : ''}
+    ${customerArr.length ? `<div class="wr-status-summary-row"><strong>客群：</strong>${customerArr.join('、')}</div>` : ''}
+    ${hotArr.length ? `<div class="wr-status-summary-row"><strong>熱銷：</strong>${hotArr.join('、')}</div>` : ''}
+  `;
+}
+
+function renderHqDetailEvents(events) {
+  const card = document.getElementById('hsdEventsCard');
+  const list = document.getElementById('hsdEventsList');
+  if (!events || events.length === 0) {
+    card.style.display = 'none';
+    return;
+  }
+  card.style.display = 'block';
+  const byCategory = {};
+  events.forEach(e => {
+    if (!byCategory[e.category]) byCategory[e.category] = [];
+    byCategory[e.category].push(e);
+  });
+  list.innerHTML = Object.entries(byCategory).map(([cat, items]) => {
+    const samples = items.slice(0, 2).map(i => i.content.substring(0, 30)).join('、');
+    return `<div class="wr-event-row"><strong>${escapeHtml(cat)} ×${items.length}</strong>　${escapeHtml(samples)}${items.length > 2 ? '...' : ''}</div>`;
+  }).join('');
+}
+
+async function sendHqReply() {
+  if (!state.isHQ) return;
+  const reply = document.getElementById('hsdReplyInput').value.trim();
+  if (!reply) {
+    showToast('請填寫回覆內容', 'error');
+    return;
+  }
+  if (!db) return;
+  setLoading(true);
+  try {
+    await db.ref(`/stores/${currentHsdStoreId}/weeklyReports/${currentHwrMonday}`).update({
+      hqReply: reply,
+      hqReplyBy: state.currentStaff || 'V',
+      hqRepliedAt: Date.now()
+    });
+    showToast('✓ 已回覆', 'success');
+    await loadHqStoreDetail();
+    renderFeatureGrid();
+  } catch (err) {
+    showToast('回覆失敗', 'error');
+  } finally {
+    setLoading(false);
+  }
+}
+
+function setupHqStoreDetailScreen() {
+  document.getElementById('hsdReplySendBtn').addEventListener('click', sendHqReply);
+}
+
+// ============================================
+// ★ Phase 1.D 模組初始化 ★
+// ============================================
+function initPhase1D() {
+  setupWeeklyReportScreen();
+  setupHqWeeklyOverviewScreen();
+  setupHqStoreDetailScreen();
+}
+
 
 // ============================================
 // 初始化
@@ -6919,6 +9495,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ★ Phase 1.C 初始化
   initPhase1C();
+
+  // ★ Phase 1.D 初始化
+  initPhase1D();
 
   // 嘗試恢復登入狀態（refresh 後保持登入）
   if (!tryRestoreSession()) {
