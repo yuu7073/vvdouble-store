@@ -6922,15 +6922,9 @@ async function renderDailyTargetGrid(ym) {
   const offset = firstWeekday === 0 ? 6 : firstWeekday - 1;
 
   const today = getTodayString();
+  // ★ 系統上線日：早於此日期的所有目標都可以改（初始化期，不視為歷史）
+  const SYSTEM_START_DATE = '2026-05-18';
   const grid = document.getElementById('dailyTargetGrid');
-
-  // 取得本月所有有業績的日期（用來判斷哪些過去日期可改）
-  const monthLogsSnap = await db.ref(`/stores/${state.storeId}/dailyLogs`).once('value');
-  const monthLogs = monthLogsSnap.val() || {};
-  const hasSalesByDate = {};
-  Object.entries(monthLogs).forEach(([d, log]) => {
-    if (log && log.sales > 0) hasSalesByDate[d] = true;
-  });
 
   let cells = '';
   // 月初空格
@@ -6943,8 +6937,11 @@ async function renderDailyTargetGrid(ym) {
     const weekday = getWeekday(year, month, d);
     const isWeekend = (weekday === 0 || weekday === 6);
     const isToday = dateStr === today;
-    // 邏輯：V 端永遠不鎖；店長端只有「過去日期 + 已有業績」才鎖（避免改歷史影響達成率）
-    const isPast = !state.isHQ && dateStr < today && hasSalesByDate[dateStr];
+    // 鎖定邏輯：
+    // 1. V 端永遠不鎖
+    // 2. 系統上線日之前的日期永遠不鎖（初始化期）
+    // 3. 系統上線日當天/之後的「過去日期」才鎖（保護真實業績期歷史）
+    const isPast = !state.isHQ && dateStr < today && dateStr >= SYSTEM_START_DATE;
     const value = dailyTargetData[dateStr] || '';
 
     const classes = ['dtm-cell'];
