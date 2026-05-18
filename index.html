@@ -3295,7 +3295,7 @@ input, textarea, select { font-family: inherit; }
 }
 
 /* ============================================
-   ★ AI 教練建議卡樣式 ★
+   ★ 營運教練建議卡樣式 ★
    ============================================ */
 
 .ac-coach-card {
@@ -3658,13 +3658,13 @@ input, textarea, select { font-family: inherit; }
         </div>
       </div>
 
-      <!-- ★ Phase 1.D+ AI 教練建議卡 ★ -->
+      <!-- ★ Phase 1.D+ 營運教練建議卡 ★ -->
       <div class="ac-coach-card" id="aiCoachCard" style="display: none;">
         <div class="ac-coach-header">
           <div class="ac-coach-icon">💡</div>
           <div class="ac-coach-title-block">
             <div class="ac-coach-title">營運教練</div>
-            <div class="ac-coach-subtitle" id="aiCoachSubtitle">根據今日數據自動產生</div>
+            <div class="ac-coach-subtitle" id="aiCoachSubtitle">根據近 7 天數據自動產生</div>
           </div>
         </div>
         <div class="ac-coach-tips" id="aiCoachTips">
@@ -3673,12 +3673,12 @@ input, textarea, select { font-family: inherit; }
         <div class="ac-coach-footer">建議僅供參考 · 依現場狀況靈活調整</div>
       </div>
 
-      <!-- AI 教練：未填數字時的提示 -->
+      <!-- 營運教練：近期無數據時的提示 -->
       <div class="ac-coach-placeholder" id="aiCoachPlaceholder" style="display: none;">
         <div class="ac-placeholder-icon">💡</div>
         <div class="ac-placeholder-text">
           <strong>營運教練待命中</strong><br>
-          <span style="font-size: 11px; opacity: 0.7;">填完今日數字後，AI 教練會給出建議</span>
+          <span style="font-size: 11px; opacity: 0.7;">近 7 天還沒有數據，先去「今日數字」填寫</span>
         </div>
       </div>
 
@@ -5844,24 +5844,101 @@ async function renderFeatureGrid() {
 }
 
 // ============================================
-// ★ AI 教練（規則式）★
+// ★ 營運教練（規則式 · 近 7 天統計）★
 // ============================================
 
 /**
- * 規則式 AI 教練：根據今日 KPI + 現場狀況產生建議
- * @param {Object} ctx - { sales, customers, items, todayTarget, log }
+ * 取得指定店家近 N 天的統計
+ * @returns {Object|null} 統計結果或 null（無資料）
  */
-function renderAiCoachAdvice(ctx) {
+async function getRecent7DaysStats(storeId, days = 7) {
+  if (!db) return null;
+
+  const today = new Date();
+  const dates = [];
+  for (let i = 0; i < days; i++) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    dates.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`);
+  }
+
+  try {
+    const ym = dates[0].substring(0, 7);
+    const lastMonthYM = dates[dates.length - 1].substring(0, 7);
+    const targetMonths = [...new Set([ym, lastMonthYM])];
+
+    const [logsSnap, ...targetSnaps] = await Promise.all([
+      db.ref(`/stores/${storeId}/dailyLogs`).once('value'),
+      ...targetMonths.map(m => db.ref(`/stores/${storeId}/targets/${m}`).once('value'))
+    ]);
+
+    const allLogs = logsSnap.val() || {};
+    const allTargets = {};
+    targetSnaps.forEach(snap => Object.assign(allTargets, snap.val() || {}));
+
+    // 收集近 7 天有紀錄的資料
+    let totalSales = 0, totalCustomers = 0, totalItems = 0, totalTarget = 0;
+    let daysWithData = 0;
+    const crowdCount = { cold: 0, normal: 0, warm: 0, full: 0 };
+    const tryCount = { rare: 0, low: 0, normal: 0, good: 0 };
+    const stockCount = { ok: 0, partial: 0, 'hot-out': 0, new: 0 };
+    const weatherCount = { sunny: 0, cloudy: 0, rainy: 0, storm: 0 };
+    const hotCount = { dress: 0, top: 0, pants: 0, outer: 0, acc: 0 };
+    const notes = [];
+
+    dates.forEach(date => {
+      const log = allLogs[date];
+      const target = allTargets[date] || 0;
+      if (log && log.sales) {
+        totalSales += Number(log.sales);
+        totalCustomers += Number(log.customers || 0);
+        totalItems += Number(log.items || 0);
+        totalTarget += target;
+        daysWithData++;
+        if (log.crowd && crowdCount[log.crowd] !== undefined) crowdCount[log.crowd]++;
+        if (log.tryConversion && tryCount[log.tryConversion] !== undefined) tryCount[log.tryConversion]++;
+        if (log.stockStatus && stockCount[log.stockStatus] !== undefined) stockCount[log.stockStatus]++;
+        if (log.weather && log.weather.key && weatherCount[log.weather.key] !== undefined) weatherCount[log.weather.key]++;
+        if (Array.isArray(log.hotCategories)) log.hotCategories.forEach(h => {
+          if (hotCount[h] !== undefined) hotCount[h]++;
+        });
+        if (log.specialNote) notes.push(log.specialNote);
+      }
+    });
+
+    if (daysWithData === 0) return null;
+
+    return {
+      daysWithData,
+      totalSales, totalCustomers, totalItems, totalTarget,
+      avgRate: totalTarget > 0 ? (totalSales / totalTarget * 100) : null,
+      avgPrice: totalCustomers > 0 ? Math.round(totalSales / totalCustomers) : null,
+      avgUpt: totalCustomers > 0 ? (totalItems / totalCustomers) : null,
+      crowdCount, tryCount, stockCount, weatherCount, hotCount,
+      notes
+    };
+  } catch (e) {
+    console.warn('getRecent7DaysStats error:', e);
+    return null;
+  }
+}
+
+/**
+ * 規則式營運教練：根據近 7 天統計產生建議
+ * 取代舊的 renderAiCoachAdvice（單日版）
+ */
+async function renderAiCoachAdvice() {
   const card = document.getElementById('aiCoachCard');
   const placeholder = document.getElementById('aiCoachPlaceholder');
   const tipsContainer = document.getElementById('aiCoachTips');
 
   if (!card || !tipsContainer) return;
 
-  const { sales, customers, items, todayTarget, log } = ctx;
+  // 取近 7 天統計
+  const stats = await getRecent7DaysStats(state.storeId, 7);
 
-  // 沒填數字 → 顯示 placeholder
-  if (!sales && !customers && !items) {
+  // 沒資料 → 顯示 placeholder
+  if (!stats || stats.daysWithData === 0) {
     card.style.display = 'none';
     placeholder.style.display = 'flex';
     return;
@@ -5869,201 +5946,155 @@ function renderAiCoachAdvice(ctx) {
   placeholder.style.display = 'none';
   card.style.display = 'block';
 
-  // 計算指標
-  const rate = todayTarget > 0 ? (sales / todayTarget * 100) : null;
-  const avg = customers > 0 ? Math.round(sales / customers) : null;
-  const upt = customers > 0 ? (items / customers) : null;
-
-  // 收集所有觸發的建議
   const tips = [];
 
-  // === 達成率類（5 級）===
-  if (rate !== null) {
-    if (rate >= 200) {
+  // === 達成率類（近 7 天平均）===
+  if (stats.avgRate !== null) {
+    const rate = stats.avgRate;
+    if (rate >= 130) {
       tips.push({
-        priority: 1,
-        type: 'success',
-        emoji: '🔥',
-        label: '表現超標',
-        text: `達成率 ${rate.toFixed(0)}% 表現亮眼！趁勝追擊，引導高單客人加購配件，把握下班前最後一波客流`
-      });
-    } else if (rate >= 150) {
-      tips.push({
-        priority: 1,
-        type: 'success',
-        emoji: '🎯',
-        label: '超前達標',
-        text: `達成率 ${rate.toFixed(0)}% 提前達標！把握剩餘時段衝高客單，目標把達成率拉到 200%`
+        priority: 2, type: 'success', emoji: '🔥', label: '近期表現超標',
+        text: `近 7 天平均達成率 ${rate.toFixed(0)}%，狀態極佳！可挑戰拉高客單，把節奏延續到月底`
       });
     } else if (rate >= 100) {
       tips.push({
-        priority: 2,
-        type: 'success',
-        emoji: '✅',
-        label: '已達標',
-        text: `達成率 ${rate.toFixed(0)}% 順利達標。保持節奏、繼續努力，每位客人都有機會超額`
+        priority: 3, type: 'success', emoji: '✅', label: '近期穩定達標',
+        text: `近 7 天平均達成率 ${rate.toFixed(0)}%，維持目前節奏即可。把握每位客人的連帶機會`
       });
     } else if (rate >= 80) {
       tips.push({
-        priority: 2,
-        type: 'warning',
-        emoji: '🟡',
-        label: '接近達標',
-        text: `達成率 ${rate.toFixed(0)}%，再衝一下！試穿中的客人是重點，主動推連帶搭配可加速達標`
+        priority: 2, type: 'warning', emoji: '🟡', label: '近期接近達標',
+        text: `近 7 天平均達成率 ${rate.toFixed(0)}%，再衝一下！從試穿轉換、連帶銷售下手`
       });
-    } else if (rate >= 50) {
+    } else if (rate >= 60) {
       tips.push({
-        priority: 1,
-        type: 'attention',
-        emoji: '🟠',
-        label: '需要追趕',
-        text: `達成率 ${rate.toFixed(0)}% 落後，集中經營試穿客戶、推 2 件 $700 / $1000 組合促銷`
+        priority: 1, type: 'attention', emoji: '🟠', label: '近期落後',
+        text: `近 7 天平均達成率 ${rate.toFixed(0)}%，建議今天從主動推 2 件組合促銷、強化試穿引導開始`
       });
     } else {
       tips.push({
-        priority: 0,
-        type: 'danger',
-        emoji: '🔴',
-        label: '業績明顯落後',
-        text: `達成率 ${rate.toFixed(0)}%，主動接觸進店客人、強化試穿引導，把握每位客人提升轉換`
+        priority: 0, type: 'danger', emoji: '🔴', label: '近期業績明顯落後',
+        text: `近 7 天平均達成率 ${rate.toFixed(0)}%，今天要主動接觸每位進店客、用力推連帶與組合優惠`
       });
     }
   }
 
-  // === 客單價類 ===
-  if (avg !== null) {
+  // === 客單價類（近 7 天平均）===
+  if (stats.avgPrice !== null) {
+    const avg = stats.avgPrice;
     if (avg < 1500) {
       tips.push({
-        priority: 3,
-        type: 'attention',
-        emoji: '💰',
-        label: '客單價偏低',
-        text: `客單價 $${avg.toLocaleString()}，建議推薦精緻單品、外套類，主推 2 件 $1000 組合可拉高客單`
+        priority: 2, type: 'attention', emoji: '💰', label: '近期客單價偏低',
+        text: `近 7 天平均客單 $${avg.toLocaleString()}，今天記得多推高單價單品、外套類；主推 2 件 $1000 組合可有效拉高客單`
       });
     } else if (avg > 2500) {
       tips.push({
-        priority: 5,
-        type: 'success',
-        emoji: '💎',
-        label: '客單表現亮眼',
-        text: `客單價 $${avg.toLocaleString()}，可主推高品質單品系列，繼續維持精緻搭配建議`
+        priority: 5, type: 'success', emoji: '💎', label: '近期客單價亮眼',
+        text: `近 7 天平均客單 $${avg.toLocaleString()}，繼續維持精緻搭配建議，可主推高品質單品系列`
       });
     } else if (avg >= 1800) {
       tips.push({
-        priority: 5,
-        type: 'success',
-        emoji: '💰',
-        label: '客單價穩定',
-        text: `客單價 $${avg.toLocaleString()}，可加推獨家自訂款或外套類提升客單`
+        priority: 5, type: 'success', emoji: '💰', label: '近期客單價穩定',
+        text: `近 7 天平均客單 $${avg.toLocaleString()}，可嘗試獨家自訂款、外套類加碼推高`
       });
     }
   }
 
-  // === UPT 類 ===
-  if (upt !== null) {
+  // === UPT 類（近 7 天平均）===
+  if (stats.avgUpt !== null) {
+    const upt = stats.avgUpt;
     if (upt < 1.3) {
       tips.push({
-        priority: 3,
-        type: 'attention',
-        emoji: '🛍',
-        label: 'UPT 偏低',
-        text: `UPT ${upt.toFixed(1)}，加強搭配建議（洋裝+外套、上衣+褲），讓客人「成套」買回家`
+        priority: 2, type: 'attention', emoji: '🛍', label: '近期 UPT 偏低',
+        text: `近 7 天平均 UPT ${upt.toFixed(1)}，今天著重連帶搭配（洋裝+外套、上衣+褲），讓客人成套買回家`
       });
     } else if (upt < 1.5) {
       tips.push({
-        priority: 4,
-        type: 'warning',
-        emoji: '🛍',
-        label: 'UPT 可加強',
-        text: `UPT ${upt.toFixed(1)}，可主動推連帶搭配、配件加購，目標拉到 1.8 以上`
+        priority: 3, type: 'warning', emoji: '🛍', label: '近期 UPT 可加強',
+        text: `近 7 天平均 UPT ${upt.toFixed(1)}，今天主動推連帶搭配與配件加購，目標拉到 1.8 以上`
       });
     } else if (upt > 2.5) {
       tips.push({
-        priority: 5,
-        type: 'success',
-        emoji: '🌟',
-        label: '搭配能力佳',
-        text: `UPT ${upt.toFixed(1)} 連帶能力出色！繼續用穿搭建議帶動連帶購買，可挑戰第 3 件配件加購`
+        priority: 5, type: 'success', emoji: '🌟', label: '近期搭配能力出色',
+        text: `近 7 天平均 UPT ${upt.toFixed(1)} 連帶能力很強！今天可挑戰第 3 件配件加購`
       });
     }
   }
 
-  // === 現場狀況類 ===
-  // 試穿轉換
-  if (log && log.tryConversion === 'low') {
+  // === 試穿轉換趨勢（近 7 天有幾天轉換差）===
+  const lowTryDays = stats.tryCount.low + stats.tryCount.rare;
+  if (lowTryDays >= 3) {
     tips.push({
-      priority: 2,
-      type: 'attention',
-      emoji: '👗',
-      label: '試穿轉換待提升',
-      text: '試穿多但成交低：傾聽客人猶豫點、主動提供尺寸或版型替代方案、肯定客人選擇'
-    });
-  }
-  if (log && log.tryConversion === 'rare') {
-    tips.push({
-      priority: 3,
-      type: 'attention',
-      emoji: '👀',
-      label: '試穿率偏低',
-      text: '試穿少：主動邀請客人進試衣間、推薦版型適合的款式，試穿率提升業績才會跟上'
+      priority: 2, type: 'attention', emoji: '👗', label: '近期試穿轉換偏低',
+      text: `近 7 天有 ${lowTryDays} 天試穿轉換不理想。今天試衣間客人是重點：傾聽猶豫點、主動提供尺寸或版型替代`
     });
   }
 
-  // 商品狀態
-  if (log && log.stockStatus === 'hot-out') {
+  // === 商品狀態趨勢 ===
+  if (stats.stockCount['hot-out'] >= 2) {
     tips.push({
-      priority: 2,
-      type: 'attention',
-      emoji: '📦',
-      label: '熱門商品斷貨',
-      text: '熱門商品斷貨：請即時通知總部補貨、引導客人替代款或預訂，避免流失客人'
+      priority: 1, type: 'attention', emoji: '📦', label: '熱門商品近期常斷貨',
+      text: `近 7 天有 ${stats.stockCount['hot-out']} 天熱門商品斷貨。今天記得通知總部追補貨、準備替代款推薦話術`
     });
-  } else if (log && log.stockStatus === 'new') {
+  }
+  if (stats.stockCount.new >= 2) {
     tips.push({
-      priority: 4,
-      type: 'success',
-      emoji: '✨',
-      label: '新品到貨',
-      text: '新品到貨：主動介紹給回頭客、用穿搭組合提升新品曝光與接受度'
+      priority: 4, type: 'success', emoji: '✨', label: '近期新品到貨多',
+      text: `近 7 天有 ${stats.stockCount.new} 天新品到貨。今天可主動介紹給回頭客、用穿搭組合帶動新品曝光`
     });
   }
 
-  // 人潮 + 達成率組合判斷
-  if (log && log.crowd === 'cold' && rate !== null && rate < 80) {
+  // === 天氣 + 業績組合判斷 ===
+  const rainyDays = stats.weatherCount.rainy + stats.weatherCount.storm;
+  if (rainyDays >= 3 && stats.avgRate !== null && stats.avgRate < 90) {
     tips.push({
-      priority: 2,
-      type: 'attention',
-      emoji: '☁️',
-      label: '人潮少時的策略',
-      text: '人潮冷清時集中經營每位試穿客，深度服務、提高轉換率衝業績'
-    });
-  }
-  if (log && (log.crowd === 'warm' || log.crowd === 'full') && rate !== null && rate < 100) {
-    tips.push({
-      priority: 3,
-      type: 'warning',
-      emoji: '⚡',
-      label: '人潮多但業績未跟上',
-      text: '人潮熱絡但達成率偏低：人手分配集中試衣間、結帳速度加快、別讓客人等太久'
+      priority: 3, type: 'attention', emoji: '☔', label: '雨天較多影響業績',
+      text: `近 7 天有 ${rainyDays} 天下雨，客流受影響。今天若仍下雨，集中經營每位進店客、深度服務提高轉換`
     });
   }
 
-  // 排序：priority 數字越小越優先；最多顯示 3 條
+  // === 人潮統計 ===
+  const coldDays = stats.crowdCount.cold;
+  if (coldDays >= 3 && stats.avgRate !== null && stats.avgRate < 90) {
+    tips.push({
+      priority: 3, type: 'attention', emoji: '☁️', label: '近期人潮偏少',
+      text: `近 7 天有 ${coldDays} 天人潮冷清。今天可主動拉客（百貨樓層、店外吸引）、把進店客當寶來服務`
+    });
+  }
+  const busyDays = stats.crowdCount.warm + stats.crowdCount.full;
+  if (busyDays >= 4 && stats.avgRate !== null && stats.avgRate < 100) {
+    tips.push({
+      priority: 3, type: 'warning', emoji: '⚡', label: '人潮多但業績未跟上',
+      text: `近 7 天有 ${busyDays} 天人潮熱絡但業績未達標。今天人手分配要更積極、結帳速度加快、別讓客人等太久`
+    });
+  }
+
+  // === 熱銷類別趨勢（給今天的搭配建議）===
+  const sortedHot = Object.entries(stats.hotCount).filter(([_, v]) => v > 0).sort((a, b) => b[1] - a[1]);
+  if (sortedHot.length >= 2) {
+    const labels = { dress: '洋裝', top: '上衣', pants: '褲裝', outer: '外套', acc: '配件' };
+    const top2 = sortedHot.slice(0, 2).map(([k]) => labels[k]).join(' + ');
+    tips.push({
+      priority: 5, type: 'success', emoji: '🎯', label: '近期熱銷品項',
+      text: `近 7 天熱銷主力是「${top2}」。今天可主推這兩類的連帶搭配組合`
+    });
+  }
+
+  // 排序、最多 3 條
   tips.sort((a, b) => a.priority - b.priority);
   const topTips = tips.slice(0, 3);
 
-  // subtitle 加上時間
+  // 副標：含資料天數提示
   const now = new Date();
   const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
   document.getElementById('aiCoachSubtitle').textContent =
-    `根據今日數據 · ${timeStr} 更新 · ${topTips.length} 條建議`;
+    `根據近 ${stats.daysWithData}/7 天數據 · ${timeStr} 更新 · ${topTips.length} 條建議`;
 
-  // 渲染
   if (topTips.length === 0) {
     tipsContainer.innerHTML = `
       <div class="ac-coach-tip warning">
         <div class="ac-coach-tip-label">💡 維持節奏</div>
-        <div class="ac-coach-tip-content">數據看起來都在正常範圍內，繼續保持目前的服務節奏</div>
+        <div class="ac-coach-tip-content">近期數據都在正常範圍內，繼續保持目前的服務節奏</div>
       </div>
     `;
   } else {
@@ -6077,7 +6108,7 @@ function renderAiCoachAdvice(ctx) {
 }
 
 /**
- * V 端 AI 教練：根據 7 店今日整體狀況產生建議
+ * V 端營運教練：根據 7 店近 7 天整體狀況產生建議
  */
 async function renderHqAiCoachAdvice() {
   const card = document.getElementById('aiCoachCard');
@@ -6091,100 +6122,119 @@ async function renderHqAiCoachAdvice() {
   placeholder.style.display = 'none';
 
   try {
-    const today = getTodayString();
-    const ym = getCurrentYM();
-
-    const monthlySnap = await db.ref(`/global/monthlyTargets/${ym}`).once('value');
-    const monthlyTargets = monthlySnap.val() || {};
-
-    const storeStats = await Promise.all(STORE_ORDER.map(async sid => {
-      const [logSnap, targetsSnap] = await Promise.all([
-        db.ref(`/stores/${sid}/dailyLogs/${today}`).once('value'),
-        db.ref(`/stores/${sid}/targets/${ym}`).once('value')
-      ]);
-      const log = logSnap.val() || {};
-      const targets = targetsSnap.val() || {};
-      const todayTarget = targets[today] || 0;
-      const sales = log.sales || 0;
-      const rate = todayTarget > 0 ? (sales / todayTarget * 100) : null;
-      const customers = log.customers || 0;
-      const items = log.items || 0;
-      const avg = customers > 0 ? Math.round(sales / customers) : null;
-      const upt = customers > 0 ? (items / customers) : null;
-      return { sid, sales, todayTarget, rate, avg, upt, log, hasData: !!sales };
-    }));
+    // 並行抓 7 店各自近 7 天統計
+    const allStats = await Promise.all(STORE_ORDER.map(sid => getRecent7DaysStats(sid, 7)));
+    const storeStats = STORE_ORDER.map((sid, i) => ({ sid, stats: allStats[i] }));
+    const dataStores = storeStats.filter(s => s.stats && s.stats.daysWithData > 0);
 
     const tips = [];
-    const dataStores = storeStats.filter(s => s.hasData);
-    const totalSales = dataStores.reduce((sum, s) => sum + s.sales, 0);
-    const totalTarget = dataStores.reduce((sum, s) => sum + s.todayTarget, 0);
-    const avgRate = totalTarget > 0 ? (totalSales / totalTarget * 100) : null;
 
-    // 整體達成率
+    // 整體 7 店近 7 天總和
+    let totalSales = 0, totalTarget = 0, totalCustomers = 0, totalItems = 0;
+    dataStores.forEach(s => {
+      totalSales += s.stats.totalSales;
+      totalTarget += s.stats.totalTarget;
+      totalCustomers += s.stats.totalCustomers;
+      totalItems += s.stats.totalItems;
+    });
+    const avgRate = totalTarget > 0 ? (totalSales / totalTarget * 100) : null;
+    const avgPrice = totalCustomers > 0 ? Math.round(totalSales / totalCustomers) : null;
+    const avgUpt = totalCustomers > 0 ? (totalItems / totalCustomers) : null;
+
+    // === 整體達成率（7 店近 7 天平均）===
     if (avgRate !== null) {
-      if (avgRate >= 100) {
+      if (avgRate >= 110) {
         tips.push({
-          priority: 2, type: 'success', emoji: '🎯', label: '7 店整體達標',
-          text: `今日整體達成率 ${avgRate.toFixed(0)}%，7 店表現良好。把握下班前最後一波`
+          priority: 2, type: 'success', emoji: '🎯', label: '7 店近 7 天整體超標',
+          text: `近 7 天整體達成率 ${avgRate.toFixed(0)}%，7 店表現亮眼。延續節奏到月底有望整體大幅超標`
+        });
+      } else if (avgRate >= 100) {
+        tips.push({
+          priority: 3, type: 'success', emoji: '✅', label: '7 店近 7 天整體達標',
+          text: `近 7 天整體達成率 ${avgRate.toFixed(0)}%，整體良好。可關注表現較弱的店分享前段班經驗`
         });
       } else if (avgRate >= 80) {
         tips.push({
-          priority: 2, type: 'warning', emoji: '🟡', label: '接近達標',
-          text: `今日整體達成率 ${avgRate.toFixed(0)}%，再衝可達標。建議追蹤試穿轉換較弱的店`
+          priority: 2, type: 'warning', emoji: '🟡', label: '7 店近期接近達標',
+          text: `近 7 天整體達成率 ${avgRate.toFixed(0)}%，再衝可達標。優先處理試穿轉換與商品調度`
         });
       } else if (avgRate < 60) {
         tips.push({
-          priority: 0, type: 'danger', emoji: '🔴', label: '整體業績落後',
-          text: `今日整體達成率 ${avgRate.toFixed(0)}%，建議跟落後店家了解現場狀況、提供支援`
+          priority: 0, type: 'danger', emoji: '🔴', label: '7 店近期整體落後',
+          text: `近 7 天整體達成率 ${avgRate.toFixed(0)}%，建議全站推促銷活動、深入了解落後店家狀況`
         });
       }
     }
 
-    // 找出落後最嚴重的店
-    const laggers = dataStores.filter(s => s.rate !== null && s.rate < 60).sort((a, b) => a.rate - b.rate);
+    // === 落後店家（近 7 天達成率 < 60%）===
+    const laggers = dataStores.filter(s => s.stats.avgRate !== null && s.stats.avgRate < 60)
+      .sort((a, b) => a.stats.avgRate - b.stats.avgRate);
     if (laggers.length > 0) {
-      const top = laggers.slice(0, 3).map(s => `${STORE_NAMES[s.sid]} ${Math.round(s.rate)}%`).join('、');
+      const top = laggers.slice(0, 3).map(s => `${STORE_NAMES[s.sid]} ${Math.round(s.stats.avgRate)}%`).join('、');
       tips.push({
-        priority: 1, type: 'attention', emoji: '⚠️', label: `${laggers.length} 店達成率低於 60%`,
-        text: `${top}，建議主動關心、提供協助或調整策略`
+        priority: 1, type: 'attention', emoji: '⚠️', label: `${laggers.length} 店近 7 天達成率低於 60%`,
+        text: `${top}，建議主動關心、了解現場狀況、提供協助或調整策略`
       });
     }
 
-    // 找出表現亮眼的店
-    const stars = dataStores.filter(s => s.rate !== null && s.rate >= 150).sort((a, b) => b.rate - a.rate);
+    // === 表現亮眼店家（近 7 天達成率 >= 130%）===
+    const stars = dataStores.filter(s => s.stats.avgRate !== null && s.stats.avgRate >= 130)
+      .sort((a, b) => b.stats.avgRate - a.stats.avgRate);
     if (stars.length > 0) {
-      const top = stars.slice(0, 2).map(s => `${STORE_NAMES[s.sid]} ${Math.round(s.rate)}%`).join('、');
+      const top = stars.slice(0, 2).map(s => `${STORE_NAMES[s.sid]} ${Math.round(s.stats.avgRate)}%`).join('、');
       tips.push({
-        priority: 4, type: 'success', emoji: '🔥', label: `${stars.length} 店表現超標`,
-        text: `${top}，可參考其銷售策略、分享給其他店學習`
+        priority: 4, type: 'success', emoji: '🔥', label: `${stars.length} 店近 7 天表現超標`,
+        text: `${top}，可了解他們的銷售策略、整理後分享給其他店學習`
       });
     }
 
-    // 客單價偏低的店
-    const lowAvg = dataStores.filter(s => s.avg !== null && s.avg < 1500);
+    // === 多店客單偏低 ===
+    const lowAvg = dataStores.filter(s => s.stats.avgPrice !== null && s.stats.avgPrice < 1500);
     if (lowAvg.length >= 3) {
       tips.push({
-        priority: 3, type: 'attention', emoji: '💰', label: `${lowAvg.length} 店客單價偏低`,
-        text: '建議統一推「2 件 $1000」組合活動、強化精緻單品教育'
+        priority: 3, type: 'attention', emoji: '💰', label: `${lowAvg.length} 店近 7 天客單價偏低`,
+        text: '建議統一推「2 件 $1000」組合活動、強化精緻單品與外套類教育訓練'
       });
     }
 
-    // UPT 普遍偏低
-    const lowUpt = dataStores.filter(s => s.upt !== null && s.upt < 1.5);
+    // === 多店 UPT 偏低 ===
+    const lowUpt = dataStores.filter(s => s.stats.avgUpt !== null && s.stats.avgUpt < 1.5);
     if (lowUpt.length >= 3) {
       tips.push({
-        priority: 3, type: 'attention', emoji: '🛍', label: `${lowUpt.length} 店 UPT 偏低`,
-        text: 'UPT 普遍偏低，建議全店宣導搭配組合銷售、訓練連帶推薦話術'
+        priority: 3, type: 'attention', emoji: '🛍', label: `${lowUpt.length} 店近 7 天 UPT 偏低`,
+        text: '近 7 天連帶銷售偏弱，建議全店宣導搭配組合銷售、加強連帶推薦話術訓練'
       });
     }
 
-    // 沒填數據的店
-    const noData = storeStats.filter(s => !s.hasData);
+    // === 多店試穿轉換問題 ===
+    const lowTry = dataStores.filter(s => {
+      const lowDays = s.stats.tryCount.low + s.stats.tryCount.rare;
+      return lowDays >= 3;
+    });
+    if (lowTry.length >= 3) {
+      tips.push({
+        priority: 3, type: 'attention', emoji: '👗', label: `${lowTry.length} 店近期試穿轉換偏低`,
+        text: '多店近期試穿轉換不理想，可能版型反應或話術問題，建議集合店長討論'
+      });
+    }
+
+    // === 多店熱門商品斷貨 ===
+    const outOfStock = dataStores.filter(s => s.stats.stockCount['hot-out'] >= 2);
+    if (outOfStock.length >= 2) {
+      const names = outOfStock.slice(0, 3).map(s => STORE_NAMES[s.sid]).join('、');
+      tips.push({
+        priority: 2, type: 'attention', emoji: '📦', label: `${outOfStock.length} 店熱門商品近期斷貨`,
+        text: `${names}，請追蹤補貨進度、確認替代款推薦策略`
+      });
+    }
+
+    // === 沒填數據的店 ===
+    const noData = storeStats.filter(s => !s.stats || s.stats.daysWithData === 0);
     if (noData.length > 0) {
       const names = noData.slice(0, 3).map(s => STORE_NAMES[s.sid]).join('、');
       tips.push({
-        priority: 5, type: 'warning', emoji: '📝', label: `${noData.length} 店尚未填寫今日數字`,
-        text: `${names}${noData.length > 3 ? ' 等' : ''}，可提醒店長補填`
+        priority: 5, type: 'warning', emoji: '📝', label: `${noData.length} 店近 7 天無數據`,
+        text: `${names}${noData.length > 3 ? ' 等' : ''}，可提醒店長補填今日數字`
       });
     }
 
@@ -6194,13 +6244,13 @@ async function renderHqAiCoachAdvice() {
     const now = new Date();
     const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
     document.getElementById('aiCoachSubtitle').textContent =
-      `7 店今日狀況分析 · ${timeStr} 更新 · ${topTips.length} 條建議`;
+      `7 店近 7 天狀況分析 · ${timeStr} 更新 · ${topTips.length} 條建議`;
 
     if (topTips.length === 0) {
       tipsContainer.innerHTML = `
         <div class="ac-coach-tip success">
-          <div class="ac-coach-tip-label">✅ 今日狀況穩定</div>
-          <div class="ac-coach-tip-content">7 店整體狀況良好，繼續保持</div>
+          <div class="ac-coach-tip-label">✅ 近期狀況穩定</div>
+          <div class="ac-coach-tip-content">7 店近 7 天整體良好，繼續保持</div>
         </div>
       `;
     } else {
@@ -6216,9 +6266,8 @@ async function renderHqAiCoachAdvice() {
     card.style.display = 'none';
   }
 }
-
 async function refreshHomeKpiSummary() {
-  // V 端：載入 7 店達成率快覽 + V 端 AI 教練
+  // V 端：載入 7 店達成率快覽 + V 端營運教練
   if (state.isHQ) {
     document.getElementById('kpiSummary').style.display = 'none';
     document.getElementById('rvMiniKpiGrid').style.display = 'none';
@@ -6379,8 +6428,8 @@ async function refreshHomeKpiSummary() {
     document.getElementById('rvMiniKpiCustomersMeta').textContent = customers > 0 ? '今日已成交' : '尚未成交';
     document.getElementById('rvMiniKpiAvgMeta').textContent = customers > 0 ? '本日平均' : '—';
 
-    // ★ 觸發 AI 教練建議（規則式）
-    renderAiCoachAdvice({ sales, customers, items, todayTarget, log });
+    // ★ 觸發營運教練建議（近 7 天統計）
+    renderAiCoachAdvice();
 
   } catch (e) {
     console.warn('refreshHomeKpiSummary error:', e);
