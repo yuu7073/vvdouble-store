@@ -3430,6 +3430,238 @@ input, textarea, select { font-family: inherit; }
 
 .ac-placeholder-text strong { color: var(--text-primary); }
 
+/* ============================================
+   ★ Teams 通知設定頁樣式 ★
+   ============================================ */
+
+.tn-status-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  font-size: 12px;
+}
+.tn-status-bar.active {
+  background: var(--success-bg);
+  border: 1px solid #C0DD97;
+  color: var(--success-text);
+}
+.tn-status-bar.inactive {
+  background: var(--bg-gray-50);
+  border: 1px solid var(--border-light);
+  color: var(--text-tertiary);
+}
+.tn-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.tn-status-bar.active .tn-status-dot { background: var(--success); }
+.tn-status-bar.inactive .tn-status-dot { background: var(--text-tertiary); }
+.tn-status-text { flex: 1; font-weight: 700; }
+
+.tn-card {
+  background: var(--bg-white);
+  border: 1px solid var(--primary-light);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin-bottom: 10px;
+}
+.tn-card-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.tn-card-desc {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.tn-url-display {
+  background: var(--bg-gray-50);
+  border: 1.5px solid var(--border-light);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-family: 'Consolas', monospace;
+  font-size: 11px;
+  color: var(--text-secondary);
+  word-break: break-all;
+  margin-bottom: 8px;
+}
+.tn-url-display.empty {
+  color: var(--text-tertiary);
+  font-style: italic;
+  font-family: inherit;
+}
+
+.tn-url-input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1.5px solid var(--border-light);
+  border-radius: 6px;
+  font-family: 'Consolas', monospace;
+  font-size: 11px;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+}
+.tn-url-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.tn-event-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--border-light);
+}
+.tn-event-row:last-child { border: none; }
+.tn-event-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--warning-bg);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.tn-event-info { flex: 1; min-width: 0; }
+.tn-event-title { font-size: 12px; font-weight: 700; color: var(--text-primary); }
+.tn-event-desc { font-size: 10px; color: var(--text-tertiary); margin-top: 1px; }
+
+/* Switch */
+.tn-switch {
+  position: relative;
+  display: inline-block;
+  width: 38px;
+  height: 22px;
+  flex-shrink: 0;
+}
+.tn-switch input { opacity: 0; width: 0; height: 0; }
+.tn-switch-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--border-medium);
+  border-radius: 22px;
+  transition: var(--transition);
+}
+.tn-switch-slider::before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 2px;
+  bottom: 2px;
+  background: white;
+  border-radius: 50%;
+  transition: var(--transition);
+}
+.tn-switch input:checked + .tn-switch-slider { background: var(--primary-dark); }
+.tn-switch input:checked + .tn-switch-slider::before { transform: translateX(16px); }
+
+.tn-test-result {
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 11px;
+  margin-top: 10px;
+  display: none;
+}
+.tn-test-result.success {
+  background: var(--success-bg);
+  border-left: 3px solid var(--success);
+  color: var(--success-text);
+}
+.tn-test-result.error {
+  background: var(--danger-bg);
+  border-left: 3px solid var(--danger);
+  color: var(--danger);
+}
+
+.tn-help-box {
+  background: linear-gradient(135deg, #FFF8E0 0%, #FFE5A0 100%);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  font-size: 11px;
+  color: var(--warning-text);
+  line-height: 1.6;
+}
+.tn-help-box strong { color: var(--text-primary); }
+
+/* URL 列表 - 緊湊單行版 */
+.tn-url-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--border-light);
+}
+.tn-url-row:last-child { border-bottom: none; }
+
+.tn-url-label {
+  width: 110px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+.tn-url-label .tn-url-sub {
+  font-size: 9px;
+  color: var(--text-tertiary);
+  font-weight: 500;
+  display: block;
+  margin-top: 1px;
+}
+
+.tn-url-input.compact {
+  flex: 1;
+  padding: 6px 8px;
+  border: 1.5px solid var(--border-light);
+  border-radius: 5px;
+  font-family: 'Consolas', monospace;
+  font-size: 10px;
+  box-sizing: border-box;
+  min-width: 0;
+  margin-bottom: 0;
+}
+.tn-url-input.compact:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+.tn-url-input.compact.has-value {
+  border-color: var(--success);
+  background: #F8FBF4;
+}
+
+.tn-url-test {
+  padding: 6px 10px !important;
+  font-size: 11px !important;
+  flex-shrink: 0;
+}
+
+.tn-url-status {
+  width: 16px;
+  font-size: 11px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .tn-url-row { flex-wrap: wrap; }
+  .tn-url-label { width: 100%; margin-bottom: 4px; }
+  .tn-url-input.compact { flex: 1; min-width: 0; }
+}
+
 </style>
 </head>
 
@@ -4367,6 +4599,158 @@ input, textarea, select { font-family: inherit; }
       </div>
     </div>
 
+    <!-- ★ Phase 1.D+: Teams 通知設定（V 端限定 · 11 URL 智慧路由版） ★ -->
+    <div id="teamsNotifyScreen" class="subscreen" style="display: none;">
+      <div class="subscreen-header">
+        <div class="subscreen-title-block">
+          <div class="subscreen-title">📡 Teams 通知設定</div>
+          <div class="subscreen-subtitle">總部 V · 11 個 URL 智慧路由</div>
+        </div>
+        <button class="btn-back" data-screen="home">‹ 返回</button>
+      </div>
+
+      <!-- 整體狀態 -->
+      <div class="tn-status-bar" id="tnStatusBar">
+        <div class="tn-status-dot"></div>
+        <div class="tn-status-text" id="tnStatusText">—</div>
+      </div>
+
+      <!-- 教學說明 -->
+      <div class="tn-help-box">
+        <strong>📋 設定步驟（每個都要做）：</strong><br>
+        1. 在 Teams 該群組/聊天右上「⋯」→「Workflows」<br>
+        2. 選範本「<strong>收到 Webhook 請求時將其張貼至聊天</strong>」或「<strong>...張貼至頻道</strong>」<br>
+        3. 確認位置 → 建立 → 複製 URL<br>
+        4. 貼到下方對應欄位 → 按「儲存」<br>
+        5. 按「🧪 測試」確認訊息能成功送達
+      </div>
+
+      <!-- 區塊 A：各店群組 -->
+      <div class="tn-card">
+        <div class="tn-card-title">🏪 各店群組 URL（7 個）</div>
+        <div class="tn-card-desc">該店業績爆發、未填今日數字、全域公告 → 發到此</div>
+        <div id="tnStoreUrlList"></div>
+      </div>
+
+      <!-- 區塊 B：店長私訊 -->
+      <div class="tn-card">
+        <div class="tn-card-title">👤 店長私訊 URL（3 個）</div>
+        <div class="tn-card-desc">提交週報、給總部訊息、補登、週報逾期 → 發到對應店長</div>
+        <div id="tnManagerUrlList"></div>
+      </div>
+
+      <!-- 區塊 C：總部群組 -->
+      <div class="tn-card">
+        <div class="tn-card-title">🏢 總部群組 URL（1 個）</div>
+        <div class="tn-card-desc">給總部訊息、補登申請 → 同步發到此給 V</div>
+        <div class="tn-url-row">
+          <div class="tn-url-label">總部 V</div>
+          <input type="url" class="tn-url-input compact" id="tnUrl_hq"
+                 placeholder="https://...">
+          <button class="btn-ghost tn-url-test" data-target="hq">🧪</button>
+          <span class="tn-url-status" id="tnStatus_hq">—</span>
+        </div>
+      </div>
+
+      <!-- 儲存按鈕 -->
+      <div style="display: flex; gap: 6px; margin-bottom: 14px;">
+        <button class="btn-primary" style="flex: 1; padding: 10px;" id="tnSaveAllBtn">💾 儲存所有 URL</button>
+        <button class="btn-ghost" style="padding: 10px 14px; color: var(--danger);" id="tnClearAllBtn">清除全部</button>
+      </div>
+      <div class="tn-test-result" id="tnTestResult"></div>
+
+      <!-- 通知事件開關 -->
+      <div class="tn-card">
+        <div class="tn-card-title">🔔 通知事件</div>
+        <div class="tn-card-desc">勾選要自動推送到 Teams 的事件</div>
+
+        <div class="tn-event-row">
+          <div class="tn-event-icon">📮</div>
+          <div class="tn-event-info">
+            <div class="tn-event-title">店長給總部訊息</div>
+            <div class="tn-event-desc">→ 對應店長私訊 + 總部群</div>
+          </div>
+          <label class="tn-switch">
+            <input type="checkbox" id="tnEventMessage" data-event="message" checked>
+            <span class="tn-switch-slider"></span>
+          </label>
+        </div>
+
+        <div class="tn-event-row">
+          <div class="tn-event-icon">⚠️</div>
+          <div class="tn-event-info">
+            <div class="tn-event-title">補登申請</div>
+            <div class="tn-event-desc">→ 對應店長私訊 + 總部群</div>
+          </div>
+          <label class="tn-switch">
+            <input type="checkbox" id="tnEventAmendment" data-event="amendment" checked>
+            <span class="tn-switch-slider"></span>
+          </label>
+        </div>
+
+        <div class="tn-event-row">
+          <div class="tn-event-icon">📝</div>
+          <div class="tn-event-info">
+            <div class="tn-event-title">店長提交週報</div>
+            <div class="tn-event-desc">→ 對應店長私訊</div>
+          </div>
+          <label class="tn-switch">
+            <input type="checkbox" id="tnEventWeeklyReport" data-event="weeklyReport" checked>
+            <span class="tn-switch-slider"></span>
+          </label>
+        </div>
+
+        <div class="tn-event-row">
+          <div class="tn-event-icon">🔥</div>
+          <div class="tn-event-info">
+            <div class="tn-event-title">業績爆發（5 種觸發）</div>
+            <div class="tn-event-desc">達成率≥200%、月度新高、連3天達標、客單≥3000、UPT≥3.0 → 該店群組</div>
+          </div>
+          <label class="tn-switch">
+            <input type="checkbox" id="tnEventSalesBoom" data-event="salesBoom" checked>
+            <span class="tn-switch-slider"></span>
+          </label>
+        </div>
+
+        <div class="tn-event-row">
+          <div class="tn-event-icon">⏰</div>
+          <div class="tn-event-info">
+            <div class="tn-event-title">週報逾期</div>
+            <div class="tn-event-desc">→ 對應店長私訊</div>
+          </div>
+          <label class="tn-switch">
+            <input type="checkbox" id="tnEventOverdue" data-event="overdue" checked>
+            <span class="tn-switch-slider"></span>
+          </label>
+        </div>
+
+        <div class="tn-event-row">
+          <div class="tn-event-icon">📢</div>
+          <div class="tn-event-info">
+            <div class="tn-event-title">V 發布全域公告</div>
+            <div class="tn-event-desc">→ 全部 7 個店家群組</div>
+          </div>
+          <label class="tn-switch">
+            <input type="checkbox" id="tnEventAnnouncement" data-event="announcement" checked>
+            <span class="tn-switch-slider"></span>
+          </label>
+        </div>
+
+        <div class="tn-event-row">
+          <div class="tn-event-icon">📝</div>
+          <div class="tn-event-info">
+            <div class="tn-event-title">未填今日數字提醒</div>
+            <div class="tn-event-desc">V 進主畫面時檢查 → 沒填的店發到該店群組（每天每店僅一次）</div>
+          </div>
+          <label class="tn-switch">
+            <input type="checkbox" id="tnEventUnfilled" data-event="unfilled" checked>
+            <span class="tn-switch-slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ★ Phase 1.C: 公告列表 ★ -->
     <!-- ★ Phase 1.C: 公告列表 ★ -->
     <div id="announcementScreen" class="subscreen" style="display: none;">
       <div class="subscreen-header">
@@ -5566,7 +5950,8 @@ const SCREENS = {
   // Phase 1.D
   weeklyReport: 'weeklyReportScreen',
   hqWeeklyOverview: 'hqWeeklyOverviewScreen',
-  hqStoreDetail: 'hqStoreDetailScreen'
+  hqStoreDetail: 'hqStoreDetailScreen',
+  teamsNotify: 'teamsNotifyScreen'
 };
 
 function showScreen(screenName) {
@@ -5693,6 +6078,13 @@ const featureGridHTML = {
       title: '排班表',
       desc: '查看 7 店排班（檢視）',
       action: () => openSchedule()
+    },
+    {
+      key: 'teamsNotify',
+      icon: '<svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>',
+      title: 'Teams 通知',
+      desc: '設定 Webhook 與通知事件',
+      action: () => openTeamsNotify()
     }
   ]
 };
@@ -6273,6 +6665,10 @@ async function refreshHomeKpiSummary() {
     document.getElementById('rvMiniKpiGrid').style.display = 'none';
     await loadHqStoresOverview();
     await renderHqAiCoachAdvice();
+    // 背景檢查週報逾期（每天每店只通知一次）
+    checkAndNotifyOverdue();
+    // 背景檢查未填今日數字（每天每店只通知一次、早上 10 點後才發）
+    checkAndNotifyUnfilled();
     return;
   }
   document.getElementById('rvHqStoresOverview').style.display = 'none';
@@ -7040,7 +7436,7 @@ function updateDailyTargetSummary() {
     remEl.textContent = formatMoney(remaining);
     remEl.classList.add('danger');
   } else {
-    remEl.textContent = formatMoney(remaining) + '（超出）';
+    remEl.textContent = formatMoney(Math.abs(remaining)) + '（超出）';
     remEl.classList.add('danger');
   }
 
@@ -7114,7 +7510,11 @@ function updateDailyCountdownBanner() {
     numEl.textContent = diffDays;
     titleEl.textContent = `距離 ${month} 月開始還有 ${diffDays} 天`;
     const r = dailyTargetMonthlyTotal - assigned;
-    descEl.textContent = `還差 ${formatMoney(r)} 沒分配，建議在月初前完成`;
+    if (r > 0) {
+      descEl.textContent = `還差 ${formatMoney(r)} 沒分配，建議在月初前完成`;
+    } else {
+      descEl.textContent = `已超出月總目標 ${formatMoney(Math.abs(r))}，建議調整分配`;
+    }
   } else if (isCurrent) {
     banner.classList.remove('green');
     const dim = getDaysInMonth(year, month);
@@ -7122,7 +7522,11 @@ function updateDailyCountdownBanner() {
     numEl.textContent = daysLeft;
     titleEl.textContent = `本月還剩 ${daysLeft} 天`;
     const r = dailyTargetMonthlyTotal - assigned;
-    descEl.textContent = `還差 ${formatMoney(r)} 沒分配，請繼續完成`;
+    if (r > 0) {
+      descEl.textContent = `還差 ${formatMoney(r)} 沒分配，請繼續完成`;
+    } else {
+      descEl.textContent = `已超出月總目標 ${formatMoney(Math.abs(r))}，建議調整分配`;
+    }
   } else {
     banner.style.display = 'none';
   }
@@ -7632,6 +8036,13 @@ async function saveDailyLog(submit) {
       document.getElementById('dailyLogEditCount').textContent = `已編輯 ${editCount} 次`;
     }
 
+    // ★ Phase 1.D+：業績爆發通知（5 種觸發條件統一檢查）
+    if (submit) {
+      try {
+        checkSalesBoomTriggers(state.storeId, date, newData, currentDailyLog._currentTarget || 0);
+      } catch (e) {}
+    }
+
     if (submit) {
       setTimeout(() => showScreen('home'), 800);
     }
@@ -7755,6 +8166,11 @@ async function submitAmendmentRequest() {
     });
     showToast('已送出補登申請', 'success');
     closeAmendmentRequestModal();
+
+    // ★ Phase 1.D+：觸發 Teams 通知
+    try {
+      notifyAmendmentRequest(state.storeId, state.currentStaff, currentDailyLogDate, reason);
+    } catch (e) {}
   } catch (err) {
     showToast('送出失敗', 'error');
   } finally {
@@ -8326,6 +8742,12 @@ async function publishAnnouncement(publish) {
       reads: {}
     });
     showToast(publish ? '✓ 公告已發布' : '草稿已儲存', 'success');
+
+    // ★ Phase 1.D+：發布全域公告 → Teams 通知
+    if (publish) {
+      try { notifyAnnouncement(title, content, annEditorState.scope); } catch (e) {}
+    }
+
     setTimeout(() => showScreen('announcement'), 800);
   } catch (err) {
     showToast('發布失敗：' + err.message, 'error');
@@ -9524,6 +9946,26 @@ async function saveWeeklyReport(submit) {
     currentWeeklyData = dataToSave;
     showToast(submit ? '✓ 已提交週報' : '草稿已儲存', 'success');
 
+    // ★ Phase 1.D+：觸發 Teams 通知
+    if (submit) {
+      const weekLabel = formatWeekLabel(currentWeeklyMonday);
+      // 通知：週報已提交
+      try {
+        // 計算達成率（從本週數字總覽）
+        const rateEl = document.getElementById('wrAchieveRate');
+        let rate = null;
+        if (rateEl && rateEl.textContent) {
+          const match = rateEl.textContent.match(/(\d+)/);
+          if (match) rate = parseInt(match[1]);
+        }
+        notifyWeeklyReportSubmitted(state.storeId, state.currentStaff, weekLabel, rate);
+      } catch (e) {}
+      // 通知：給總部的話（若有內容）
+      if (data.messageToHQ) {
+        try { notifyMessageToHQ(state.storeId, state.currentStaff, data.messageToHQ, weekLabel); } catch (e) {}
+      }
+    }
+
     if (submit) {
       setTimeout(() => showScreen('home'), 800);
     } else {
@@ -10079,12 +10521,713 @@ function setupHqStoreDetailScreen() {
 }
 
 // ============================================
+// ★ Teams 通知整合（V 端 · 11 URL 智慧路由）★
+// ============================================
+
+// 店家 → 店長 對應（寫死）
+const STORE_TO_MANAGER = {
+  zhongxiao: 'qsuan',
+  tongyi: 'qsuan',
+  taoyuan: 'qsuan',
+  yizhong: 'youjia',
+  xinyizhong: 'youjia',
+  xintiandi: 'meiru',
+  xinjuejiang: 'meiru'
+};
+
+const MANAGER_NAMES = {
+  qsuan: 'Q萱',
+  youjia: '又嘉',
+  meiru: '美儒'
+};
+
+const MANAGER_STORES = {
+  qsuan: ['zhongxiao', 'tongyi', 'taoyuan'],
+  youjia: ['yizhong', 'xinyizhong'],
+  meiru: ['xintiandi', 'xinjuejiang']
+};
+
+let teamsRoutingConfig = {
+  channels: {},       // { zhongxiao: <URL>, ... } 7 店
+  managers: {},       // { qsuan: <URL>, ... } 3 店長
+  hq: null,           // 總部 V URL
+  enabledEvents: {
+    message: true,
+    amendment: true,
+    weeklyReport: true,
+    salesBoom: true,
+    overdue: true,
+    announcement: true,
+    unfilled: true
+  }
+};
+
+/** 載入 Teams 設定 */
+async function loadTeamsRoutingConfig() {
+  if (!db) return;
+  try {
+    const snap = await db.ref('/global/settings/teamsRouting').once('value');
+    const data = snap.val();
+    if (data) {
+      teamsRoutingConfig.channels = data.channels || {};
+      teamsRoutingConfig.managers = data.managers || {};
+      teamsRoutingConfig.hq = data.hq || null;
+      if (data.enabledEvents) {
+        teamsRoutingConfig.enabledEvents = { ...teamsRoutingConfig.enabledEvents, ...data.enabledEvents };
+      }
+    }
+  } catch (e) {
+    console.warn('loadTeamsRoutingConfig error:', e);
+  }
+}
+
+/** 通用：發送 webhook 到指定 URL */
+async function sendWebhook(url, payload) {
+  if (!url) return false;
+  try {
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (resp.ok || resp.status === 202) return true;
+    throw new Error('status ' + resp.status);
+  } catch (e) {
+    console.warn('webhook normal fetch failed, trying no-cors:', e.message);
+    try {
+      await fetch(url, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      return true;
+    } catch (e2) {
+      console.warn('webhook failed completely:', e2.message);
+      return false;
+    }
+  }
+}
+
+/** 建立 Adaptive Card */
+function buildTeamsCard(opts) {
+  const { emoji, title, subtitle, facts, color } = opts;
+  const body = [
+    {
+      type: 'TextBlock',
+      text: `${emoji || ''} ${title}`,
+      size: 'Large',
+      weight: 'Bolder',
+      color: color || 'Default',
+      wrap: true
+    }
+  ];
+  if (subtitle) {
+    body.push({
+      type: 'TextBlock',
+      text: subtitle,
+      isSubtle: true,
+      wrap: true,
+      spacing: 'Small'
+    });
+  }
+  if (facts && facts.length > 0) {
+    body.push({
+      type: 'FactSet',
+      facts: facts,
+      spacing: 'Medium'
+    });
+  }
+  body.push({
+    type: 'TextBlock',
+    text: `📅 ${new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' })}`,
+    isSubtle: true,
+    size: 'Small',
+    spacing: 'Small'
+  });
+
+  return {
+    type: 'message',
+    attachments: [{
+      contentType: 'application/vnd.microsoft.card.adaptive',
+      content: {
+        $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+        type: 'AdaptiveCard',
+        version: '1.4',
+        body: body,
+        actions: [{
+          type: 'Action.OpenUrl',
+          title: '🔗 開啟店長中心',
+          url: 'https://yuu7073.github.io/vvdouble-store/'
+        }]
+      }
+    }]
+  };
+}
+
+/** 路由：依事件決定要發到哪些 URL */
+function getRouteUrls(event, storeId) {
+  const urls = [];
+  switch (event) {
+    case 'weeklyReportSubmitted':
+    case 'weeklyReportOverdue': {
+      // 店長私訊
+      const mgr = STORE_TO_MANAGER[storeId];
+      if (mgr && teamsRoutingConfig.managers[mgr]) urls.push(teamsRoutingConfig.managers[mgr]);
+      break;
+    }
+    case 'messageToHQ':
+    case 'amendment': {
+      // 店長私訊 + 總部群
+      const mgr = STORE_TO_MANAGER[storeId];
+      if (mgr && teamsRoutingConfig.managers[mgr]) urls.push(teamsRoutingConfig.managers[mgr]);
+      if (teamsRoutingConfig.hq) urls.push(teamsRoutingConfig.hq);
+      break;
+    }
+    case 'salesBoom':
+    case 'unfilled': {
+      // 該店群組
+      if (teamsRoutingConfig.channels[storeId]) urls.push(teamsRoutingConfig.channels[storeId]);
+      break;
+    }
+    case 'announcement': {
+      // 全部 7 店
+      Object.values(teamsRoutingConfig.channels).forEach(u => { if (u) urls.push(u); });
+      break;
+    }
+  }
+  return urls;
+}
+
+/** 統一通知入口 */
+async function notifyByRoute(event, storeId, card) {
+  // 事件開關
+  const eventKey = event === 'weeklyReportSubmitted' ? 'weeklyReport'
+                : event === 'weeklyReportOverdue' ? 'overdue'
+                : event === 'messageToHQ' ? 'message'
+                : event;
+  if (!teamsRoutingConfig.enabledEvents[eventKey]) return;
+
+  const urls = getRouteUrls(event, storeId);
+  if (urls.length === 0) {
+    console.log(`notifyByRoute: no URL for event=${event}, storeId=${storeId}`);
+    return;
+  }
+
+  // 並發送
+  await Promise.all(urls.map(url => sendWebhook(url, card)));
+}
+
+// ---------- 6 個觸發點（智慧路由版）----------
+
+function notifyMessageToHQ(storeId, staff, message, weekLabel) {
+  const mgr = STORE_TO_MANAGER[storeId];
+  const card = buildTeamsCard({
+    emoji: '📮',
+    title: `${STORE_NAMES[storeId]} · 給總部的話`,
+    subtitle: `店長：${staff || '?'} · ${weekLabel}${mgr ? ' · 管理者：' + MANAGER_NAMES[mgr] : ''}`,
+    facts: [{ title: '訊息內容', value: message.length > 150 ? message.substring(0, 150) + '...' : message }],
+    color: 'Accent'
+  });
+  notifyByRoute('messageToHQ', storeId, card);
+}
+
+function notifyAmendmentRequest(storeId, staff, logDate, reason) {
+  const mgr = STORE_TO_MANAGER[storeId];
+  const card = buildTeamsCard({
+    emoji: '⚠️',
+    title: `${STORE_NAMES[storeId]} · 補登申請`,
+    subtitle: `申請人：${staff || '?'} · 紀錄日期：${logDate}${mgr ? ' · 管理者：' + MANAGER_NAMES[mgr] : ''}`,
+    facts: [{ title: '原因', value: reason }],
+    color: 'Warning'
+  });
+  notifyByRoute('amendment', storeId, card);
+}
+
+function notifyWeeklyReportSubmitted(storeId, staff, weekLabel, achieveRate) {
+  const card = buildTeamsCard({
+    emoji: '📝',
+    title: `${STORE_NAMES[storeId]} · 週報已提交`,
+    subtitle: `店長：${staff || '?'} · ${weekLabel}`,
+    facts: achieveRate !== null && achieveRate !== undefined ? [{ title: '達成率', value: `${achieveRate.toFixed(0)}%` }] : [],
+    color: 'Good'
+  });
+  notifyByRoute('weeklyReportSubmitted', storeId, card);
+}
+
+/** 業績爆發：5 種觸發 */
+function notifySalesBoom(storeId, kind, opts) {
+  // kind: 'rate200' | 'monthHigh' | 'streak3' | 'highAvg' | 'highUpt'
+  let title, subtitle, facts, emoji;
+  switch (kind) {
+    case 'rate200':
+      emoji = '🔥';
+      title = `${STORE_NAMES[storeId]} · 業績爆發！`;
+      subtitle = `今日達成率 ${opts.rate.toFixed(0)}%`;
+      facts = [
+        { title: '今日業績', value: formatMoney(opts.sales) },
+        { title: '達成率', value: `${opts.rate.toFixed(0)}%` }
+      ];
+      break;
+    case 'monthHigh':
+      emoji = '📈';
+      title = `${STORE_NAMES[storeId]} · 月度新高！`;
+      subtitle = `今日業績刷新本月最高紀錄`;
+      facts = [
+        { title: '今日業績', value: formatMoney(opts.sales) },
+        { title: '前次最高', value: formatMoney(opts.prevHigh) }
+      ];
+      break;
+    case 'streak3':
+      emoji = '🌟';
+      title = `${STORE_NAMES[storeId]} · 連續 3 天達標！`;
+      subtitle = '連 3 天達成率 ≥ 100%，狀態穩定';
+      facts = [
+        { title: '今日達成率', value: `${opts.rate.toFixed(0)}%` }
+      ];
+      break;
+    case 'highAvg':
+      emoji = '💎';
+      title = `${STORE_NAMES[storeId]} · 客單表現亮眼`;
+      subtitle = `今日客單價 ${formatMoney(opts.avg)}`;
+      facts = [
+        { title: '客單價', value: formatMoney(opts.avg) },
+        { title: '結帳人數', value: `${opts.customers} 人` }
+      ];
+      break;
+    case 'highUpt':
+      emoji = '🎯';
+      title = `${STORE_NAMES[storeId]} · 連帶神技`;
+      subtitle = `今日 UPT ${opts.upt.toFixed(1)} 表現超強`;
+      facts = [
+        { title: 'UPT', value: opts.upt.toFixed(1) },
+        { title: '件數/客數', value: `${opts.items} / ${opts.customers}` }
+      ];
+      break;
+  }
+  const card = buildTeamsCard({ emoji, title, subtitle, facts, color: 'Good' });
+  notifyByRoute('salesBoom', storeId, card);
+}
+
+function notifyAnnouncement(title, content, scope) {
+  // 廣播給全部 7 店：每個店都發一份
+  const card = buildTeamsCard({
+    emoji: '📢',
+    title: `新公告：${title}`,
+    subtitle: scope === 'all' ? '全店家公告' : '指定店家公告',
+    facts: [{ title: '內容', value: content.length > 200 ? content.substring(0, 200) + '...' : content }],
+    color: 'Accent'
+  });
+  // announcement 對應路由：全部店家群組
+  notifyByRoute('announcement', null, card);
+}
+
+function notifyUnfilled(storeId) {
+  const today = getTodayString();
+  const card = buildTeamsCard({
+    emoji: '📝',
+    title: `${STORE_NAMES[storeId]} · 今日數字尚未填寫`,
+    subtitle: `${today} · 提醒店員盡快補填`,
+    facts: [],
+    color: 'Warning'
+  });
+  notifyByRoute('unfilled', storeId, card);
+}
+
+// ---------- 業績爆發 5 種判斷 ----------
+
+/** 提交今日數字時，檢查所有業績爆發條件 */
+async function checkSalesBoomTriggers(storeId, todayDate, currentLog, todayTarget) {
+  if (!teamsRoutingConfig.enabledEvents.salesBoom) return;
+  const sales = currentLog.sales || 0;
+  const customers = currentLog.customers || 0;
+  const items = currentLog.items || 0;
+
+  // 觸發 1：達成率 ≥ 200%
+  if (todayTarget > 0) {
+    const rate = sales / todayTarget * 100;
+    if (rate >= 200) {
+      try { notifySalesBoom(storeId, 'rate200', { sales, rate }); } catch (e) {}
+    }
+  }
+
+  // 觸發 4：客單價 ≥ 3000
+  if (customers > 0) {
+    const avg = Math.round(sales / customers);
+    if (avg >= 3000) {
+      try { notifySalesBoom(storeId, 'highAvg', { avg, customers }); } catch (e) {}
+    }
+    // 觸發 5：UPT ≥ 3.0
+    const upt = items / customers;
+    if (upt >= 3.0) {
+      try { notifySalesBoom(storeId, 'highUpt', { upt, items, customers }); } catch (e) {}
+    }
+  }
+
+  // 觸發 2：月度新高 + 觸發 3：連續 3 天達標
+  try {
+    const ym = todayDate.substring(0, 7);
+    const [logsSnap, targetsSnap] = await Promise.all([
+      db.ref(`/stores/${storeId}/dailyLogs`).once('value'),
+      db.ref(`/stores/${storeId}/targets/${ym}`).once('value')
+    ]);
+    const allLogs = logsSnap.val() || {};
+    const targets = targetsSnap.val() || {};
+
+    // 月度新高判斷
+    let prevHigh = 0;
+    Object.entries(allLogs).forEach(([d, log]) => {
+      if (d === todayDate) return;
+      if (d.startsWith(ym) && log && log.sales > prevHigh) {
+        prevHigh = log.sales;
+      }
+    });
+    if (sales > prevHigh && prevHigh > 0) {
+      try { notifySalesBoom(storeId, 'monthHigh', { sales, prevHigh }); } catch (e) {}
+    }
+
+    // 連續 3 天達標判斷（含今天）
+    let streak = 0;
+    for (let i = 0; i < 3; i++) {
+      const d = new Date(todayDate);
+      d.setDate(d.getDate() - i);
+      const dStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      const log = dStr === todayDate ? currentLog : allLogs[dStr];
+      const tgt = targets[dStr] || 0;
+      if (log && log.sales && tgt > 0) {
+        const rate = log.sales / tgt * 100;
+        if (rate >= 100) streak++;
+        else break;
+      } else {
+        break;
+      }
+    }
+    if (streak >= 3) {
+      const todayRate = todayTarget > 0 ? sales / todayTarget * 100 : 0;
+      try { notifySalesBoom(storeId, 'streak3', { rate: todayRate }); } catch (e) {}
+    }
+  } catch (e) {
+    console.warn('checkSalesBoomTriggers error:', e);
+  }
+}
+
+// ---------- V 端：未填今日數字檢查 ----------
+
+/** V 進主畫面時觸發。每天每店只發一次。 */
+async function checkAndNotifyUnfilled() {
+  if (!state.isHQ) return;
+  if (!db) return;
+  if (!teamsRoutingConfig.enabledEvents.unfilled) return;
+
+  const today = getTodayString();
+  const now = new Date();
+  // 早上 10 點前不發（剛開店時還沒填正常）
+  if (now.getHours() < 10) return;
+
+  try {
+    const sentSnap = await db.ref(`/global/settings/teamsRouting/unfilledSent/${today}`).once('value');
+    const sentList = sentSnap.val() || {};
+
+    for (const sid of STORE_ORDER) {
+      if (sentList[sid]) continue;
+
+      // 該店今日有沒有填？
+      const logSnap = await db.ref(`/stores/${sid}/dailyLogs/${today}`).once('value');
+      const log = logSnap.val();
+      if (log && log.sales && log.sales > 0) continue; // 已填
+
+      // 發提醒
+      try {
+        notifyUnfilled(sid);
+        await db.ref(`/global/settings/teamsRouting/unfilledSent/${today}/${sid}`).set(true);
+      } catch (e) {
+        console.warn('unfilled notify failed for', sid, e);
+      }
+    }
+  } catch (e) {
+    console.warn('checkAndNotifyUnfilled error:', e);
+  }
+}
+
+// ---------- V 端：週報逾期檢查 ----------
+
+async function checkAndNotifyOverdue() {
+  if (!state.isHQ) return;
+  if (!db) return;
+  if (!teamsRoutingConfig.enabledEvents.overdue) return;
+
+  const now = new Date();
+  const lastMonday = shiftWeek(getCurrentMonday(), -1);
+  const deadline = getWeekDeadline(lastMonday);
+  if (now <= deadline) return;
+
+  const todayKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+  try {
+    const sentSnap = await db.ref(`/global/settings/teamsRouting/overdueSent/${todayKey}`).once('value');
+    const sentList = sentSnap.val() || {};
+
+    for (const sid of STORE_ORDER) {
+      if (sentList[sid]) continue;
+      const reportSnap = await db.ref(`/stores/${sid}/weeklyReports/${lastMonday}`).once('value');
+      const report = reportSnap.val();
+      const status = getReportStatus(report, lastMonday);
+      if (status === 'overdue') {
+        const overDays = Math.floor((now - deadline) / 86400000);
+        const mgr = STORE_TO_MANAGER[sid];
+        try {
+          const card = buildTeamsCard({
+            emoji: '⏰',
+            title: `${STORE_NAMES[sid]} · 週報已逾期`,
+            subtitle: `上週週報尚未提交（${formatWeekLabel(lastMonday)}）${mgr ? ' · 管理者：' + MANAGER_NAMES[mgr] : ''}`,
+            facts: [
+              { title: '逾期天數', value: `${overDays} 天` },
+              { title: '截止時間', value: deadline.toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' }) }
+            ],
+            color: 'Warning'
+          });
+          await notifyByRoute('weeklyReportOverdue', sid, card);
+          await db.ref(`/global/settings/teamsRouting/overdueSent/${todayKey}/${sid}`).set(true);
+        } catch (e) {
+          console.warn('overdue notify failed:', sid, e);
+        }
+      }
+    }
+  } catch (e) {
+    console.warn('checkAndNotifyOverdue error:', e);
+  }
+}
+
+// ---------- 設定頁邏輯 ----------
+
+async function openTeamsNotify() {
+  if (!state.isHQ) {
+    showToast('此功能僅總部可用', 'error');
+    return;
+  }
+  showScreen('teamsNotify');
+  await renderTeamsNotifySettings();
+}
+
+function renderUrlRow(label, sub, id, currentValue) {
+  return `
+    <div class="tn-url-row">
+      <div class="tn-url-label">${label}${sub ? `<span class="tn-url-sub">${sub}</span>` : ''}</div>
+      <input type="url" class="tn-url-input compact${currentValue ? ' has-value' : ''}"
+             id="tnUrl_${id}" data-id="${id}"
+             placeholder="https://..." value="${currentValue || ''}">
+      <button class="btn-ghost tn-url-test" data-target="${id}">🧪</button>
+      <span class="tn-url-status" id="tnStatus_${id}">${currentValue ? '✓' : ''}</span>
+    </div>
+  `;
+}
+
+async function renderTeamsNotifySettings() {
+  await loadTeamsRoutingConfig();
+
+  // 各店群組
+  const storeRows = STORE_ORDER.map(sid => {
+    const url = teamsRoutingConfig.channels[sid];
+    return renderUrlRow(STORE_NAMES[sid], '', `channel_${sid}`, url);
+  }).join('');
+  document.getElementById('tnStoreUrlList').innerHTML = storeRows;
+
+  // 店長私訊
+  const mgrRows = ['qsuan', 'youjia', 'meiru'].map(mgr => {
+    const url = teamsRoutingConfig.managers[mgr];
+    const stores = MANAGER_STORES[mgr].map(s => STORE_NAMES[s]).join('/');
+    return renderUrlRow(MANAGER_NAMES[mgr], stores, `manager_${mgr}`, url);
+  }).join('');
+  document.getElementById('tnManagerUrlList').innerHTML = mgrRows;
+
+  // 總部群
+  document.getElementById('tnUrl_hq').value = teamsRoutingConfig.hq || '';
+  document.getElementById('tnUrl_hq').classList.toggle('has-value', !!teamsRoutingConfig.hq);
+  document.getElementById('tnStatus_hq').textContent = teamsRoutingConfig.hq ? '✓' : '';
+
+  // 統計已設定數
+  let setCount = 0;
+  const total = 11;
+  STORE_ORDER.forEach(sid => { if (teamsRoutingConfig.channels[sid]) setCount++; });
+  ['qsuan', 'youjia', 'meiru'].forEach(mgr => { if (teamsRoutingConfig.managers[mgr]) setCount++; });
+  if (teamsRoutingConfig.hq) setCount++;
+
+  const statusBar = document.getElementById('tnStatusBar');
+  const statusText = document.getElementById('tnStatusText');
+  if (setCount === 0) {
+    statusBar.classList.remove('active');
+    statusBar.classList.add('inactive');
+    statusText.textContent = '尚未設定任何 URL';
+  } else if (setCount === total) {
+    statusBar.classList.remove('inactive');
+    statusBar.classList.add('active');
+    statusText.textContent = `✓ 全部 ${total} 個 URL 已設定完成`;
+  } else {
+    statusBar.classList.remove('active');
+    statusBar.classList.add('inactive');
+    statusText.textContent = `已設定 ${setCount} / ${total} 個 URL（缺 ${total - setCount} 個）`;
+  }
+
+  // 事件開關
+  ['message', 'amendment', 'weeklyReport', 'salesBoom', 'overdue', 'announcement', 'unfilled'].forEach(event => {
+    const id = `tnEvent${event.charAt(0).toUpperCase() + event.slice(1)}`;
+    const el = document.getElementById(id);
+    if (el) el.checked = teamsRoutingConfig.enabledEvents[event] !== false;
+  });
+
+  // 即時更新有 value 樣式
+  document.querySelectorAll('#tnStoreUrlList .tn-url-input, #tnManagerUrlList .tn-url-input').forEach(input => {
+    input.addEventListener('input', () => {
+      input.classList.toggle('has-value', !!input.value.trim());
+    });
+  });
+  document.getElementById('tnUrl_hq').addEventListener('input', e => {
+    e.target.classList.toggle('has-value', !!e.target.value.trim());
+  });
+}
+
+async function saveAllTeamsUrls() {
+  if (!db) return;
+  setLoading(true);
+  try {
+    const update = { channels: {}, managers: {} };
+    STORE_ORDER.forEach(sid => {
+      const v = document.getElementById(`tnUrl_channel_${sid}`).value.trim();
+      if (v) update.channels[sid] = v;
+    });
+    ['qsuan', 'youjia', 'meiru'].forEach(mgr => {
+      const v = document.getElementById(`tnUrl_manager_${mgr}`).value.trim();
+      if (v) update.managers[mgr] = v;
+    });
+    const hq = document.getElementById('tnUrl_hq').value.trim();
+
+    await db.ref('/global/settings/teamsRouting/channels').set(update.channels);
+    await db.ref('/global/settings/teamsRouting/managers').set(update.managers);
+    await db.ref('/global/settings/teamsRouting/hq').set(hq || null);
+
+    teamsRoutingConfig.channels = update.channels;
+    teamsRoutingConfig.managers = update.managers;
+    teamsRoutingConfig.hq = hq || null;
+
+    await renderTeamsNotifySettings();
+    showToast('✓ 所有 URL 已儲存', 'success');
+  } catch (e) {
+    showToast('儲存失敗：' + e.message, 'error');
+  } finally {
+    setLoading(false);
+  }
+}
+
+async function clearAllTeamsUrls() {
+  if (!confirm('確定清除全部 11 個 URL？\n清除後所有 Teams 通知將停止運作。')) return;
+  if (!db) return;
+  setLoading(true);
+  try {
+    await db.ref('/global/settings/teamsRouting/channels').remove();
+    await db.ref('/global/settings/teamsRouting/managers').remove();
+    await db.ref('/global/settings/teamsRouting/hq').remove();
+    teamsRoutingConfig.channels = {};
+    teamsRoutingConfig.managers = {};
+    teamsRoutingConfig.hq = null;
+    await renderTeamsNotifySettings();
+    showToast('已清除', 'success');
+  } catch (e) {
+    showToast('清除失敗', 'error');
+  } finally {
+    setLoading(false);
+  }
+}
+
+/** 測試單一 URL */
+async function testSingleUrl(targetId) {
+  let url = null;
+  let label = '';
+  if (targetId === 'hq') {
+    url = document.getElementById('tnUrl_hq').value.trim();
+    label = '總部 V';
+  } else if (targetId.startsWith('channel_')) {
+    const sid = targetId.replace('channel_', '');
+    url = document.getElementById(`tnUrl_${targetId}`).value.trim();
+    label = STORE_NAMES[sid];
+  } else if (targetId.startsWith('manager_')) {
+    const mgr = targetId.replace('manager_', '');
+    url = document.getElementById(`tnUrl_${targetId}`).value.trim();
+    label = MANAGER_NAMES[mgr] + ' 私訊';
+  }
+
+  const resultEl = document.getElementById('tnTestResult');
+  if (!url) {
+    resultEl.className = 'tn-test-result error';
+    resultEl.style.display = 'block';
+    resultEl.textContent = '請先填入 ' + label + ' 的 URL';
+    return;
+  }
+
+  resultEl.className = 'tn-test-result';
+  resultEl.style.display = 'block';
+  resultEl.textContent = '⏳ 測試中（' + label + '）...';
+
+  const card = buildTeamsCard({
+    emoji: '🧪',
+    title: `VV DOUBLE 店長中心 · 測試訊息`,
+    subtitle: `目標：${label}`,
+    facts: [
+      { title: '測試時間', value: new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' }) },
+      { title: '發送者', value: state.currentStaff || 'V' }
+    ],
+    color: 'Good'
+  });
+
+  const ok = await sendWebhook(url, card);
+  if (ok) {
+    resultEl.className = 'tn-test-result success';
+    resultEl.innerHTML = `✓ 已送出至「${label}」<br><span style="font-size:10px;">請打開 Teams 確認是否收到。沒收到請檢查 URL 或 Workflow 設定。</span>`;
+    document.getElementById(`tnStatus_${targetId}`).textContent = '✓';
+  } else {
+    resultEl.className = 'tn-test-result error';
+    resultEl.innerHTML = `✗ 發送失敗（${label}）<br><span style="font-size:10px;">F12 Console 可看詳細錯誤。</span>`;
+  }
+}
+
+async function toggleTeamsEvent(event, enabled) {
+  if (!db) return;
+  try {
+    await db.ref(`/global/settings/teamsRouting/enabledEvents/${event}`).set(enabled);
+    teamsRoutingConfig.enabledEvents[event] = enabled;
+  } catch (e) {
+    console.warn('toggleTeamsEvent error:', e);
+  }
+}
+
+function setupTeamsNotifyScreen() {
+  document.getElementById('tnSaveAllBtn').addEventListener('click', saveAllTeamsUrls);
+  document.getElementById('tnClearAllBtn').addEventListener('click', clearAllTeamsUrls);
+
+  // 用 event delegation 處理測試按鈕（因為 URL row 是動態渲染的）
+  document.getElementById('teamsNotifyScreen').addEventListener('click', e => {
+    const btn = e.target.closest('.tn-url-test');
+    if (btn) testSingleUrl(btn.dataset.target);
+  });
+
+  // 事件開關
+  ['message', 'amendment', 'weeklyReport', 'salesBoom', 'overdue', 'announcement', 'unfilled'].forEach(event => {
+    const id = `tnEvent${event.charAt(0).toUpperCase() + event.slice(1)}`;
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('change', () => toggleTeamsEvent(event, el.checked));
+    }
+  });
+}
+// ============================================
 // ★ Phase 1.D 模組初始化 ★
 // ============================================
 function initPhase1D() {
   setupWeeklyReportScreen();
   setupHqWeeklyOverviewScreen();
   setupHqStoreDetailScreen();
+  setupTeamsNotifyScreen();
+  // 載入 Teams 設定（背景）
+  loadTeamsRoutingConfig();
 }
 
 
