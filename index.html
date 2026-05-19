@@ -2468,10 +2468,32 @@ input, textarea, select { font-family: inherit; }
 
 .rv-hq-store-name {
   font-size: 11px;
-  width: 70px;
+  width: 110px;
   color: var(--text-primary);
   font-weight: 600;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.rv-hq-store-name .rv-hq-name-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.rv-hq-store-name .rv-hq-unfilled-tag {
+  background: var(--danger-bg);
+  color: var(--danger);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  line-height: 1.3;
 }
 
 .rv-hq-store-bar-wrap { flex: 1; }
@@ -3850,12 +3872,12 @@ input, textarea, select { font-family: inherit; }
         <select class="login-input" id="loginStoreId">
           <option value="">選擇你的店家...</option>
           <option value="zhongxiao">台北忠孝旗艦</option>
-          <option value="tongyi">台北統一 3F</option>
+          <option value="tongyi">統一門市</option>
           <option value="taoyuan">桃園 ATT</option>
-          <option value="yizhong">台中一中旗艦</option>
+          <option value="yizhong">一中門市</option>
           <option value="xinyizhong">台中新一中</option>
-          <option value="xintiandi">台南新天地 4F</option>
-          <option value="xinjuejiang">高雄新堀江</option>
+          <option value="xintiandi">台南門市</option>
+          <option value="xinjuejiang">高雄門市</option>
           <option value="V">總部 V</option>
         </select>
       </div>
@@ -5039,6 +5061,16 @@ input, textarea, select { font-family: inherit; }
           <textarea class="form-input" id="annContent" rows="8" style="min-height: 160px; resize: vertical;" placeholder="例：&#10;春季新檔將於 5/1 全店上架&#10;請各店：&#10;1. 4/29-30 完成新檔陳列&#10;2. 5/1 上午檢查商品標籤&#10;3. 配合 IG 春季主題拍攝"></textarea>
         </div>
 
+        <div style="background: var(--bg-gray-50); border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 10px;">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; flex: 1;">
+            <input type="checkbox" id="annPushTeams" checked style="width: 16px; height: 16px; cursor: pointer; accent-color: var(--primary-dark);">
+            <div>
+              <div style="font-size: 12px; font-weight: 700; color: var(--text-primary);">📡 同步推送到 Teams</div>
+              <div style="font-size: 10px; color: var(--text-tertiary); margin-top: 1px;">推送到對應店家群組（依公告類型決定）</div>
+            </div>
+          </label>
+        </div>
+
         <div style="display: flex; gap: 8px; margin-top: 16px;">
           <button class="btn-ghost" style="flex: 1;" id="annSaveDraftBtn">儲存草稿</button>
           <button class="btn-primary" style="flex: 2; justify-content: center; padding: 12px;" id="annPublishBtn">
@@ -5496,12 +5528,12 @@ const STORE_PASSWORDS = {
 // 店家中文名對照
 const STORE_NAMES = {
   zhongxiao: "台北忠孝旗艦",
-  tongyi: "台北統一 3F",
+  tongyi: "統一門市",
   taoyuan: "桃園 ATT",
-  yizhong: "台中一中旗艦",
+  yizhong: "一中門市",
   xinyizhong: "台中新一中",
-  xintiandi: "台南新天地 4F",
-  xinjuejiang: "高雄新堀江",
+  xintiandi: "台南門市",
+  xinjuejiang: "高雄門市",
   V: "總部 V"
 };
 
@@ -7243,16 +7275,19 @@ async function loadHqStoresOverview() {
       else if (diff >= 0) { cls = 'mid'; barClass = 'yellow'; }
       else if (diff >= -10) { cls = 'mid'; barClass = 'orange'; }
 
-      const shortName = (STORE_NAMES[sid] || sid).replace(/^台北|^台中|^台南|^高雄|^桃園/, '');
+      const shortName = STORE_NAMES[sid] || sid;
 
       // 今日是否已填？
       const todayLog = logs[today];
       const filledToday = todayLog && todayLog.sales && todayLog.sales > 0;
-      const unfilledBadge = filledToday ? '' : `<span style="background: var(--danger-bg); color: var(--danger); font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px; margin-left: 4px; white-space: nowrap;">未填</span>`;
+      const unfilledBadge = filledToday ? '' : `<span class="rv-hq-unfilled-tag">未填</span>`;
 
       return `
         <div class="rv-hq-store-row">
-          <span class="rv-hq-store-name">${escapeHtml(shortName)}${unfilledBadge}</span>
+          <span class="rv-hq-store-name">
+            <span class="rv-hq-name-text">${escapeHtml(shortName)}</span>
+            ${unfilledBadge}
+          </span>
           <div class="rv-hq-store-bar-wrap">
             <div class="rv-bar-bg">
               <div class="rv-bar-fill ${barClass}" style="width: ${Math.min(pct, 100)}%;"></div>
@@ -9041,6 +9076,9 @@ function openAnnouncementEditor() {
   document.querySelectorAll('.type-option').forEach(t => t.classList.toggle('active', t.dataset.type === 'normal'));
   document.querySelectorAll('.scope-option').forEach(s => s.classList.toggle('active', s.dataset.scope === 'global'));
   document.getElementById('annStoreCheckboxes').style.display = 'none';
+  // Teams 推送預設勾選
+  const pushTeamsEl = document.getElementById('annPushTeams');
+  if (pushTeamsEl) pushTeamsEl.checked = true;
   // 渲染店家複選框
   document.getElementById('annStoreCheckboxes').innerHTML = STORE_ORDER.map(sid => `
     <label class="store-checkbox-item">
@@ -9113,9 +9151,13 @@ async function publishAnnouncement(publish) {
     });
     showToast(publish ? '✓ 公告已發布' : '草稿已儲存', 'success');
 
-    // ★ Phase 1.D+：發布全域公告 → Teams 通知
+    // ★ Phase 1.D+：發布公告 → Teams 通知（依用戶勾選）
     if (publish) {
-      try { notifyAnnouncement(title, content, annEditorState.scope); } catch (e) {}
+      const pushTeamsEl = document.getElementById('annPushTeams');
+      const shouldPush = pushTeamsEl ? pushTeamsEl.checked : true;
+      if (shouldPush) {
+        try { notifyAnnouncement(title, content, annEditorState.scope); } catch (e) {}
+      }
     }
 
     setTimeout(() => showScreen('announcement'), 800);
@@ -9520,7 +9562,7 @@ function renderHealthBars(storeStats) {
     else if (s.count >= 6) cls = 'mid';
     else if (s.count >= 3) cls = 'low';
 
-    const shortName = (STORE_NAMES[s.sid] || s.sid).replace(/^台北|^台中|^台南|^高雄|^桃園/, '');
+    const shortName = STORE_NAMES[s.sid] || s.sid;
 
     return `
       <div class="bar-row">
@@ -9543,7 +9585,7 @@ function renderStaffHeat(staffStats, staffRoles) {
   container.innerHTML = list.map((s, i) => {
     const heavy = s.count >= 8;
     const role = staffRoles[`${s.storeId}__${s.name}`] || '店員';
-    const shortStore = (STORE_NAMES[s.storeId] || s.storeId).replace(/^台北|^台中|^台南|^高雄|^桃園/, '');
+    const shortStore = STORE_NAMES[s.storeId] || s.storeId;
     return `
       <div class="staff-heat-card ${heavy ? 'heavy' : ''}">
         <div class="staff-heat-rank">${i + 1}</div>
