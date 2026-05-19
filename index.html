@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VV DOUBLE 店長中心</title>
 
+<!-- ★ Favicon：上揚曲線、黃底黑線（data URI 內嵌、不需額外檔案） -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%23FFD93D%22%2F%3E%3Cpath%20d%3D%22M%2012%2046%20L%2024%2032%20L%2032%2038%20L%2050%2018%22%20fill%3D%22none%22%20stroke%3D%22%231A1A1A%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3Cpath%20d%3D%22M%2042%2018%20L%2050%2018%20L%2050%2026%22%20fill%3D%22none%22%20stroke%3D%22%231A1A1A%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20180%20180%22%3E%3Crect%20width%3D%22180%22%20height%3D%22180%22%20rx%3D%2240%22%20fill%3D%22%23FFD93D%22%2F%3E%3Cpath%20d%3D%22M%2034%20130%20L%2068%2090%20L%2090%20108%20L%20140%2050%22%20fill%3D%22none%22%20stroke%3D%22%231A1A1A%22%20stroke-width%3D%2214%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3Cpath%20d%3D%22M%20118%2050%20L%20140%2050%20L%20140%2072%22%20fill%3D%22none%22%20stroke%3D%22%231A1A1A%22%20stroke-width%3D%2214%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E">
+
 <!-- Firebase compat 版（依 skill 規範，禁用 modular） -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -2241,8 +2245,9 @@ input, textarea, select { font-family: inherit; }
 .rv-rate-hero-num-row {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: 14px;
   margin-top: 2px;
+  flex-wrap: wrap;
 }
 
 .rv-rate-hero-num {
@@ -2258,6 +2263,16 @@ input, textarea, select { font-family: inherit; }
   font-size: 22px;
 }
 
+/* ★ 業績金額（比達成率小、有層次感）*/
+.rv-rate-hero-money {
+  font-family: 'Consolas', monospace;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+  letter-spacing: -0.3px;
+}
+
 .rv-rate-hero-status {
   font-size: 12px;
   font-weight: 700;
@@ -2269,6 +2284,8 @@ input, textarea, select { font-family: inherit; }
 
 .rv-rate-hero-side {
   text-align: right;
+  flex-shrink: 0;
+  padding-left: 8px;
 }
 
 .rv-rate-hero-side-label { font-size: 10px; color: var(--text-tertiary); }
@@ -2281,8 +2298,11 @@ input, textarea, select { font-family: inherit; }
 }
 
 .rv-rate-hero-side-target {
-  font-size: 11px;
-  color: var(--text-tertiary);
+  font-family: 'Consolas', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-top: 2px;
 }
 
 /* 月累積進度（時間軸 vs 業績） */
@@ -2516,8 +2536,10 @@ input, textarea, select { font-family: inherit; }
   .rv-mini-kpi-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
   .rv-mini-kpi-card { padding: 10px 8px; }
   .rv-mini-kpi-value { font-size: 18px; }
-  .rv-rate-hero-num { font-size: 32px; }
-  .rv-rate-hero-num-pct { font-size: 18px; }
+  .rv-rate-hero-num { font-size: 28px; }
+  .rv-rate-hero-num-pct { font-size: 16px; }
+  .rv-rate-hero-money { font-size: 18px; letter-spacing: -0.3px; }
+  .rv-rate-hero-num-row { gap: 10px; }
   .rv-total-target-num { font-size: 26px; }
   .rv-target-row input.rv-target-input { width: 110px; font-size: 12px; }
   .rv-daily-progress-grid { grid-template-columns: 1fr; }
@@ -3969,27 +3991,24 @@ input, textarea, select { font-family: inherit; }
           </div>
         </div>
 
-        <!-- 大型達成率 + 進度條（改成「本月達成率」）-->
+        <!-- 大型達成率 + 業績金額（並列、字一樣大）-->
         <div class="rv-rate-hero">
           <div class="rv-rate-hero-row">
-            <div>
+            <div style="flex: 1; min-width: 0;">
               <div class="rv-rate-hero-label">本月達成率</div>
               <div class="rv-rate-hero-num-row">
                 <div class="rv-rate-hero-num" id="rvRateHeroNum">—<span class="rv-rate-hero-num-pct">%</span></div>
+                <div class="rv-rate-hero-money" id="homeKpiSales">$ 0</div>
                 <div class="rv-rate-hero-status" id="rvRateHeroStatus">—</div>
               </div>
             </div>
             <div class="rv-rate-hero-side">
-              <div class="rv-rate-hero-side-label">本月業績 / 目標</div>
-              <div class="rv-rate-hero-side-num" id="homeKpiSales">—</div>
-              <div class="rv-rate-hero-side-target" id="homeKpiTarget">/ —</div>
+              <div class="rv-rate-hero-side-label">本月目標</div>
+              <div class="rv-rate-hero-side-target" id="homeKpiTarget">—</div>
             </div>
           </div>
-          <div class="rv-bar-bg tall subtle">
-            <div class="rv-bar-fill orange" id="rvRateHeroBar" style="width: 0%;"></div>
-          </div>
 
-          <!-- 雙進度條：時間 vs 業績（移到 hero 卡內部）-->
+          <!-- 雙進度條：時間 vs 業績 -->
           <div class="rv-hero-dual-bars">
             <div class="rv-hero-bar-row">
               <span class="rv-hero-bar-label">📅 時間</span>
@@ -7093,48 +7112,38 @@ async function refreshHomeKpiSummary() {
     const monthRate = finalTargetSum > 0 ? Math.round(monthSales / finalTargetSum * 100) : 0;
     const diffVsTime = monthRate - timePct;
 
-    // ★ 改版：Hero 顯示「本月達成率」
+    // ★ 改版：Hero 顯示「本月達成率」+ 業績金額並列
     const heroNumEl = document.getElementById('rvRateHeroNum');
     const heroStatusEl = document.getElementById('rvRateHeroStatus');
-    const heroBarEl = document.getElementById('rvRateHeroBar');
 
     if (finalTargetSum > 0) {
       heroNumEl.innerHTML = `${monthRate}<span class="rv-rate-hero-num-pct">%</span>`;
       heroStatusEl.classList.remove('high', 'mid', 'low');
-      let barClass = 'orange';
       // 用「相對時間進度」判斷狀態（不是絕對的 100%）
       if (monthRate >= 100) {
         heroStatusEl.textContent = '✓ 已達標';
         heroStatusEl.classList.add('high');
-        barClass = 'green';
       } else if (diffVsTime >= 5) {
         heroStatusEl.textContent = `↑ 超前 ${diffVsTime}%`;
         heroStatusEl.classList.add('high');
-        barClass = 'green';
       } else if (diffVsTime >= -5) {
         heroStatusEl.textContent = '同步進度';
         heroStatusEl.classList.add('mid');
-        barClass = 'yellow';
       } else if (diffVsTime >= -15) {
         heroStatusEl.textContent = `↓ 落後 ${Math.abs(diffVsTime)}%`;
         heroStatusEl.classList.add('mid');
-        barClass = 'orange';
       } else {
         heroStatusEl.textContent = `↓ 落後 ${Math.abs(diffVsTime)}%`;
         heroStatusEl.classList.add('low');
-        barClass = 'red';
       }
-      heroBarEl.className = `rv-bar-fill ${barClass}`;
-      heroBarEl.style.width = Math.min(monthRate, 100) + '%';
     } else {
       heroNumEl.innerHTML = `—<span class="rv-rate-hero-num-pct">%</span>`;
       heroStatusEl.textContent = '無目標';
-      heroBarEl.style.width = '0%';
     }
 
-    // ★ 右側顯示「本月業績 / 目標」
+    // ★ 業績金額（跟達成率字一樣大）+ 右上「本月目標」
     document.getElementById('homeKpiSales').textContent = formatMoney(monthSales);
-    document.getElementById('homeKpiTarget').textContent = finalTargetSum > 0 ? `/ ${formatMoney(finalTargetSum)}` : '/ —';
+    document.getElementById('homeKpiTarget').textContent = finalTargetSum > 0 ? formatMoney(finalTargetSum) : '—';
 
     // ★ 雙進度條：時間 vs 業績
     const timePctEl = document.getElementById('rvMonthTimePct');
