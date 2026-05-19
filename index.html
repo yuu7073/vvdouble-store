@@ -2299,6 +2299,95 @@ input, textarea, select { font-family: inherit; }
 .rv-month-progress-pct.ahead { color: var(--success-text); font-weight: 700; }
 .rv-month-progress-pct.behind { color: var(--danger); font-weight: 700; }
 
+/* Hero 內部雙進度條（時間 vs 業績） */
+.rv-hero-dual-bars {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(0,0,0,0.08);
+}
+.rv-hero-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.rv-hero-bar-row:last-child { margin-bottom: 0; }
+.rv-hero-bar-label {
+  font-size: 10px;
+  color: rgba(0,0,0,0.6);
+  width: 40px;
+  flex-shrink: 0;
+  font-weight: 700;
+}
+.rv-hero-bar-bg {
+  flex: 1;
+  background: rgba(0,0,0,0.1);
+  height: 6px;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.rv-hero-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.6s ease;
+}
+.rv-hero-bar-fill.time { background: #888888; }
+.rv-hero-bar-fill.sales { background: #FF6B35; }
+.rv-hero-bar-fill.sales.ahead { background: #4CAF50; }
+.rv-hero-bar-pct {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(0,0,0,0.7);
+  width: 48px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.rv-hero-bar-pct.ahead { color: #2E7D32; }
+.rv-hero-bar-pct.behind { color: #993C1D; }
+
+/* 今天還沒填提醒卡 */
+.rv-unfilled-card {
+  background: linear-gradient(135deg, #FFF8E0 0%, #FFE5A0 100%);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #FFE5A0;
+}
+.rv-unfilled-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.rv-unfilled-info { flex: 1; min-width: 0; }
+.rv-unfilled-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.rv-unfilled-desc {
+  font-size: 10px;
+  color: var(--warning-text);
+  margin-top: 1px;
+  line-height: 1.4;
+}
+.rv-unfilled-btn {
+  background: var(--text-primary);
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+.rv-unfilled-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+.rv-unfilled-btn:active { transform: translateY(0); }
+
 /* 主畫面 KPI 小卡（客數、客單價、UPT） */
 .rv-mini-kpi-grid {
   display: grid;
@@ -3662,6 +3751,59 @@ input, textarea, select { font-family: inherit; }
   .tn-url-input.compact { flex: 1; min-width: 0; }
 }
 
+/* 店家營業時間表 */
+.sh-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--border-light);
+  flex-wrap: wrap;
+}
+.sh-row:last-child { border-bottom: none; }
+.sh-row.header {
+  font-weight: 800;
+  font-size: 10px;
+  color: var(--text-tertiary);
+  border-bottom: 1px solid var(--border-medium);
+  padding-bottom: 8px;
+}
+.sh-store-name {
+  width: 80px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+.sh-time-cell {
+  flex: 1;
+  min-width: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.sh-time-input {
+  width: 50px;
+  padding: 3px 4px;
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  font-size: 10px;
+  text-align: center;
+  font-family: 'Consolas', monospace;
+}
+.sh-time-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+@media (max-width: 600px) {
+  .sh-row { flex-direction: column; align-items: flex-start; }
+  .sh-store-name { width: 100%; margin-bottom: 4px; }
+  .sh-time-cell { flex-direction: row; width: 100%; justify-content: space-between; }
+  .sh-time-cell .sh-day-label { font-size: 10px; }
+}
+
 </style>
 </head>
 
@@ -3814,11 +3956,11 @@ input, textarea, select { font-family: inherit; }
         </div>
       </div>
 
-      <!-- ★ 改版：今日業績概況（自動載入今日紀錄資料） -->
+      <!-- ★ 改版：本月業績概況（自動載入今日紀錄資料） -->
       <div class="rv-home-summary-card" id="kpiSummary" style="display: none;">
         <div class="rv-home-summary-header">
           <div>
-            <div class="rv-home-summary-label">今日業績概況</div>
+            <div class="rv-home-summary-label">本月業績概況</div>
             <div class="rv-home-summary-date" id="kpiSummaryDate">—</div>
           </div>
           <div class="rv-home-countdown">
@@ -3827,18 +3969,18 @@ input, textarea, select { font-family: inherit; }
           </div>
         </div>
 
-        <!-- 大型達成率 + 進度條 -->
+        <!-- 大型達成率 + 進度條（改成「本月達成率」）-->
         <div class="rv-rate-hero">
           <div class="rv-rate-hero-row">
             <div>
-              <div class="rv-rate-hero-label">今日達成率</div>
+              <div class="rv-rate-hero-label">本月達成率</div>
               <div class="rv-rate-hero-num-row">
                 <div class="rv-rate-hero-num" id="rvRateHeroNum">—<span class="rv-rate-hero-num-pct">%</span></div>
                 <div class="rv-rate-hero-status" id="rvRateHeroStatus">—</div>
               </div>
             </div>
             <div class="rv-rate-hero-side">
-              <div class="rv-rate-hero-side-label">今日業績 / 目標</div>
+              <div class="rv-rate-hero-side-label">本月業績 / 目標</div>
               <div class="rv-rate-hero-side-num" id="homeKpiSales">—</div>
               <div class="rv-rate-hero-side-target" id="homeKpiTarget">/ —</div>
             </div>
@@ -3846,47 +3988,53 @@ input, textarea, select { font-family: inherit; }
           <div class="rv-bar-bg tall subtle">
             <div class="rv-bar-fill orange" id="rvRateHeroBar" style="width: 0%;"></div>
           </div>
-        </div>
 
-        <!-- 月累積進度（時間軸） -->
-        <div class="rv-month-progress">
-          <div class="rv-month-progress-row">
-            <span class="rv-month-progress-label">📅 本月時間進度</span>
-            <span class="rv-month-progress-pct" id="rvMonthTimePct">— 過完</span>
-          </div>
-          <div class="rv-bar-bg">
-            <div class="rv-bar-fill neutral" id="rvMonthTimeBar" style="width: 0%;"></div>
-          </div>
-        </div>
-
-        <!-- 月累積業績 -->
-        <div class="rv-month-progress" style="margin-bottom: 0;">
-          <div class="rv-month-progress-row">
-            <span class="rv-month-progress-label">💰 本月業績累積</span>
-            <span class="rv-month-progress-pct" id="rvMonthSalesPct">—</span>
-          </div>
-          <div class="rv-bar-bg">
-            <div class="rv-bar-fill green" id="rvMonthSalesBar" style="width: 0%;"></div>
+          <!-- 雙進度條：時間 vs 業績（移到 hero 卡內部）-->
+          <div class="rv-hero-dual-bars">
+            <div class="rv-hero-bar-row">
+              <span class="rv-hero-bar-label">📅 時間</span>
+              <div class="rv-hero-bar-bg">
+                <div class="rv-hero-bar-fill time" id="rvMonthTimeBar" style="width: 0%;"></div>
+              </div>
+              <span class="rv-hero-bar-pct" id="rvMonthTimePct">—%</span>
+            </div>
+            <div class="rv-hero-bar-row">
+              <span class="rv-hero-bar-label">🏆 業績</span>
+              <div class="rv-hero-bar-bg">
+                <div class="rv-hero-bar-fill sales" id="rvMonthSalesBar" style="width: 0%;"></div>
+              </div>
+              <span class="rv-hero-bar-pct" id="rvMonthSalesPct">—%</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- 主畫面 KPI 小卡片：客數、客單價、UPT -->
+      <!-- ★ 新增：今天還沒填提醒卡（已填則隱藏） -->
+      <div class="rv-unfilled-card" id="rvUnfilledCard" style="display: none;">
+        <div class="rv-unfilled-icon">📝</div>
+        <div class="rv-unfilled-info">
+          <div class="rv-unfilled-title">今天還沒填數字</div>
+          <div class="rv-unfilled-desc">下班前記得填「今日數字」，累積業績讓月達成率往上爬</div>
+        </div>
+        <button class="rv-unfilled-btn" id="rvUnfilledBtn">去填寫 ›</button>
+      </div>
+
+      <!-- 主畫面 KPI 小卡片：今日業績、客數、客單價 -->
       <div class="rv-mini-kpi-grid" id="rvMiniKpiGrid" style="display: none; margin-bottom: 16px;">
         <div class="rv-mini-kpi-card">
+          <div class="rv-mini-kpi-label">今日業績</div>
+          <div class="rv-mini-kpi-value" id="rvHomeKpiTodaySales">$ 0</div>
+          <div class="rv-mini-kpi-meta neutral" id="rvMiniKpiTodaySalesMeta">尚未成交</div>
+        </div>
+        <div class="rv-mini-kpi-card">
           <div class="rv-mini-kpi-label">客數</div>
-          <div class="rv-mini-kpi-value" id="homeKpiCustomers">—</div>
-          <div class="rv-mini-kpi-meta neutral" id="rvMiniKpiCustomersMeta">—</div>
+          <div class="rv-mini-kpi-value" id="homeKpiCustomers">0</div>
+          <div class="rv-mini-kpi-meta neutral" id="rvMiniKpiCustomersMeta">尚未成交</div>
         </div>
         <div class="rv-mini-kpi-card">
           <div class="rv-mini-kpi-label">客單價</div>
           <div class="rv-mini-kpi-value" id="rvHomeKpiAvg">—</div>
           <div class="rv-mini-kpi-meta neutral" id="rvMiniKpiAvgMeta">—</div>
-        </div>
-        <div class="rv-mini-kpi-card">
-          <div class="rv-mini-kpi-label">UPT</div>
-          <div class="rv-mini-kpi-value" id="rvHomeKpiUpt">—</div>
-          <div class="rv-mini-kpi-meta neutral" id="rvMiniKpiUptMeta">—</div>
         </div>
       </div>
 
@@ -4659,6 +4807,44 @@ input, textarea, select { font-family: inherit; }
       </div>
       <div class="tn-test-result" id="tnTestResult"></div>
 
+      <!-- 店家營業時間管理 -->
+      <div class="tn-card">
+        <div class="tn-card-title">🕐 店家營業時間（影響未填提醒）</div>
+        <div class="tn-card-desc">「未填提醒」會在打烊前 X 分鐘自動觸發，下表可調整各店各日打烊時間</div>
+
+        <div style="display: flex; align-items: center; gap: 8px; padding: 8px 0; margin-bottom: 8px; border-bottom: 1px dashed var(--border-light);">
+          <span style="font-size: 11px; font-weight: 700;">打烊前多久提醒：</span>
+          <input type="number" id="tnReminderMinutes" min="5" max="120" step="5"
+                 style="width: 60px; padding: 5px; border: 1.5px solid var(--border-light); border-radius: 5px; font-size: 12px; text-align: center;" value="15">
+          <span style="font-size: 11px;">分鐘</span>
+          <button class="btn-ghost" style="padding: 5px 10px; font-size: 11px;" id="tnSaveReminderMinutes">儲存</button>
+        </div>
+
+        <div id="tnStoreHoursList" style="font-size: 11px;"></div>
+
+        <div style="margin-top: 10px; display: flex; gap: 6px;">
+          <button class="btn-primary" style="flex: 1; padding: 8px; font-size: 12px;" id="tnSaveStoreHoursBtn">💾 儲存營業時間</button>
+          <button class="btn-ghost" style="padding: 8px 12px; font-size: 12px;" id="tnResetStoreHoursBtn">↻ 還原預設</button>
+        </div>
+      </div>
+
+      <!-- 手動推送提醒 -->
+      <div class="tn-card">
+        <div class="tn-card-title">🔄 手動推送（V 主動）</div>
+        <div class="tn-card-desc">不想等 Cloud Functions 排程？這裡可立即觸發兩種檢查</div>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <button class="btn-ghost" style="padding: 10px; font-size: 12px; text-align: left;" id="tnManualUnfilled">
+            📝 立即推送「未填提醒」到該店群組
+            <div style="font-size: 10px; color: var(--text-tertiary); margin-top: 2px;">檢查 7 店今日是否進入提醒視窗、未填者發 Teams</div>
+          </button>
+          <button class="btn-ghost" style="padding: 10px; font-size: 12px; text-align: left;" id="tnManualOverdue">
+            ⏰ 立即推送「週報逾期提醒」到對應店長
+            <div style="font-size: 10px; color: var(--text-tertiary); margin-top: 2px;">檢查上週週報、逾期者發 Teams 給店長</div>
+          </button>
+        </div>
+        <div class="tn-test-result" id="tnManualResult"></div>
+      </div>
+
       <!-- 通知事件開關 -->
       <div class="tn-card">
         <div class="tn-card-title">🔔 通知事件</div>
@@ -4981,6 +5167,38 @@ input, textarea, select { font-family: inherit; }
     <div class="modal-footer">
       <button class="btn-ghost" style="flex: 1;" id="addStaffCancelBtn">取消</button>
       <button class="btn-primary" style="flex: 2; justify-content: center; padding: 10px;" id="addStaffConfirmBtn">確認新增</button>
+    </div>
+  </div>
+</div>
+
+<!-- ★ 編輯員工彈窗 ★ -->
+<div class="modal-overlay" id="editStaffModal">
+  <div class="modal-box" style="max-width: 380px;">
+    <div class="modal-header">
+      <div class="modal-title">編輯員工</div>
+      <button class="modal-close" id="editStaffCloseBtn">
+        <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">姓名 <span class="form-required">*</span></label>
+        <input type="text" class="form-input" id="editStaffName" placeholder="例：小婷" maxlength="20">
+        <div class="form-hint" style="font-size: 10px; color: var(--text-tertiary); margin-top: 4px;">⚠️ 修改後，歷史紀錄中該員工的舊名字會自動更新</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">職位 <span class="form-required">*</span></label>
+        <select class="form-select" id="editStaffRole">
+          <option value="店員">店員</option>
+          <option value="店長">店長</option>
+          <option value="副店長">副店長</option>
+          <option value="工讀生">工讀生</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" style="flex: 1;" id="editStaffCancelBtn">取消</button>
+      <button class="btn-primary" style="flex: 2; justify-content: center; padding: 10px;" id="editStaffConfirmBtn">儲存變更</button>
     </div>
   </div>
 </div>
@@ -5639,6 +5857,14 @@ function setupStaffManagement() {
   document.getElementById('addStaffCloseBtn').addEventListener('click', closeAddStaffModal);
   document.getElementById('addStaffCancelBtn').addEventListener('click', closeAddStaffModal);
   document.getElementById('addStaffConfirmBtn').addEventListener('click', confirmAddStaff);
+
+  // ★ 編輯員工 modal events
+  const editClose = document.getElementById('editStaffCloseBtn');
+  const editCancel = document.getElementById('editStaffCancelBtn');
+  const editConfirm = document.getElementById('editStaffConfirmBtn');
+  if (editClose) editClose.addEventListener('click', closeEditStaffModal);
+  if (editCancel) editCancel.addEventListener('click', closeEditStaffModal);
+  if (editConfirm) editConfirm.addEventListener('click', saveEditedStaff);
 }
 
 function openStaffMgmt() {
@@ -5696,20 +5922,24 @@ function renderStaffMgmtList(list) {
           <div class="staff-mgmt-name">${escapeHtml(s.name)} ${isActive ? '' : '<span style="font-size:10px;color:var(--text-tertiary);">(已停用)</span>'}</div>
           <div class="staff-mgmt-meta">${escapeHtml(s.role || '店員')} · 加入於 ${formatDate(s.createdAt)}</div>
         </div>
-        ${isActive
-          ? `<button class="btn-danger" data-action="deactivate" data-id="${s.id}">停用</button>`
-          : `<button class="btn-ghost" data-action="reactivate" data-id="${s.id}">重新啟用</button>`}
+        <div style="display: flex; gap: 4px; flex-shrink: 0;">
+          <button class="btn-ghost" style="padding: 6px 10px; font-size: 11px;" data-action="edit" data-id="${s.id}">編輯</button>
+          ${isActive
+            ? `<button class="btn-danger" style="padding: 6px 10px; font-size: 11px;" data-action="deactivate" data-id="${s.id}">停用</button>`
+            : `<button class="btn-ghost" style="padding: 6px 10px; font-size: 11px;" data-action="reactivate" data-id="${s.id}">重新啟用</button>`}
+        </div>
       </div>
     `;
   }).join('');
 
-  // 綁定停用/啟用按鈕
+  // 綁定按鈕
   container.querySelectorAll('button[data-action]').forEach(btn => {
     btn.addEventListener('click', () => {
       const action = btn.dataset.action;
       const id = btn.dataset.id;
       if (action === 'deactivate') deactivateStaff(id);
       if (action === 'reactivate') reactivateStaff(id);
+      if (action === 'edit') openEditStaffModal(id);
     });
   });
 }
@@ -5732,6 +5962,90 @@ async function reactivateStaff(staffId) {
   if (result.success) {
     showToast('已重新啟用', 'success');
     loadStaffMgmtList();
+  }
+}
+
+// ============================================
+// ★ 編輯員工 ★
+// ============================================
+let editingStaffId = null;
+
+async function openEditStaffModal(staffId) {
+  if (!db) return;
+  try {
+    const snap = await db.ref(`/stores/${state.storeId}/staff/${staffId}`).once('value');
+    const staff = snap.val();
+    if (!staff) {
+      showToast('找不到員工資料', 'error');
+      return;
+    }
+    editingStaffId = staffId;
+    document.getElementById('editStaffName').value = staff.name || '';
+    document.getElementById('editStaffRole').value = staff.role || '店員';
+    document.getElementById('editStaffModal').classList.add('show');
+    setTimeout(() => document.getElementById('editStaffName').focus(), 100);
+  } catch (e) {
+    showToast('讀取失敗：' + e.message, 'error');
+  }
+}
+
+function closeEditStaffModal() {
+  editingStaffId = null;
+  document.getElementById('editStaffModal').classList.remove('show');
+}
+
+async function saveEditedStaff() {
+  if (!editingStaffId) return;
+  const newName = document.getElementById('editStaffName').value.trim();
+  const newRole = document.getElementById('editStaffRole').value;
+
+  if (!newName) {
+    showToast('姓名不能為空', 'error');
+    return;
+  }
+  if (newName.length > 20) {
+    showToast('姓名最多 20 字', 'error');
+    return;
+  }
+
+  setLoading(true);
+  try {
+    // 讀舊資料（要拿舊名字、更新歷史紀錄）
+    const oldSnap = await db.ref(`/stores/${state.storeId}/staff/${editingStaffId}`).once('value');
+    const oldStaff = oldSnap.val() || {};
+    const oldName = oldStaff.name;
+
+    // 更新 staff 表
+    await db.ref(`/stores/${state.storeId}/staff/${editingStaffId}`).update({
+      name: newName,
+      role: newRole
+    });
+
+    // 若名字有變、且 storeId 是 V 自己以外的店、嘗試同步更新歷史紀錄中提及此人的舊名
+    // （只更新 _history 內 staffId 等於此 id 的記錄，靠 staffId 連結，無需重寫舊名）
+    // 這邊主要靠 staffId 為主鍵，舊名只是顯示快照——所以實務上不必改舊紀錄
+    // 但為了 V 看到的歷史紀錄畫面不誤導，可考慮：之後顯示時用「最新 staff.name」取代快照
+
+    showToast(`✓ 已更新為「${newName}」`, 'success');
+    closeEditStaffModal();
+    loadStaffMgmtList();
+
+    // 若 currentStaff 就是被改的人、即時更新登入狀態
+    if (state.selectedStaffId === editingStaffId && oldName === state.currentStaff) {
+      state.currentStaff = newName;
+      try {
+        sessionStorage.setItem('vvds_session', JSON.stringify({
+          storeId: state.storeId,
+          isHQ: state.isHQ,
+          currentStaff: newName,
+          selectedStaffId: state.selectedStaffId
+        }));
+      } catch (e) {}
+    }
+  } catch (e) {
+    showToast('儲存失敗：' + e.message, 'error');
+  } finally {
+    setLoading(false);
   }
 }
 
@@ -6665,10 +6979,8 @@ async function refreshHomeKpiSummary() {
     document.getElementById('rvMiniKpiGrid').style.display = 'none';
     await loadHqStoresOverview();
     await renderHqAiCoachAdvice();
-    // 背景檢查週報逾期（每天每店只通知一次）
-    checkAndNotifyOverdue();
-    // 背景檢查未填今日數字（每天每店只通知一次、早上 10 點後才發）
-    checkAndNotifyUnfilled();
+    // 註：Teams 自動通知（未填提醒、週報逾期）已移到「立即檢查並推送」按鈕
+    // 或交由 Cloud Functions 排程處理，不在 V 登入時自動觸發
     return;
   }
   document.getElementById('rvHqStoresOverview').style.display = 'none';
@@ -6711,45 +7023,7 @@ async function refreshHomeKpiSummary() {
     document.getElementById('kpiHomeCountdownNum').textContent = daysLeft + ' 天';
     document.getElementById('kpiHomeCountdownLabel').textContent = daysLeft <= 0 ? '本月最後一天' : '距月底還有';
 
-    // 達成率 hero
-    const rate = todayTarget > 0 ? Math.round(sales / todayTarget * 100) : 0;
-    const heroNumEl = document.getElementById('rvRateHeroNum');
-    const heroStatusEl = document.getElementById('rvRateHeroStatus');
-    const heroBarEl = document.getElementById('rvRateHeroBar');
-
-    if (todayTarget > 0) {
-      heroNumEl.innerHTML = `${rate}<span class="rv-rate-hero-num-pct">%</span>`;
-      heroStatusEl.classList.remove('high', 'mid', 'low');
-      let barClass = 'orange';
-      if (rate >= 100) {
-        heroStatusEl.textContent = '✓ 達標';
-        heroStatusEl.classList.add('high');
-        barClass = 'green';
-      } else if (rate >= 80) {
-        heroStatusEl.textContent = '接近達標 ✦';
-        heroStatusEl.classList.add('mid');
-        barClass = 'yellow';
-      } else if (rate >= 50) {
-        heroStatusEl.textContent = '需要加把勁';
-        heroStatusEl.classList.add('low');
-        barClass = 'orange';
-      } else {
-        heroStatusEl.textContent = '需努力';
-        heroStatusEl.classList.add('low');
-        barClass = 'red';
-      }
-      heroBarEl.className = `rv-bar-fill ${barClass}`;
-      heroBarEl.style.width = Math.min(rate, 100) + '%';
-    } else {
-      heroNumEl.innerHTML = `—<span class="rv-rate-hero-num-pct">%</span>`;
-      heroStatusEl.textContent = '無目標';
-      heroBarEl.style.width = '0%';
-    }
-
-    document.getElementById('homeKpiSales').textContent = formatMoney(sales);
-    document.getElementById('homeKpiTarget').textContent = todayTarget > 0 ? `/ ${formatMoney(todayTarget)}` : '/ —';
-
-    // 月累積進度
+    // ★ 計算本月累積資料
     let monthSales = 0;
     let monthTargetSum = 0;
     Object.entries(allLogs).forEach(([date, l]) => {
@@ -6761,66 +7035,96 @@ async function refreshHomeKpiSummary() {
 
     // 時間進度（本月已過幾%）
     const timePct = Math.min(Math.round(todayDay / daysInMonth * 100), 100);
-    document.getElementById('rvMonthTimePct').textContent = `${timePct}% 過完`;
-    document.getElementById('rvMonthTimeBar').style.width = timePct + '%';
 
-    // 業績進度
+    // 業績進度（本月達成率）
     const finalTargetSum = monthlyTarget > 0 ? monthlyTarget : monthTargetSum;
+    const monthRate = finalTargetSum > 0 ? Math.round(monthSales / finalTargetSum * 100) : 0;
+    const diffVsTime = monthRate - timePct;
+
+    // ★ 改版：Hero 顯示「本月達成率」
+    const heroNumEl = document.getElementById('rvRateHeroNum');
+    const heroStatusEl = document.getElementById('rvRateHeroStatus');
+    const heroBarEl = document.getElementById('rvRateHeroBar');
+
     if (finalTargetSum > 0) {
-      const salesPct = Math.round(monthSales / finalTargetSum * 100);
-      const diffVsTime = salesPct - timePct;
-      const pctEl = document.getElementById('rvMonthSalesPct');
-      const barEl = document.getElementById('rvMonthSalesBar');
-      pctEl.classList.remove('ahead', 'behind');
-      if (diffVsTime >= 5) {
-        pctEl.classList.add('ahead');
-        pctEl.textContent = `${salesPct}%（超前 ${diffVsTime}%）`;
-        barEl.className = 'rv-bar-fill green';
-      } else if (diffVsTime <= -5) {
-        pctEl.classList.add('behind');
-        pctEl.textContent = `${salesPct}%（落後 ${Math.abs(diffVsTime)}%）`;
-        barEl.className = 'rv-bar-fill orange';
+      heroNumEl.innerHTML = `${monthRate}<span class="rv-rate-hero-num-pct">%</span>`;
+      heroStatusEl.classList.remove('high', 'mid', 'low');
+      let barClass = 'orange';
+      // 用「相對時間進度」判斷狀態（不是絕對的 100%）
+      if (monthRate >= 100) {
+        heroStatusEl.textContent = '✓ 已達標';
+        heroStatusEl.classList.add('high');
+        barClass = 'green';
+      } else if (diffVsTime >= 5) {
+        heroStatusEl.textContent = `↑ 超前 ${diffVsTime}%`;
+        heroStatusEl.classList.add('high');
+        barClass = 'green';
+      } else if (diffVsTime >= -5) {
+        heroStatusEl.textContent = '同步進度';
+        heroStatusEl.classList.add('mid');
+        barClass = 'yellow';
+      } else if (diffVsTime >= -15) {
+        heroStatusEl.textContent = `↓ 落後 ${Math.abs(diffVsTime)}%`;
+        heroStatusEl.classList.add('mid');
+        barClass = 'orange';
       } else {
-        pctEl.textContent = `${salesPct}%（同步）`;
-        barEl.className = 'rv-bar-fill yellow';
+        heroStatusEl.textContent = `↓ 落後 ${Math.abs(diffVsTime)}%`;
+        heroStatusEl.classList.add('low');
+        barClass = 'red';
       }
-      barEl.style.width = Math.min(salesPct, 100) + '%';
+      heroBarEl.className = `rv-bar-fill ${barClass}`;
+      heroBarEl.style.width = Math.min(monthRate, 100) + '%';
     } else {
-      document.getElementById('rvMonthSalesPct').textContent = '尚未設定目標';
-      document.getElementById('rvMonthSalesBar').style.width = '0%';
+      heroNumEl.innerHTML = `—<span class="rv-rate-hero-num-pct">%</span>`;
+      heroStatusEl.textContent = '無目標';
+      heroBarEl.style.width = '0%';
     }
 
-    // 客數
-    document.getElementById('homeKpiCustomers').textContent = customers || '—';
-    // 客單價
+    // ★ 右側顯示「本月業績 / 目標」
+    document.getElementById('homeKpiSales').textContent = formatMoney(monthSales);
+    document.getElementById('homeKpiTarget').textContent = finalTargetSum > 0 ? `/ ${formatMoney(finalTargetSum)}` : '/ —';
+
+    // ★ 雙進度條：時間 vs 業績
+    const timePctEl = document.getElementById('rvMonthTimePct');
+    const timeBarEl = document.getElementById('rvMonthTimeBar');
+    timePctEl.textContent = timePct + '%';
+    timeBarEl.style.width = timePct + '%';
+
+    const salesPctEl = document.getElementById('rvMonthSalesPct');
+    const salesBarEl = document.getElementById('rvMonthSalesBar');
+    salesPctEl.classList.remove('ahead', 'behind');
+    salesBarEl.classList.remove('ahead');
+    if (finalTargetSum > 0) {
+      salesPctEl.textContent = monthRate + '%';
+      if (diffVsTime >= 5) {
+        salesPctEl.classList.add('ahead');
+        salesBarEl.classList.add('ahead');
+      } else if (diffVsTime <= -5) {
+        salesPctEl.classList.add('behind');
+      }
+      salesBarEl.style.width = Math.min(monthRate, 100) + '%';
+    } else {
+      salesPctEl.textContent = '—';
+      salesBarEl.style.width = '0%';
+    }
+
+    // ★ 未填提醒卡（今日尚未填 → 顯示）
+    const unfilledCard = document.getElementById('rvUnfilledCard');
+    if (sales > 0 || customers > 0) {
+      unfilledCard.style.display = 'none';
+    } else {
+      unfilledCard.style.display = 'flex';
+    }
+
+    // ★ 三小卡：今日業績、客數、客單價
+    document.getElementById('rvHomeKpiTodaySales').textContent = formatMoney(sales);
+    document.getElementById('homeKpiCustomers').textContent = customers || '0';
     document.getElementById('rvHomeKpiAvg').textContent =
       customers > 0 ? formatMoney(Math.round(sales / customers)) : '—';
-    // UPT
-    const upt = customers > 0 ? (items / customers).toFixed(1) : null;
-    document.getElementById('rvHomeKpiUpt').textContent = upt !== null ? upt : '—';
 
-    // UPT meta
-    const uptMeta = document.getElementById('rvMiniKpiUptMeta');
-    uptMeta.classList.remove('up', 'down', 'neutral');
-    if (upt !== null) {
-      const uptNum = parseFloat(upt);
-      if (uptNum >= 2.0) {
-        uptMeta.classList.add('up');
-        uptMeta.textContent = '✓ 搭配能力佳';
-      } else if (uptNum >= 1.5) {
-        uptMeta.classList.add('neutral');
-        uptMeta.textContent = '可加強搭配';
-      } else if (uptNum > 0) {
-        uptMeta.classList.add('down');
-        uptMeta.textContent = '單件多，可推搭配';
-      } else {
-        uptMeta.textContent = '—';
-      }
-    } else {
-      uptMeta.classList.add('neutral');
-      uptMeta.textContent = '—';
-    }
-
+    document.getElementById('rvMiniKpiTodaySalesMeta').textContent = sales > 0
+      ? (todayTarget > 0 ? `今日目標 ${formatMoney(todayTarget)}` : '已成交')
+      : '尚未成交';
     document.getElementById('rvMiniKpiCustomersMeta').textContent = customers > 0 ? '今日已成交' : '尚未成交';
     document.getElementById('rvMiniKpiAvgMeta').textContent = customers > 0 ? '本日平均' : '—';
 
@@ -6880,9 +7184,14 @@ async function loadHqStoresOverview() {
 
       const shortName = (STORE_NAMES[sid] || sid).replace(/^台北|^台中|^台南|^高雄|^桃園/, '');
 
+      // 今日是否已填？
+      const todayLog = logs[today];
+      const filledToday = todayLog && todayLog.sales && todayLog.sales > 0;
+      const unfilledBadge = filledToday ? '' : `<span style="background: var(--danger-bg); color: var(--danger); font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px; margin-left: 4px; white-space: nowrap;">未填</span>`;
+
       return `
         <div class="rv-hq-store-row">
-          <span class="rv-hq-store-name">${escapeHtml(shortName)}</span>
+          <span class="rv-hq-store-name">${escapeHtml(shortName)}${unfilledBadge}</span>
           <div class="rv-hq-store-bar-wrap">
             <div class="rv-bar-bg">
               <div class="rv-bar-fill ${barClass}" style="width: ${Math.min(pct, 100)}%;"></div>
@@ -10547,6 +10856,105 @@ const MANAGER_STORES = {
   meiru: ['xintiandi', 'xinjuejiang']
 };
 
+/** 7 店週一~週日 營業時間（預設值，V 可在設定頁覆蓋）
+ *  day key: 0=Sun, 1=Mon, ..., 6=Sat (對應 Date.prototype.getDay()) */
+const STORE_HOURS_DEFAULT = {
+  zhongxiao: {
+    1: { open: '12:30', close: '21:30' }, 2: { open: '12:30', close: '21:30' },
+    3: { open: '12:30', close: '21:30' }, 4: { open: '12:30', close: '21:30' },
+    5: { open: '13:00', close: '22:00' }, 6: { open: '13:00', close: '22:00' },
+    0: { open: '12:30', close: '21:30' }
+  },
+  tongyi: {
+    1: { open: '10:30', close: '21:30' }, 2: { open: '10:30', close: '21:30' },
+    3: { open: '10:30', close: '21:30' }, 4: { open: '10:30', close: '21:30' },
+    5: { open: '13:00', close: '22:00' }, 6: { open: '13:00', close: '22:00' },
+    0: { open: '12:30', close: '21:30' }
+  },
+  taoyuan: {
+    1: { open: '10:30', close: '22:00' }, 2: { open: '10:30', close: '22:00' },
+    3: { open: '10:30', close: '22:00' }, 4: { open: '10:30', close: '22:00' },
+    5: { open: '10:30', close: '22:00' }, 6: { open: '13:00', close: '22:00' },
+    0: { open: '13:00', close: '22:00' }
+  },
+  yizhong: {
+    1: { open: '12:30', close: '22:00' }, 2: { open: '12:30', close: '22:00' },
+    3: { open: '12:30', close: '22:00' }, 4: { open: '12:30', close: '22:00' },
+    5: { open: '12:30', close: '22:30' }, 6: { open: '12:30', close: '22:30' },
+    0: { open: '12:30', close: '22:00' }
+  },
+  xinyizhong: {
+    1: { open: '13:00', close: '22:00' }, 2: { open: '13:00', close: '22:00' },
+    3: { open: '13:00', close: '22:00' }, 4: { open: '13:00', close: '22:00' },
+    5: { open: '13:00', close: '22:30' }, 6: { open: '13:00', close: '22:30' },
+    0: { open: '13:00', close: '22:00' }
+  },
+  xintiandi: {
+    1: { open: '10:30', close: '22:00' }, 2: { open: '10:30', close: '22:00' },
+    3: { open: '10:30', close: '22:00' }, 4: { open: '10:30', close: '22:00' },
+    5: { open: '10:30', close: '22:00' }, 6: { open: '13:00', close: '22:00' },
+    0: { open: '13:00', close: '22:00' }
+  },
+  xinjuejiang: {
+    1: { open: '13:00', close: '22:00' }, 2: { open: '13:00', close: '22:00' },
+    3: { open: '13:00', close: '22:00' }, 4: { open: '13:00', close: '22:00' },
+    5: { open: '13:00', close: '22:30' }, 6: { open: '13:00', close: '22:30' },
+    0: { open: '13:00', close: '22:00' }
+  }
+};
+
+// 執行時的營業時間（會從 Firebase 載入覆蓋預設值）
+let storeHoursConfig = JSON.parse(JSON.stringify(STORE_HOURS_DEFAULT));
+
+// 打烊前多少分鐘要提醒（預設 15）
+let unfilledReminderMinutes = 15;
+
+/** 載入 Firebase 自訂的營業時間 */
+async function loadStoreHoursConfig() {
+  if (!db) return;
+  try {
+    const snap = await db.ref('/global/settings/storeHours').once('value');
+    const data = snap.val();
+    if (data) {
+      // 用 Firebase 設定覆蓋預設（保留沒設定的 default）
+      Object.keys(data).forEach(sid => {
+        if (data[sid]) storeHoursConfig[sid] = { ...storeHoursConfig[sid], ...data[sid] };
+      });
+    }
+    const reminderSnap = await db.ref('/global/settings/unfilledReminderMinutes').once('value');
+    if (reminderSnap.val() != null) unfilledReminderMinutes = reminderSnap.val();
+  } catch (e) {
+    console.warn('loadStoreHoursConfig error:', e);
+  }
+}
+
+/** 取得指定店某天的打烊時間（HH:MM 字串，公休回 null）*/
+function getCloseTimeForStoreOnDay(storeId, dayOfWeek) {
+  const cfg = storeHoursConfig[storeId];
+  if (!cfg) return null;
+  const day = cfg[dayOfWeek];
+  if (!day || !day.close || day.close === 'closed' || day.close === '公休') return null;
+  return day.close;
+}
+
+/** 把 HH:MM 字串轉成今天的 Date 物件 */
+function timeStringToTodayDate(hhmm) {
+  const [h, m] = hhmm.split(':').map(Number);
+  const d = new Date();
+  d.setHours(h, m, 0, 0);
+  return d;
+}
+
+/** 判斷某店「現在」是不是進入「打烊前 N 分鐘 ~ 打烊」這個提醒視窗 */
+function isInReminderWindow(storeId) {
+  const now = new Date();
+  const closeStr = getCloseTimeForStoreOnDay(storeId, now.getDay());
+  if (!closeStr) return false; // 公休
+  const closeTime = timeStringToTodayDate(closeStr);
+  const reminderStart = new Date(closeTime.getTime() - unfilledReminderMinutes * 60000);
+  return now >= reminderStart && now <= closeTime;
+}
+
 let teamsRoutingConfig = {
   channels: {},       // { zhongxiao: <URL>, ... } 7 店
   managers: {},       // { qsuan: <URL>, ... } 3 店長
@@ -10913,16 +11321,15 @@ async function checkSalesBoomTriggers(storeId, todayDate, currentLog, todayTarge
 
 // ---------- V 端：未填今日數字檢查 ----------
 
-/** V 進主畫面時觸發。每天每店只發一次。 */
+/** V 進主畫面時觸發。
+ *  邏輯：對每店，看現在是否進入「打烊前 N 分鐘 ~ 打烊」這個提醒視窗
+ *  若是、且該店今日尚未填、且今日尚未發過提醒 → 發送 */
 async function checkAndNotifyUnfilled() {
   if (!state.isHQ) return;
   if (!db) return;
   if (!teamsRoutingConfig.enabledEvents.unfilled) return;
 
   const today = getTodayString();
-  const now = new Date();
-  // 早上 10 點前不發（剛開店時還沒填正常）
-  if (now.getHours() < 10) return;
 
   try {
     const sentSnap = await db.ref(`/global/settings/teamsRouting/unfilledSent/${today}`).once('value');
@@ -10930,6 +11337,9 @@ async function checkAndNotifyUnfilled() {
 
     for (const sid of STORE_ORDER) {
       if (sentList[sid]) continue;
+
+      // 不在提醒視窗內 → 跳過
+      if (!isInReminderWindow(sid)) continue;
 
       // 該店今日有沒有填？
       const logSnap = await db.ref(`/stores/${sid}/dailyLogs/${today}`).once('value');
@@ -11084,6 +11494,10 @@ async function renderTeamsNotifySettings() {
   document.getElementById('tnUrl_hq').addEventListener('input', e => {
     e.target.classList.toggle('has-value', !!e.target.value.trim());
   });
+
+  // 渲染營業時間表
+  await loadStoreHoursConfig();
+  renderStoreHoursTable();
 }
 
 async function saveAllTeamsUrls() {
@@ -11217,6 +11631,153 @@ function setupTeamsNotifyScreen() {
       el.addEventListener('change', () => toggleTeamsEvent(event, el.checked));
     }
   });
+
+  // 營業時間相關
+  document.getElementById('tnSaveReminderMinutes').addEventListener('click', saveReminderMinutes);
+  document.getElementById('tnSaveStoreHoursBtn').addEventListener('click', saveStoreHours);
+  document.getElementById('tnResetStoreHoursBtn').addEventListener('click', resetStoreHours);
+
+  // 手動推送
+  document.getElementById('tnManualUnfilled').addEventListener('click', manualPushUnfilled);
+  document.getElementById('tnManualOverdue').addEventListener('click', manualPushOverdue);
+}
+
+/** 手動推送未填提醒（V 點按鈕觸發） */
+async function manualPushUnfilled() {
+  const resultEl = document.getElementById('tnManualResult');
+  resultEl.style.display = 'block';
+  resultEl.className = 'tn-test-result';
+  resultEl.textContent = '⏳ 檢查中...';
+
+  try {
+    await checkAndNotifyUnfilled();
+    resultEl.className = 'tn-test-result success';
+    resultEl.innerHTML = '✓ 已執行未填提醒檢查<br><span style="font-size:10px;">F12 Console 可看詳細執行紀錄。若所有店都已填或不在提醒視窗、就不會發出訊息。</span>';
+  } catch (e) {
+    resultEl.className = 'tn-test-result error';
+    resultEl.textContent = '✗ 執行失敗：' + e.message;
+  }
+}
+
+/** 手動推送週報逾期提醒（V 點按鈕觸發） */
+async function manualPushOverdue() {
+  const resultEl = document.getElementById('tnManualResult');
+  resultEl.style.display = 'block';
+  resultEl.className = 'tn-test-result';
+  resultEl.textContent = '⏳ 檢查中...';
+
+  try {
+    await checkAndNotifyOverdue();
+    resultEl.className = 'tn-test-result success';
+    resultEl.innerHTML = '✓ 已執行週報逾期檢查<br><span style="font-size:10px;">F12 Console 可看詳細紀錄。若上週都已交週報、就不會發出訊息。</span>';
+  } catch (e) {
+    resultEl.className = 'tn-test-result error';
+    resultEl.textContent = '✗ 執行失敗：' + e.message;
+  }
+}
+
+// ---------- 營業時間管理 ----------
+
+const DAY_NAMES = ['日', '一', '二', '三', '四', '五', '六'];
+const DAY_ORDER = [1, 2, 3, 4, 5, 6, 0]; // 顯示順序：週一~週日
+
+function renderStoreHoursTable() {
+  const container = document.getElementById('tnStoreHoursList');
+  document.getElementById('tnReminderMinutes').value = unfilledReminderMinutes;
+
+  // 表頭
+  let html = `
+    <div class="sh-row header">
+      <div class="sh-store-name">店家</div>
+      ${DAY_ORDER.map(d => `<div class="sh-time-cell"><span class="sh-day-label">${DAY_NAMES[d]}</span></div>`).join('')}
+    </div>
+  `;
+
+  // 7 店各列
+  STORE_ORDER.forEach(sid => {
+    const cfg = storeHoursConfig[sid] || {};
+    html += `
+      <div class="sh-row" data-store="${sid}">
+        <div class="sh-store-name">${escapeHtml(STORE_NAMES[sid])}</div>
+        ${DAY_ORDER.map(d => {
+          const day = cfg[d] || {};
+          const closeVal = day.close && day.close !== 'closed' ? day.close : '';
+          return `
+            <div class="sh-time-cell">
+              <input type="text" class="sh-time-input" data-store="${sid}" data-day="${d}"
+                     value="${closeVal}" placeholder="休" maxlength="5">
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+async function saveReminderMinutes() {
+  const val = parseInt(document.getElementById('tnReminderMinutes').value);
+  if (isNaN(val) || val < 5 || val > 120) {
+    showToast('提醒時間必須在 5-120 分鐘之間', 'error');
+    return;
+  }
+  setLoading(true);
+  try {
+    await db.ref('/global/settings/unfilledReminderMinutes').set(val);
+    unfilledReminderMinutes = val;
+    showToast(`✓ 已設定為打烊前 ${val} 分鐘提醒`, 'success');
+  } catch (e) {
+    showToast('儲存失敗', 'error');
+  } finally {
+    setLoading(false);
+  }
+}
+
+async function saveStoreHours() {
+  setLoading(true);
+  try {
+    const update = {};
+    document.querySelectorAll('.sh-time-input').forEach(input => {
+      const sid = input.dataset.store;
+      const day = parseInt(input.dataset.day);
+      const val = input.value.trim();
+      if (!update[sid]) update[sid] = JSON.parse(JSON.stringify(storeHoursConfig[sid] || {}));
+      // 保留 open，更新 close
+      if (!update[sid][day]) update[sid][day] = {};
+      if (val === '' || val === '休' || val === '公休') {
+        update[sid][day].close = 'closed';
+      } else if (/^\d{1,2}:\d{2}$/.test(val)) {
+        update[sid][day].close = val;
+      } else {
+        // 格式錯誤、跳過該格
+        console.warn('無效時間格式', sid, day, val);
+      }
+    });
+
+    await db.ref('/global/settings/storeHours').set(update);
+    storeHoursConfig = update;
+    showToast('✓ 營業時間已儲存', 'success');
+  } catch (e) {
+    showToast('儲存失敗：' + e.message, 'error');
+  } finally {
+    setLoading(false);
+  }
+}
+
+async function resetStoreHours() {
+  if (!confirm('還原成預設營業時間？\n（你之前的自訂會被覆蓋）')) return;
+  setLoading(true);
+  try {
+    storeHoursConfig = JSON.parse(JSON.stringify(STORE_HOURS_DEFAULT));
+    await db.ref('/global/settings/storeHours').set(storeHoursConfig);
+    renderStoreHoursTable();
+    showToast('已還原預設', 'success');
+  } catch (e) {
+    showToast('還原失敗', 'error');
+  } finally {
+    setLoading(false);
+  }
 }
 // ============================================
 // ★ Phase 1.D 模組初始化 ★
@@ -11228,6 +11789,8 @@ function initPhase1D() {
   setupTeamsNotifyScreen();
   // 載入 Teams 設定（背景）
   loadTeamsRoutingConfig();
+  // 載入店家營業時間（背景）
+  loadStoreHoursConfig();
 }
 
 
@@ -11257,6 +11820,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ★ Phase 1.D 初始化
   initPhase1D();
+
+  // ★ 店員主畫面：未填提醒按鈕「去填寫」
+  const unfilledBtn = document.getElementById('rvUnfilledBtn');
+  if (unfilledBtn) {
+    unfilledBtn.addEventListener('click', () => openDailyLog());
+  }
 
   // 嘗試恢復登入狀態（refresh 後保持登入）
   if (!tryRestoreSession()) {
