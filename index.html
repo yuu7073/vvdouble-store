@@ -5779,16 +5779,9 @@ function enterMainApp() {
     ? `總部視角 · ${state.currentStaff}`
     : `值班：${state.currentStaff}`;
 
-  // 更新歡迎詞
+  // 更新歡迎詞（隨機池：每次登入隨機抽一句）
   const welcomeEl = document.getElementById('welcomeText');
-  const hour = new Date().getHours();
-  let greet = '';
-  if (hour < 11) greet = '早安';
-  else if (hour < 14) greet = '午安';
-  else if (hour < 18) greet = '午後好';
-  else greet = '晚安';
-
-  welcomeEl.innerHTML = `${greet}，<strong>${escapeHtml(state.currentStaff)}</strong> ✿<br>這是 Phase 1.A 地基版本，後續模組將陸續上線。`;
+  welcomeEl.innerHTML = pickGreeting(state.currentStaff);
 
   // 載入個人主題偏好
   loadUserThemeFromFirebase();
@@ -6143,6 +6136,65 @@ function setupThemeSwitcher() {
       showToast('已切換主題', 'success');
     });
   });
+}
+
+// ============================================
+// 隨機招呼語池（依時段）
+// ============================================
+const GREETING_POOLS = {
+  morning: [
+    '早安，{name} ☀',
+    '新的一天，加油 {name} ✨',
+    '{name} 早安啊，今天也要美美的 🌸',
+    '早安，{name}！喝杯咖啡再開始吧 ☕',
+    '今天會是好的一天 {name} 🌿',
+    '{name} 早，準備好了嗎 💪',
+    '早安 {name}，今天又要發光了 ✨'
+  ],
+  noon: [
+    '午安，{name} 🍱',
+    '{name} 中午好，記得吃飯 ☀',
+    '吃飽了再戰 {name} 💪',
+    '午安啊 {name}，下午一起加油 🌿',
+    '{name} 午安，今天感覺如何？',
+    '休息一下吧 {name} ☕'
+  ],
+  afternoon: [
+    '{name} 下午好 🌿',
+    '下午也要繼續發光 {name} ✨',
+    '{name} 加油，撐到收店 💪',
+    '午後愉快 {name} ☕',
+    '{name}，下午的客人來了嗎 🛍',
+    '今天還順利嗎 {name}'
+  ],
+  evening: [
+    '晚安，{name} 🌙',
+    '辛苦了 {name} ✨',
+    '{name}，今天也辛苦了 🌃',
+    '快收店了，加油 {name} 💪',
+    '{name} 晚安，記得趕快回家',
+    '今晚也是元氣 {name} 🌙'
+  ],
+  midnight: [
+    '夜深了 {name}，要不要早點休息 💤',
+    '{name} 還在嗎 🌙',
+    '深夜還在拚，{name} 加油 ✨',
+    '{name}，明天再戰吧 🌙'
+  ]
+};
+
+/** 依時段挑選隨機招呼語 */
+function pickGreeting(name) {
+  const hour = new Date().getHours();
+  let pool;
+  if (hour >= 5 && hour < 11) pool = GREETING_POOLS.morning;
+  else if (hour >= 11 && hour < 14) pool = GREETING_POOLS.noon;
+  else if (hour >= 14 && hour < 18) pool = GREETING_POOLS.afternoon;
+  else if (hour >= 18 && hour < 23) pool = GREETING_POOLS.evening;
+  else pool = GREETING_POOLS.midnight;
+
+  const greeting = pool[Math.floor(Math.random() * pool.length)];
+  return greeting.replace('{name}', `<strong>${escapeHtml(name || '')}</strong>`);
 }
 
 // ============================================
