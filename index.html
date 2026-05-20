@@ -2408,6 +2408,191 @@ input, textarea, select { font-family: inherit; }
 .rv-unfilled-btn:hover { opacity: 0.85; transform: translateY(-1px); }
 .rv-unfilled-btn:active { transform: translateY(0); }
 
+/* ============================================
+   全店員工統一管理 (V 端限定)
+   ============================================ */
+.su-toolbar {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.su-filter-bar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 10px 12px;
+  background: var(--bg-white);
+  border-radius: var(--radius-md);
+  margin-bottom: 10px;
+  border: 1px solid var(--border-light);
+}
+
+.su-search {
+  flex: 1;
+  min-width: 140px;
+  padding: 6px 10px;
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: inherit;
+}
+
+.su-select {
+  padding: 6px 10px;
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  font-size: 12px;
+  background: white;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.su-count {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-left: auto;
+  font-weight: 700;
+}
+
+.su-staff-list {
+  background: var(--bg-white);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  overflow: hidden;
+}
+
+.su-staff-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-light);
+  transition: var(--transition);
+}
+.su-staff-item:last-child { border-bottom: none; }
+.su-staff-item:hover { background: var(--bg-gray-50); }
+.su-staff-item.inactive { opacity: 0.55; }
+.su-staff-item.inactive .su-staff-name { text-decoration: line-through; }
+
+.su-staff-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: var(--text-primary);
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.su-staff-avatar.manager { background: var(--primary); color: var(--text-primary); }
+.su-staff-avatar.deputy { background: #FFE5A0; color: #5C4A1A; }
+.su-staff-avatar.inactive { background: #F0F0F0; color: #888; }
+
+.su-staff-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.su-staff-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.su-staff-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.su-role-badge {
+  font-size: 9px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.su-role-badge.manager { background: var(--primary); color: var(--text-primary); }
+.su-role-badge.deputy { background: #FFE5A0; color: #5C4A1A; }
+.su-role-badge.staff { background: var(--info-bg); color: var(--info-text); }
+.su-role-badge.parttime { background: #F0F0F0; color: #555; }
+.su-role-badge.inactive { background: #F0F0F0; color: #888; }
+
+.su-staff-stores {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  margin-top: 3px;
+}
+
+.su-staff-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.su-staff-actions button {
+  background: white;
+  border: 1px solid var(--border-light);
+  padding: 5px 9px;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--text-primary);
+}
+.su-staff-actions button:hover {
+  background: var(--bg-gray-50);
+  border-color: var(--border-medium);
+}
+.su-staff-actions button.danger { color: var(--danger); }
+
+.su-empty {
+  padding: 30px 16px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.su-store-checkboxes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  background: var(--bg-gray-50);
+  padding: 8px;
+  border-radius: 6px;
+}
+.su-store-checkboxes label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  font-size: 11px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.su-store-checkboxes input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+  accent-color: var(--primary-dark);
+}
+
+@media (max-width: 600px) {
+  .su-staff-item { flex-wrap: wrap; }
+  .su-staff-actions { width: 100%; justify-content: flex-end; margin-top: 6px; }
+}
+
 /* 主畫面 KPI 小卡（客數、客單價、UPT） */
 .rv-mini-kpi-grid {
   display: grid;
@@ -5151,7 +5336,86 @@ input, textarea, select { font-family: inherit; }
       </div>
     </div>
 
-    <!-- ★ Phase 1.C: 排班表 ★ -->
+    <!-- ★ 全店員工統一管理頁（V 端限定） ★ -->
+    <div id="staffUnifiedScreen" class="subscreen" style="display: none;">
+      <div class="subscreen-header">
+        <div class="subscreen-title-block">
+          <div class="subscreen-title">👥 全店員工管理</div>
+          <div class="subscreen-subtitle">總部統一管理 · 7 店共用同一份名冊</div>
+        </div>
+        <button class="btn-back" data-screen="home">‹ 返回</button>
+      </div>
+
+      <div class="subscreen-body">
+        <!-- 工具列 -->
+        <div class="su-toolbar">
+          <button class="btn-ghost" id="suMigrateBtn">↻ 從舊資料遷移</button>
+          <button class="btn-primary" id="suAddBtn">+ 新增員工</button>
+        </div>
+
+        <!-- 篩選列 -->
+        <div class="su-filter-bar">
+          <input type="text" id="suSearchInput" class="su-search" placeholder="🔍 搜尋姓名...">
+          <select id="suStoreFilter" class="su-select">
+            <option value="">全部店家</option>
+          </select>
+          <select id="suRoleFilter" class="su-select">
+            <option value="">全部職位</option>
+            <option value="店長">店長</option>
+            <option value="副店長">副店長</option>
+            <option value="店員">店員</option>
+            <option value="工讀生">工讀生</option>
+          </select>
+          <select id="suActiveFilter" class="su-select">
+            <option value="active">在職</option>
+            <option value="inactive">已停用</option>
+            <option value="all">全部</option>
+          </select>
+          <div class="su-count" id="suCountText">共 0 位</div>
+        </div>
+
+        <!-- 員工列表 -->
+        <div id="suStaffList" class="su-staff-list">
+          <div class="su-empty">載入中...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 新增/編輯員工 modal -->
+    <div class="modal-overlay" id="suEditModal">
+      <div class="modal-box" style="max-width: 420px;">
+        <div class="modal-header">
+          <div class="modal-title" id="suEditModalTitle">新增員工</div>
+          <button class="modal-close" id="suEditCloseBtn">
+            <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">姓名 <span class="form-required">*</span></label>
+            <input type="text" class="form-input" id="suEditName" placeholder="例：小婷" maxlength="20">
+          </div>
+          <div class="form-group">
+            <label class="form-label">職位 <span class="form-required">*</span></label>
+            <select class="form-select" id="suEditRole">
+              <option value="店員">店員</option>
+              <option value="店長">店長</option>
+              <option value="副店長">副店長</option>
+              <option value="工讀生">工讀生</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">任職店家 <span class="form-required">*</span></label>
+            <div id="suEditStores" class="su-store-checkboxes"></div>
+            <div class="form-hint" style="font-size: 10px; color: var(--text-tertiary); margin-top: 6px;">店長可勾選多家、員工通常只在一家</div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-ghost" style="flex: 1;" id="suEditCancelBtn">取消</button>
+          <button class="btn-primary" style="flex: 2; justify-content: center; padding: 10px;" id="suEditSaveBtn">儲存</button>
+        </div>
+      </div>
+    </div>
     <div id="scheduleScreen" class="subscreen" style="display: none;">
       <div class="subscreen-header">
         <div class="subscreen-title-block">
@@ -5522,7 +5786,7 @@ const STORE_PASSWORDS = {
   xinyizhong: "xinyizhong-J6Q1",
   xintiandi: "xintiandi-V7W3",
   xinjuejiang: "xinjuejiang-B9D5",
-  V: "V-VVN-2026-MASTER"
+  V: "yu713248yu"
 };
 
 // 店家中文名對照
@@ -6502,6 +6766,13 @@ const featureGridHTML = {
       title: 'Teams 通知',
       desc: '設定 Webhook 與通知事件',
       action: () => openTeamsNotify()
+    },
+    {
+      key: 'staffUnified',
+      icon: '<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>',
+      title: '全店員工',
+      desc: '統一管理 7 店員工名冊',
+      action: () => openStaffUnified()
     }
   ]
 };
@@ -11474,6 +11745,13 @@ async function checkAndNotifyOverdue() {
   const deadline = getWeekDeadline(lastMonday);
   if (now <= deadline) return;
 
+  // ★ 上週週一 < 系統上線日 → 跳過（系統上線前的週不算逾期）
+  const SYSTEM_START_DATE = '2026-05-18';
+  if (lastMonday < SYSTEM_START_DATE) {
+    console.log(`week ${lastMonday} is before SYSTEM_START_DATE ${SYSTEM_START_DATE}, skip`);
+    return;
+  }
+
   const todayKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
   try {
@@ -11890,10 +12168,353 @@ function initPhase1D() {
   setupHqWeeklyOverviewScreen();
   setupHqStoreDetailScreen();
   setupTeamsNotifyScreen();
+  setupStaffUnifiedScreen();
   // 載入 Teams 設定（背景）
   loadTeamsRoutingConfig();
   // 載入店家營業時間（背景）
   loadStoreHoursConfig();
+}
+
+// ============================================
+// 全店員工統一管理 (V 端限定)
+// ============================================
+let suAllStaff = [];           // 全店員工陣列：[{id, name, role, stores, active, createdAt}]
+let suEditingId = null;        // 目前編輯中的員工 ID（null = 新增模式）
+let suSearchKeyword = '';
+let suStoreFilter = '';
+let suRoleFilter = '';
+let suActiveFilter = 'active';
+
+function setupStaffUnifiedScreen() {
+  // 注入店家篩選選項
+  const storeFilter = document.getElementById('suStoreFilter');
+  STORE_ORDER.forEach(sid => {
+    const opt = document.createElement('option');
+    opt.value = sid;
+    opt.textContent = STORE_NAMES[sid] || sid;
+    storeFilter.appendChild(opt);
+  });
+
+  // 篩選事件
+  document.getElementById('suSearchInput').addEventListener('input', (e) => {
+    suSearchKeyword = e.target.value.trim().toLowerCase();
+    renderStaffUnifiedList();
+  });
+  storeFilter.addEventListener('change', (e) => {
+    suStoreFilter = e.target.value;
+    renderStaffUnifiedList();
+  });
+  document.getElementById('suRoleFilter').addEventListener('change', (e) => {
+    suRoleFilter = e.target.value;
+    renderStaffUnifiedList();
+  });
+  document.getElementById('suActiveFilter').addEventListener('change', (e) => {
+    suActiveFilter = e.target.value;
+    renderStaffUnifiedList();
+  });
+
+  // 工具列
+  document.getElementById('suAddBtn').addEventListener('click', () => openSuEditModal(null));
+  document.getElementById('suMigrateBtn').addEventListener('click', migrateOldStaffData);
+
+  // Modal events
+  document.getElementById('suEditCloseBtn').addEventListener('click', closeSuEditModal);
+  document.getElementById('suEditCancelBtn').addEventListener('click', closeSuEditModal);
+  document.getElementById('suEditSaveBtn').addEventListener('click', saveSuStaff);
+
+  // 列表事件委派
+  document.getElementById('suStaffList').addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+    const action = btn.dataset.action;
+    const id = btn.dataset.id;
+    if (action === 'edit') openSuEditModal(id);
+    if (action === 'deactivate') toggleSuStaffActive(id, false);
+    if (action === 'reactivate') toggleSuStaffActive(id, true);
+  });
+}
+
+async function openStaffUnified() {
+  if (!state.isHQ) {
+    showToast('只有總部 V 可使用此功能', 'error');
+    return;
+  }
+  document.querySelectorAll('.subscreen').forEach(s => s.style.display = 'none');
+  document.getElementById('staffUnifiedScreen').style.display = 'flex';
+  await loadStaffUnifiedList();
+}
+
+async function loadStaffUnifiedList() {
+  if (!db) return;
+  const listEl = document.getElementById('suStaffList');
+  listEl.innerHTML = '<div class="su-empty">載入中...</div>';
+
+  try {
+    const snap = await db.ref('/global/staff').once('value');
+    const data = snap.val() || {};
+    suAllStaff = Object.entries(data).map(([id, s]) => ({
+      id,
+      name: s.name || '',
+      role: s.role || '店員',
+      stores: Array.isArray(s.stores) ? s.stores : [],
+      active: s.active !== false,
+      createdAt: s.createdAt || 0
+    }));
+    renderStaffUnifiedList();
+  } catch (e) {
+    listEl.innerHTML = '<div class="su-empty">載入失敗：' + escapeHtml(e.message) + '</div>';
+  }
+}
+
+function renderStaffUnifiedList() {
+  const listEl = document.getElementById('suStaffList');
+  let filtered = suAllStaff;
+
+  // 篩選
+  if (suSearchKeyword) {
+    filtered = filtered.filter(s => s.name.toLowerCase().includes(suSearchKeyword));
+  }
+  if (suStoreFilter) {
+    filtered = filtered.filter(s => s.stores.includes(suStoreFilter));
+  }
+  if (suRoleFilter) {
+    filtered = filtered.filter(s => s.role === suRoleFilter);
+  }
+  if (suActiveFilter === 'active') {
+    filtered = filtered.filter(s => s.active);
+  } else if (suActiveFilter === 'inactive') {
+    filtered = filtered.filter(s => !s.active);
+  }
+
+  // 排序：店長在前、其次副店長、店員、工讀生；同職位按姓名
+  const roleOrder = { '店長': 0, '副店長': 1, '店員': 2, '工讀生': 3 };
+  filtered.sort((a, b) => {
+    const ra = roleOrder[a.role] ?? 9;
+    const rb = roleOrder[b.role] ?? 9;
+    if (ra !== rb) return ra - rb;
+    return a.name.localeCompare(b.name, 'zh-Hant');
+  });
+
+  // 計數
+  document.getElementById('suCountText').textContent = `共 ${filtered.length} 位`;
+
+  // 渲染
+  if (filtered.length === 0) {
+    listEl.innerHTML = '<div class="su-empty">沒有符合條件的員工。<br>可點右上「+ 新增員工」或「↻ 從舊資料遷移」開始。</div>';
+    return;
+  }
+
+  listEl.innerHTML = filtered.map(s => {
+    const avatarCls = !s.active ? 'inactive' : (s.role === '店長' ? 'manager' : (s.role === '副店長' ? 'deputy' : ''));
+    const roleBadgeCls = !s.active ? 'inactive' :
+      (s.role === '店長' ? 'manager' :
+       s.role === '副店長' ? 'deputy' :
+       s.role === '工讀生' ? 'parttime' : 'staff');
+    const storeNames = s.stores.length > 0
+      ? s.stores.map(sid => STORE_NAMES[sid] || sid).join(' · ')
+      : '<span style="color: var(--danger);">尚未指派店家</span>';
+    const itemCls = !s.active ? 'su-staff-item inactive' : 'su-staff-item';
+    const avatarText = (s.name || '?').charAt(0);
+
+    return `
+      <div class="${itemCls}">
+        <div class="su-staff-avatar ${avatarCls}">${escapeHtml(avatarText)}</div>
+        <div class="su-staff-info">
+          <div class="su-staff-name-row">
+            <span class="su-staff-name">${escapeHtml(s.name)}</span>
+            <span class="su-role-badge ${roleBadgeCls}">${!s.active ? '已停用' : escapeHtml(s.role)}</span>
+          </div>
+          <div class="su-staff-stores">${storeNames}</div>
+        </div>
+        <div class="su-staff-actions">
+          ${s.active ? `
+            <button data-action="edit" data-id="${s.id}">編輯</button>
+            <button data-action="deactivate" data-id="${s.id}" class="danger">停用</button>
+          ` : `
+            <button data-action="reactivate" data-id="${s.id}">重新啟用</button>
+          `}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openSuEditModal(staffId) {
+  suEditingId = staffId;
+  const titleEl = document.getElementById('suEditModalTitle');
+  const nameEl = document.getElementById('suEditName');
+  const roleEl = document.getElementById('suEditRole');
+  const storesEl = document.getElementById('suEditStores');
+
+  // 渲染店家勾選
+  storesEl.innerHTML = STORE_ORDER.map(sid => `
+    <label>
+      <input type="checkbox" data-store="${sid}" value="${sid}">
+      <span>${escapeHtml(STORE_NAMES[sid] || sid)}</span>
+    </label>
+  `).join('');
+
+  if (staffId) {
+    // 編輯模式
+    const staff = suAllStaff.find(s => s.id === staffId);
+    if (!staff) {
+      showToast('找不到員工資料', 'error');
+      return;
+    }
+    titleEl.textContent = `編輯：${staff.name}`;
+    nameEl.value = staff.name;
+    roleEl.value = staff.role;
+    staff.stores.forEach(sid => {
+      const cb = storesEl.querySelector(`input[data-store="${sid}"]`);
+      if (cb) cb.checked = true;
+    });
+  } else {
+    // 新增模式
+    titleEl.textContent = '新增員工';
+    nameEl.value = '';
+    roleEl.value = '店員';
+  }
+
+  document.getElementById('suEditModal').classList.add('show');
+  setTimeout(() => nameEl.focus(), 100);
+}
+
+function closeSuEditModal() {
+  suEditingId = null;
+  document.getElementById('suEditModal').classList.remove('show');
+}
+
+async function saveSuStaff() {
+  const name = document.getElementById('suEditName').value.trim();
+  const role = document.getElementById('suEditRole').value;
+  const stores = Array.from(document.querySelectorAll('#suEditStores input[type="checkbox"]:checked'))
+    .map(cb => cb.dataset.store);
+
+  if (!name) {
+    showToast('姓名不能為空', 'error');
+    return;
+  }
+  if (name.length > 20) {
+    showToast('姓名最多 20 字', 'error');
+    return;
+  }
+  if (stores.length === 0) {
+    showToast('至少要勾一家店', 'error');
+    return;
+  }
+
+  setLoading(true);
+  try {
+    if (suEditingId) {
+      // 編輯
+      await db.ref(`/global/staff/${suEditingId}`).update({ name, role, stores });
+      showToast(`✓ 已更新：${name}`, 'success');
+    } else {
+      // 新增
+      const newRef = db.ref('/global/staff').push();
+      await newRef.set({
+        name, role, stores,
+        active: true,
+        createdAt: Date.now(),
+        createdBy: state.currentStaff || 'V'
+      });
+      showToast(`✓ 已新增：${name}`, 'success');
+    }
+    closeSuEditModal();
+    await loadStaffUnifiedList();
+  } catch (e) {
+    showToast('儲存失敗：' + e.message, 'error');
+  } finally {
+    setLoading(false);
+  }
+}
+
+async function toggleSuStaffActive(staffId, active) {
+  const staff = suAllStaff.find(s => s.id === staffId);
+  if (!staff) return;
+  const verb = active ? '重新啟用' : '停用';
+  if (!confirm(`確定要${verb}「${staff.name}」嗎？\n${active ? '' : '停用後此員工不會出現在排班選單'}`)) return;
+
+  setLoading(true);
+  try {
+    await db.ref(`/global/staff/${staffId}/active`).set(active);
+    showToast(`✓ 已${verb}：${staff.name}`, 'success');
+    await loadStaffUnifiedList();
+  } catch (e) {
+    showToast('操作失敗：' + e.message, 'error');
+  } finally {
+    setLoading(false);
+  }
+}
+
+// 從舊各店 staff 遷移到 /global/staff
+async function migrateOldStaffData() {
+  if (!confirm('將從各店舊員工資料 (stores/{sid}/staff/) 一次遷移到「全店員工」/global/staff/。\n\n同名員工會自動合併（多店標記為跨店任職）。\n舊資料保留、可重複執行（已存在的員工不會重複新增）。\n\n要繼續嗎？')) return;
+
+  setLoading(true);
+  try {
+    // 1. 撈所有店的 staff
+    const merged = {}; // name -> { name, role, stores: Set, active, createdAt }
+    for (const sid of STORE_ORDER) {
+      const snap = await db.ref(`/stores/${sid}/staff`).once('value');
+      const data = snap.val() || {};
+      Object.values(data).forEach(s => {
+        if (!s || !s.name) return;
+        const key = s.name.trim();
+        if (!key) return;
+        if (!merged[key]) {
+          merged[key] = {
+            name: key,
+            role: s.role || '店員',
+            stores: new Set(),
+            active: s.active !== false,
+            createdAt: s.createdAt || Date.now()
+          };
+        }
+        merged[key].stores.add(sid);
+        // 任何店設為 active = active
+        if (s.active !== false) merged[key].active = true;
+        // 取最早的 createdAt
+        if (s.createdAt && s.createdAt < merged[key].createdAt) merged[key].createdAt = s.createdAt;
+        // 職位以「店長」優先
+        if (s.role === '店長') merged[key].role = '店長';
+        else if (s.role === '副店長' && merged[key].role !== '店長') merged[key].role = '副店長';
+      });
+    }
+
+    // 2. 跟現有 /global/staff 對比、不重複
+    const globalSnap = await db.ref('/global/staff').once('value');
+    const existingByName = {};
+    Object.entries(globalSnap.val() || {}).forEach(([id, s]) => {
+      if (s && s.name) existingByName[s.name.trim()] = id;
+    });
+
+    // 3. 寫入新資料
+    let added = 0, skipped = 0;
+    for (const [name, info] of Object.entries(merged)) {
+      if (existingByName[name]) {
+        skipped++;
+        continue;
+      }
+      const newRef = db.ref('/global/staff').push();
+      await newRef.set({
+        name: info.name,
+        role: info.role,
+        stores: Array.from(info.stores),
+        active: info.active,
+        createdAt: info.createdAt,
+        createdBy: 'migration'
+      });
+      added++;
+    }
+
+    showToast(`✓ 遷移完成：新增 ${added} 位、跳過 ${skipped} 位（已存在）`, 'success');
+    await loadStaffUnifiedList();
+  } catch (e) {
+    showToast('遷移失敗：' + e.message, 'error');
+  } finally {
+    setLoading(false);
+  }
 }
 
 
