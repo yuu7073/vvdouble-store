@@ -1935,6 +1935,143 @@ input, textarea, select { font-family: inherit; }
   border-color: var(--primary);
 }
 
+/* ★ 新版排班 modal（員工 × 班別矩陣） */
+.sched-quick-bar {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  padding: 8px 10px;
+  background: var(--bg-gray-50);
+  border-radius: 6px;
+  margin-bottom: 12px;
+  align-items: center;
+}
+.sched-quick-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-right: 2px;
+}
+.sched-quick-btn {
+  background: white;
+  border: 1px solid var(--border-light);
+  padding: 4px 9px;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: inherit;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: var(--transition);
+}
+.sched-quick-btn:hover {
+  background: var(--bg-gray-50);
+  border-color: var(--border-medium);
+}
+.sched-quick-btn.danger { color: var(--danger); }
+
+.sched-staff-list {
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.sched-staff-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: white;
+  border-bottom: 1px solid var(--border-light);
+  transition: background 0.2s;
+}
+.sched-staff-row:last-child { border-bottom: none; }
+.sched-staff-row.shift-morning { background: #E6F1FB; }
+.sched-staff-row.shift-evening { background: #EEEDFE; }
+.sched-staff-row.shift-fullday { background: #FFF8E0; }
+.sched-staff-row.shift-off { background: var(--bg-gray-50); }
+
+.sched-staff-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 12px;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+.sched-staff-avatar.manager { background: var(--primary); }
+.sched-staff-avatar.deputy { background: #FFE5A0; color: #5C4A1A; }
+
+.sched-staff-info {
+  flex: 1;
+  min-width: 0;
+}
+.sched-staff-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.sched-staff-meta {
+  font-size: 9px;
+  color: var(--text-tertiary);
+  margin-top: 1px;
+}
+
+.sched-shift-btns {
+  display: flex;
+  gap: 3px;
+  flex-shrink: 0;
+}
+.sched-shift-btn {
+  background: white;
+  border: 1px solid var(--border-light);
+  padding: 5px 8px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: inherit;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  min-width: 32px;
+  text-align: center;
+  transition: var(--transition);
+}
+.sched-shift-btn:hover {
+  background: var(--bg-gray-50);
+  border-color: var(--border-medium);
+}
+.sched-shift-btn.active.morning { background: #378ADD; border-color: #185FA5; color: white; }
+.sched-shift-btn.active.evening { background: #6B5BD8; border-color: #4A3FA8; color: white; }
+.sched-shift-btn.active.fullday { background: #FFD93D; border-color: #B8860B; color: var(--text-primary); }
+.sched-shift-btn.active.off { background: #888; border-color: #555; color: white; }
+.sched-shift-btn.active.none { background: var(--text-primary); border-color: var(--text-primary); color: white; }
+
+.sched-summary {
+  margin-top: 12px;
+  padding: 8px 10px;
+  background: var(--warning-bg);
+  border-radius: 6px;
+  font-size: 10px;
+  color: var(--warning-text);
+  line-height: 1.5;
+}
+.sched-summary .sched-summary-label {
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  .sched-staff-row { flex-wrap: wrap; }
+  .sched-shift-btns { width: 100%; justify-content: flex-end; margin-top: 4px; }
+  .sched-shift-btn { min-width: 36px; padding: 6px 10px; font-size: 12px; }
+}
+
 /* 響應式：手機 */
 @media (max-width: 600px) {
   .scope-options { grid-template-columns: 1fr; }
@@ -5699,7 +5836,7 @@ input, textarea, select { font-family: inherit; }
 
 <!-- ★ Phase 1.C: 排班編輯彈窗 ★ -->
 <div class="modal-overlay" id="shiftEditModal">
-  <div class="modal-box" style="max-width: 420px;">
+  <div class="modal-box" style="max-width: 460px;">
     <div class="modal-header">
       <div class="modal-title" id="shiftEditTitle">排班</div>
       <button class="modal-close" id="shiftEditCloseBtn">
@@ -5707,37 +5844,28 @@ input, textarea, select { font-family: inherit; }
       </button>
     </div>
     <div class="modal-body">
-      <div class="form-group">
-        <label class="form-label">班別</label>
-        <div class="shift-options" id="shiftOptions">
-          <div class="shift-option active morning" data-shift="morning">
-            <div class="shift-option-name">早班</div>
-            <div class="shift-option-time">11:00 - 18:00</div>
-          </div>
-          <div class="shift-option evening" data-shift="evening">
-            <div class="shift-option-name">晚班</div>
-            <div class="shift-option-time">14:00 - 22:00</div>
-          </div>
-          <div class="shift-option fullday" data-shift="fullday">
-            <div class="shift-option-name">全天</div>
-            <div class="shift-option-time">11:00 - 22:00</div>
-          </div>
-          <div class="shift-option off" data-shift="off">
-            <div class="shift-option-name">休假</div>
-            <div class="shift-option-time">公休</div>
-          </div>
-        </div>
+
+      <!-- 快速按鈕 -->
+      <div class="sched-quick-bar">
+        <span class="sched-quick-label">⚡ 快速：</span>
+        <button class="sched-quick-btn" data-quick="morning">全部設早班</button>
+        <button class="sched-quick-btn" data-quick="evening">全部設晚班</button>
+        <button class="sched-quick-btn" data-quick="fullday">全部設全天</button>
+        <button class="sched-quick-btn" data-quick="off">全部設公休</button>
+        <button class="sched-quick-btn danger" data-quick="none">全部清空</button>
       </div>
 
-      <div class="form-group" id="shiftStaffGroup">
-        <label class="form-label">值班員工</label>
-        <div class="shift-staff-list" id="shiftStaffList">
-          <!-- 動態載入 -->
-        </div>
-      </div>
+      <div style="font-size: 11px; color: var(--text-tertiary); margin-bottom: 8px; font-weight: 700;">員工 · 班別（每人擇一）</div>
+
+      <!-- 員工列表（動態渲染）-->
+      <div class="sched-staff-list" id="schedStaffList"></div>
+
+      <!-- 今日總覽 -->
+      <div class="sched-summary" id="schedSummary"></div>
+
     </div>
     <div class="modal-footer">
-      <button class="btn-danger" style="flex: 1;" id="shiftEditClearBtn">清空</button>
+      <button class="btn-danger" style="flex: 1;" id="shiftEditClearBtn">清空全部</button>
       <button class="btn-ghost" style="flex: 1;" id="shiftEditCancelBtn">取消</button>
       <button class="btn-primary" style="flex: 2; justify-content: center; padding: 11px;" id="shiftEditConfirmBtn">儲存</button>
     </div>
@@ -9880,8 +10008,6 @@ let currentScheduleStoreId = null;
 let scheduleData = {};
 let scheduleStaffList = [];
 let scheduleEditingDate = null;
-let scheduleEditingShift = 'morning';
-let scheduleEditingStaff = [];
 
 async function openSchedule() {
   // V 端：先選一家店看；店長端：自動是自己店
@@ -9965,66 +10091,103 @@ function renderScheduleGrid() {
   }
 }
 
+// ============================================
+// ★ 排班 modal 新版邏輯（員工 × 班別矩陣）
+// ============================================
+// schedAssignments 結構：{ "員工名": "morning" | "evening" | "fullday" | "off" | "none" }
+let schedAssignments = {};
+
 function openShiftEdit(date) {
   if (!date) return;
   scheduleEditingDate = date;
-  // 預設選早班
+
+  // 從 Firebase 已存的資料反推：每位員工目前的班別
+  schedAssignments = {};
   const dayShifts = scheduleData[date] || {};
-  // 找第一個有人的班別
-  const existingShifts = Object.entries(dayShifts).filter(([_, arr]) => arr && (Array.isArray(arr) ? arr.length > 0 : true));
-  if (existingShifts.length > 0) {
-    scheduleEditingShift = existingShifts[0][0];
-    scheduleEditingStaff = Array.isArray(existingShifts[0][1]) ? [...existingShifts[0][1]] : [];
-  } else {
-    scheduleEditingShift = 'morning';
-    scheduleEditingStaff = [];
+  ['morning', 'evening', 'fullday', 'off'].forEach(shift => {
+    const arr = dayShifts[shift];
+    if (Array.isArray(arr)) {
+      arr.forEach(name => {
+        if (name === '公休') return;
+        schedAssignments[name] = shift;
+      });
+    }
+  });
+  // 舊資料相容：off 只有 ["公休"] 時、視為全員公休
+  if (Array.isArray(dayShifts.off) && dayShifts.off.includes('公休') && dayShifts.off.length === 1) {
+    scheduleStaffList.forEach(s => {
+      if (!schedAssignments[s.name]) schedAssignments[s.name] = 'off';
+    });
   }
 
   document.getElementById('shiftEditTitle').textContent = `${date} 排班`;
-  renderShiftOptions();
-  renderShiftStaffList();
+  renderSchedStaffList();
   document.getElementById('shiftEditModal').classList.add('show');
 }
 
-function renderShiftOptions() {
-  document.querySelectorAll('#shiftOptions .shift-option').forEach(o => {
-    o.classList.toggle('active', o.dataset.shift === scheduleEditingShift);
-  });
-  // 休假時隱藏員工選擇
-  document.getElementById('shiftStaffGroup').style.display = scheduleEditingShift === 'off' ? 'none' : 'block';
-}
-
-function renderShiftStaffList() {
-  const container = document.getElementById('shiftStaffList');
-  if (scheduleStaffList.length === 0) {
-    container.innerHTML = '<div style="font-size: 11px; color: var(--text-tertiary); padding: 10px;">該店尚無員工</div>';
+function renderSchedStaffList() {
+  const container = document.getElementById('schedStaffList');
+  if (!scheduleStaffList || scheduleStaffList.length === 0) {
+    container.innerHTML = '<div style="padding: 20px; text-align: center; font-size: 12px; color: var(--text-tertiary);">該店尚無員工<br>請先到「員工管理」新增員工</div>';
+    document.getElementById('schedSummary').innerHTML = '';
     return;
   }
-  container.innerHTML = scheduleStaffList.map(s => {
-    const selected = scheduleEditingStaff.includes(s.name);
+
+  // 排序：店長 > 副店長 > 店員 > 工讀生
+  const roleOrder = { '店長': 0, '副店長': 1, '店員': 2, '工讀生': 3 };
+  const sorted = [...scheduleStaffList].sort((a, b) => {
+    const ra = roleOrder[a.role] ?? 9;
+    const rb = roleOrder[b.role] ?? 9;
+    if (ra !== rb) return ra - rb;
+    return (a.name || '').localeCompare(b.name || '', 'zh-Hant');
+  });
+
+  container.innerHTML = sorted.map(s => {
+    const current = schedAssignments[s.name] || 'none';
+    const rowCls = current === 'none' ? '' : `shift-${current}`;
+    const avatarCls = s.role === '店長' ? 'manager' : (s.role === '副店長' ? 'deputy' : '');
+    const avatarText = (s.name || '?').charAt(0);
+
     return `
-      <div class="shift-staff-item ${selected ? 'selected' : ''}" data-name="${escapeHtml(s.name)}">
-        <div class="staff-avatar" style="width: 28px; height: 28px; font-size: 11px;">${escapeHtml(s.name.charAt(s.name.length - 1))}</div>
-        <div style="flex: 1;">
-          <div style="font-size: 12px; font-weight: 600;">${escapeHtml(s.name)}</div>
-          <div style="font-size: 10px; color: var(--text-tertiary);">${escapeHtml(s.role)}</div>
+      <div class="sched-staff-row ${rowCls}" data-name="${escapeHtml(s.name)}">
+        <div class="sched-staff-avatar ${avatarCls}">${escapeHtml(avatarText)}</div>
+        <div class="sched-staff-info">
+          <div class="sched-staff-name">${escapeHtml(s.name)}</div>
+          <div class="sched-staff-meta">${escapeHtml(s.role || '店員')}${current === 'none' ? ' · 未排' : ''}</div>
         </div>
-        <div style="width: 16px; height: 16px; border-radius: 4px; border: 2px solid var(--border-dark); ${selected ? 'background: var(--success); border-color: var(--success);' : ''} display: flex; align-items: center; justify-content: center;">
-          ${selected ? '<svg style="width: 10px; height: 10px; stroke: white; stroke-width: 3.5; fill: none;" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>' : ''}
+        <div class="sched-shift-btns">
+          <button class="sched-shift-btn ${current === 'morning' ? 'active morning' : ''}" data-shift="morning" data-name="${escapeHtml(s.name)}">早</button>
+          <button class="sched-shift-btn ${current === 'evening' ? 'active evening' : ''}" data-shift="evening" data-name="${escapeHtml(s.name)}">晚</button>
+          <button class="sched-shift-btn ${current === 'fullday' ? 'active fullday' : ''}" data-shift="fullday" data-name="${escapeHtml(s.name)}">全</button>
+          <button class="sched-shift-btn ${current === 'off' ? 'active off' : ''}" data-shift="off" data-name="${escapeHtml(s.name)}">休</button>
+          <button class="sched-shift-btn ${current === 'none' ? 'active none' : ''}" data-shift="none" data-name="${escapeHtml(s.name)}">—</button>
         </div>
       </div>
     `;
   }).join('');
 
-  container.querySelectorAll('.shift-staff-item').forEach(item => {
-    item.addEventListener('click', () => {
-      const name = item.dataset.name;
-      const idx = scheduleEditingStaff.indexOf(name);
-      if (idx >= 0) scheduleEditingStaff.splice(idx, 1);
-      else scheduleEditingStaff.push(name);
-      renderShiftStaffList();
+  container.querySelectorAll('.sched-shift-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const name = btn.dataset.name;
+      const shift = btn.dataset.shift;
+      schedAssignments[name] = shift;
+      renderSchedStaffList();
     });
   });
+
+  renderSchedSummary();
+}
+
+function renderSchedSummary() {
+  const counts = { morning: 0, evening: 0, fullday: 0, off: 0, none: 0 };
+  scheduleStaffList.forEach(s => {
+    const shift = schedAssignments[s.name] || 'none';
+    counts[shift] = (counts[shift] || 0) + 1;
+  });
+  document.getElementById('schedSummary').innerHTML = `
+    <div><span class="sched-summary-label">今日總覽：</span>早班 ${counts.morning} · 晚班 ${counts.evening} · 全天 ${counts.fullday} · 公休 ${counts.off} · 未排 ${counts.none}</div>
+    <div style="margin-top: 3px; opacity: 0.8;">📋 早 11:00-18:00 · 晚 14:00-22:00 · 全 11:00-22:00</div>
+  `;
 }
 
 function setupScheduleScreen() {
@@ -10042,10 +10205,14 @@ function setupScheduleScreen() {
   document.getElementById('shiftEditClearBtn').addEventListener('click', clearShift);
   document.getElementById('shiftEditConfirmBtn').addEventListener('click', confirmShift);
 
-  document.querySelectorAll('#shiftOptions .shift-option').forEach(o => {
-    o.addEventListener('click', () => {
-      scheduleEditingShift = o.dataset.shift;
-      renderShiftOptions();
+  // 快速套用按鈕
+  document.querySelectorAll('.sched-quick-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const shift = btn.dataset.quick;
+      scheduleStaffList.forEach(s => {
+        schedAssignments[s.name] = shift;
+      });
+      renderSchedStaffList();
     });
   });
 }
@@ -10072,24 +10239,26 @@ async function clearShift() {
 
 async function confirmShift() {
   if (!db) return;
-  if (scheduleEditingShift !== 'off' && scheduleEditingStaff.length === 0) {
-    showToast('請至少選一位員工，或選休假', 'error');
-    return;
-  }
   setLoading(true);
   try {
-    const updateData = {};
-    if (scheduleEditingShift === 'off') {
-      updateData[scheduleEditingShift] = ['公休'];
+    const grouped = { morning: [], evening: [], fullday: [], off: [] };
+    Object.entries(schedAssignments).forEach(([name, shift]) => {
+      if (shift && shift !== 'none' && grouped[shift]) {
+        grouped[shift].push(name);
+      }
+    });
+
+    const totalAssigned = grouped.morning.length + grouped.evening.length + grouped.fullday.length + grouped.off.length;
+    if (totalAssigned === 0) {
+      await db.ref(`/stores/${state.storeId}/schedule/${currentScheduleMonth}/${scheduleEditingDate}`).remove();
     } else {
-      updateData[scheduleEditingShift] = scheduleEditingStaff;
+      await db.ref(`/stores/${state.storeId}/schedule/${currentScheduleMonth}/${scheduleEditingDate}`).set(grouped);
     }
-    await db.ref(`/stores/${state.storeId}/schedule/${currentScheduleMonth}/${scheduleEditingDate}`).update(updateData);
     showToast('已儲存', 'success');
     closeShiftEdit();
     await loadSchedule();
   } catch (err) {
-    showToast('儲存失敗', 'error');
+    showToast('儲存失敗：' + err.message, 'error');
   } finally {
     setLoading(false);
   }
