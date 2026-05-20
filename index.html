@@ -4499,8 +4499,8 @@ input, textarea, select { font-family: inherit; }
   </div>
 
   <!-- ★ 跑馬燈管理 modal（V 專用） -->
-  <div class="modal-overlay hidden" id="marqueeModal">
-    <div class="modal-card" style="max-width: 480px;">
+  <div class="modal-overlay" id="marqueeModal">
+    <div class="modal-box" style="max-width: 480px;">
       <div class="modal-header">
         <div class="modal-title">📢 跑馬燈管理</div>
         <button class="modal-close" id="marqueeModalClose">×</button>
@@ -12386,7 +12386,7 @@ function renderMarqueeBar() {
     bar.style.background = '#1A1A1A';
   } else if (state.isHQ) {
     // ★ V 沒設定時：顯示提示 bar、讓 V 知道怎麼設定
-    content.textContent = '點右側 ⚙️ 設定跑馬燈內容（店長/店員看不到此提示）';
+    content.textContent = '點右側 ⚙️ 設定跑馬燈內容';
     content.style.animationPlayState = 'paused';  // 不動
     content.style.transform = 'translate3d(0, 0, 0)';
     content.style.paddingLeft = '0';
@@ -12404,7 +12404,7 @@ function openMarqueeEditor() {
 
   document.getElementById('marqueeEnabled').checked = marqueeConfig.enabled;
   renderMarqueeItemsList(marqueeConfig.items.length > 0 ? [...marqueeConfig.items] : ['']);
-  document.getElementById('marqueeModal').classList.remove('hidden');
+  document.getElementById('marqueeModal').classList.add('show');
 }
 
 /** 渲染 modal 內的訊息列表 */
@@ -12456,7 +12456,7 @@ async function saveMarqueeConfig() {
       updatedBy: state.currentStaff || 'V'
     });
     showToast('✓ 跑馬燈已更新', 'success');
-    document.getElementById('marqueeModal').classList.add('hidden');
+    document.getElementById('marqueeModal').classList.remove('show');
   } catch (err) {
     showToast('儲存失敗：' + err.message, 'error');
   }
@@ -12469,12 +12469,12 @@ function setupMarqueeEditor() {
 
   const closeBtn = document.getElementById('marqueeModalClose');
   if (closeBtn) closeBtn.addEventListener('click', () => {
-    document.getElementById('marqueeModal').classList.add('hidden');
+    document.getElementById('marqueeModal').classList.remove('show');
   });
 
   const cancelBtn = document.getElementById('marqueeCancelBtn');
   if (cancelBtn) cancelBtn.addEventListener('click', () => {
-    document.getElementById('marqueeModal').classList.add('hidden');
+    document.getElementById('marqueeModal').classList.remove('show');
   });
 
   const saveBtn = document.getElementById('marqueeSaveBtn');
