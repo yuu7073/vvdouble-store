@@ -314,14 +314,16 @@ input, textarea, select { font-family: inherit; }
 .app-logo {
   width: 32px;
   height: 32px;
+  background: var(--primary-dark);
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  color: var(--primary-text-on-dark);
+  font-size: 12px;
+  font-weight: 800;
   flex-shrink: 0;
 }
-.app-logo svg { width: 100%; height: 100%; display: block; }
 
 .app-title {
   font-size: 14px;
@@ -4375,7 +4377,7 @@ input, textarea, select { font-family: inherit; }
 <div id="mainApp">
   <header class="app-header">
     <div class="app-header-left">
-      <div class="app-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><rect x="2" y="2" width="56" height="56" rx="10" fill="#FFD93D"/><path d="M 14 42 L 26 30 L 34 38 L 46 22" fill="none" stroke="#1A1A1A" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><polygon points="40,22 50,18 46,28" fill="#1A1A1A"/></svg></div>
+      <div class="app-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#FFD93D"/><path d="M 12 46 L 24 32 L 32 38 L 50 18" fill="none" stroke="#1A1A1A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M 42 18 L 50 18 L 50 26" fill="none" stroke="#1A1A1A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <div>
         <div class="app-title" id="appTitle">店長中心</div>
         <div class="app-subtitle" id="appSubtitle">值班：—</div>
@@ -4704,6 +4706,11 @@ input, textarea, select { font-family: inherit; }
           <div class="rv-countdown-title" id="rvDailyCountdownTitle">—</div>
           <div class="rv-countdown-desc" id="rvDailyCountdownDesc">—</div>
         </div>
+      </div>
+
+      <!-- 2026/5 補登提示 banner（限 2026 年 5 月顯示）-->
+      <div id="dailyTargetMayBackfillBanner" style="display: none; background: #F5F5F5; border-left: 3px solid #BBBBBB; padding: 10px 14px; border-radius: 8px; margin-bottom: 12px; font-size: 12px; color: #555; line-height: 1.6;">
+        ⓘ 2026/5/1 – 5/20 為店長中心正式啟用前的補登資料、5/21 起為正式業績紀錄
       </div>
 
       <!-- 三卡片：總目標 / 已分配 / 還差 -->
@@ -5534,11 +5541,27 @@ input, textarea, select { font-family: inherit; }
           </label>
         </div>
 
+        <!-- ★ 預約發布（只給 V / 助理用）-->
+        <div id="annScheduleSection" style="display: none; background: #FFF8E0; border: 1px solid #FFD93D; border-radius: 8px; padding: 12px; margin-top: 8px;">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <input type="checkbox" id="annScheduleEnabled" style="width: 16px; height: 16px; cursor: pointer; accent-color: var(--primary-dark);">
+            <div style="flex: 1;">
+              <div style="font-size: 12px; font-weight: 700; color: var(--text-primary);">⏰ 預約發布</div>
+              <div style="font-size: 10px; color: var(--text-tertiary); margin-top: 1px;">選擇未來時間自動發布、不勾則立即發布</div>
+            </div>
+          </label>
+          <div id="annScheduleTimeWrap" style="display: none; margin-top: 10px; padding-left: 24px;">
+            <label style="display: block; font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">預約時間</label>
+            <input type="datetime-local" id="annScheduleAt" class="form-input" style="font-size: 13px;">
+            <div id="annScheduleHint" style="font-size: 10px; color: var(--text-tertiary); margin-top: 4px;">提示：預約時間必須晚於現在</div>
+          </div>
+        </div>
+
         <div style="display: flex; gap: 8px; margin-top: 16px;">
           <button class="btn-ghost" style="flex: 1;" id="annSaveDraftBtn">儲存草稿</button>
           <button class="btn-primary" style="flex: 2; justify-content: center; padding: 12px;" id="annPublishBtn">
             <svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-            發布公告
+            <span id="annPublishBtnLabel">發布公告</span>
           </button>
         </div>
       </div>
@@ -8417,6 +8440,12 @@ async function loadDailyTargetForMonth(ym) {
   document.getElementById('dailyTargetMonth').textContent = formatYM(ym);
   document.getElementById('dailyTargetSubtitle').textContent = `${STORE_NAMES[state.storeId]}・${formatYM(ym)}`;
 
+  // 2026/5 補登提示 banner（只在 2026 年 5 月顯示）
+  const mayBanner = document.getElementById('dailyTargetMayBackfillBanner');
+  if (mayBanner) {
+    mayBanner.style.display = (ym === '2026-05') ? 'block' : 'none';
+  }
+
   try {
     const [monthlySnap, dailySnap] = await Promise.all([
       db.ref(`/global/monthlyTargets/${ym}/${state.storeId}`).once('value'),
@@ -9569,6 +9598,12 @@ function renderAnnouncements() {
   const container = document.getElementById('announcementList');
   let filtered = allAnnouncements;
 
+  // ★ 預約 (status === 'pending') 公告：只有 V/助理看得到、其他人不見
+  const isAdminLike = state.isHQ || state.storeId === 'assistant';
+  if (!isAdminLike) {
+    filtered = filtered.filter(a => a.status !== 'pending');
+  }
+
   if (currentAnnFilter === 'unread' && !state.isHQ) {
     filtered = filtered.filter(a => !userReadMap[a.id]);
   } else if (currentAnnFilter === 'urgent') {
@@ -9594,28 +9629,80 @@ function renderAnnouncements() {
       scopeBadge = `<span class="announcement-scope-badge">指定 ${count} 店</span>`;
     }
 
+    // ★ 預約標記
+    let scheduledBadge = '';
+    if (ann.status === 'pending' && ann.scheduledAt) {
+      const t = new Date(ann.scheduledAt);
+      const tStr = `${t.getMonth() + 1}/${t.getDate()} ${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}`;
+      scheduledBadge = `<span class="announcement-scope-badge" style="background:#FFF8E0; color:#8B6914; border:1px solid #FFD93D;">⏰ 預約 ${tStr}</span>`;
+    }
+
     const preview = (ann.content || '').substring(0, 100);
+    const displayTime = ann.status === 'pending' ? '尚未發布' : formatTimestamp(ann.publishedAt);
 
     return `
-      <div class="announcement-card ${isUnread ? 'unread' : ''} ${ann.type === 'urgent' ? 'urgent' : ''}" data-id="${ann.id}" data-scope-type="${ann.scopeType}">
+      <div class="announcement-card ${isUnread ? 'unread' : ''} ${ann.type === 'urgent' ? 'urgent' : ''}" data-id="${ann.id}" data-scope-type="${ann.scopeType}" data-status="${ann.status || ''}" style="${ann.status === 'pending' ? 'opacity:0.7;border:1px dashed #FFD93D;' : ''}">
         <div class="announcement-header">
           ${typeBadge}
           ${scopeBadge}
-          <span class="announcement-meta">${formatTimestamp(ann.publishedAt)}</span>
+          ${scheduledBadge}
+          <span class="announcement-meta">${displayTime}</span>
         </div>
         <div class="announcement-title">${escapeHtml(ann.title)}</div>
         <div class="announcement-preview">${escapeHtml(preview)}${ann.content && ann.content.length > 100 ? '...' : ''}</div>
         <div class="announcement-footer">
           <span>發布人：${escapeHtml(ann.publishedBy || 'V')}</span>
-          ${state.isHQ && ann.readCount != null ? `<span>已讀 ${ann.readCount} 人</span>` : ''}
+          ${state.isHQ && ann.readCount != null && ann.status !== 'pending' ? `<span>已讀 ${ann.readCount} 人</span>` : ''}
+          ${ann.status === 'pending' && isAdminLike ? '<span style="color:#8B6914;">點擊以編輯或取消預約</span>' : ''}
         </div>
       </div>
     `;
   }).join('');
 
   container.querySelectorAll('.announcement-card').forEach(card => {
-    card.addEventListener('click', () => openAnnouncementDetail(card.dataset.id, card.dataset.scopeType));
+    card.addEventListener('click', () => {
+      // ★ 預約公告：V/助理點擊 → 開編輯介面、其他人 → 不開
+      if (card.dataset.status === 'pending') {
+        if (!isAdminLike) return;
+        openScheduledAnnouncementActions(card.dataset.id, card.dataset.scopeType);
+      } else {
+        openAnnouncementDetail(card.dataset.id, card.dataset.scopeType);
+      }
+    });
   });
+}
+
+// ★ 預約公告 → 顯示「編輯 / 取消預約 / 取消」三選一
+function openScheduledAnnouncementActions(id, scopeType) {
+  const ann = allAnnouncements.find(a => a.id === id && a.scopeType === scopeType);
+  if (!ann) return;
+
+  const choice = prompt(
+    `預約公告：${ann.title}\n\n` +
+    `發布時間：${new Date(ann.scheduledAt).toLocaleString('zh-TW')}\n\n` +
+    `請輸入動作：\n` +
+    `1 = 編輯內容或時間\n` +
+    `2 = 取消預約（刪除）\n` +
+    `（空白 = 不動作）`,
+    '1'
+  );
+
+  if (choice === '1') {
+    openAnnouncementEditor(ann);
+  } else if (choice === '2') {
+    if (confirm(`確定取消預約「${ann.title}」？\n\n此操作會刪除公告、無法恢復。`)) {
+      cancelScheduledAnnouncement(id);
+    }
+  }
+}
+
+async function cancelScheduledAnnouncement(id) {
+  try {
+    await db.ref('/global/announcements/' + id).remove();
+    showToast('已取消預約', 'success');
+  } catch (err) {
+    showToast('取消失敗：' + err.message, 'error');
+  }
 }
 
 async function openAnnouncementDetail(id, scopeType) {
@@ -9738,16 +9825,29 @@ function setupAnnouncementScreen() {
 let annEditorState = {
   type: 'normal',
   scope: 'global',
-  targetStores: {}
+  targetStores: {},
+  editingId: null,  // ★ 新增：編輯預約公告時記錄 id
+  editingExisting: null  // ★ 新增：暫存原始公告資料
 };
 
-function openAnnouncementEditor() {
-  if (!state.isHQ) {
-    showToast('只有總部可發布公告', 'error');
+function canScheduleAnnouncement() {
+  // V 或 assistant 才能預約
+  return state.isHQ || state.storeId === 'assistant';
+}
+
+function openAnnouncementEditor(editingAnnouncement = null) {
+  if (!state.isHQ && state.storeId !== 'assistant') {
+    showToast('只有總部 / 助理可發布公告', 'error');
     return;
   }
   // 重置
-  annEditorState = { type: 'normal', scope: 'global', targetStores: {} };
+  annEditorState = {
+    type: 'normal',
+    scope: 'global',
+    targetStores: {},
+    editingId: editingAnnouncement ? editingAnnouncement.id : null,
+    editingExisting: editingAnnouncement || null
+  };
   document.getElementById('annTitle').value = '';
   document.getElementById('annContent').value = '';
   document.querySelectorAll('.type-option').forEach(t => t.classList.toggle('active', t.dataset.type === 'normal'));
@@ -9756,6 +9856,21 @@ function openAnnouncementEditor() {
   // Teams 推送預設勾選
   const pushTeamsEl = document.getElementById('annPushTeams');
   if (pushTeamsEl) pushTeamsEl.checked = true;
+  // ★ 預約區：V/助理顯示、其他人不顯示
+  const schedSection = document.getElementById('annScheduleSection');
+  if (schedSection) {
+    schedSection.style.display = canScheduleAnnouncement() ? 'block' : 'none';
+  }
+  // 重置預約欄位
+  const schedEnabled = document.getElementById('annScheduleEnabled');
+  const schedWrap = document.getElementById('annScheduleTimeWrap');
+  const schedAt = document.getElementById('annScheduleAt');
+  if (schedEnabled) schedEnabled.checked = false;
+  if (schedWrap) schedWrap.style.display = 'none';
+  if (schedAt) schedAt.value = '';
+  // 重置按鈕文字
+  const btnLabel = document.getElementById('annPublishBtnLabel');
+  if (btnLabel) btnLabel.textContent = '發布公告';
   // 渲染店家複選框
   document.getElementById('annStoreCheckboxes').innerHTML = STORE_ORDER.map(sid => `
     <label class="store-checkbox-item">
@@ -9763,6 +9878,40 @@ function openAnnouncementEditor() {
       <span>${escapeHtml(STORE_NAMES[sid])}</span>
     </label>
   `).join('');
+
+  // ★ 如果是編輯既有預約公告、預填資料
+  if (editingAnnouncement) {
+    document.getElementById('annTitle').value = editingAnnouncement.title || '';
+    document.getElementById('annContent').value = editingAnnouncement.content || '';
+    annEditorState.type = editingAnnouncement.urgency || 'normal';
+    annEditorState.scope = editingAnnouncement.scope || 'global';
+    annEditorState.targetStores = editingAnnouncement.targetStores || {};
+    document.querySelectorAll('.type-option').forEach(t => t.classList.toggle('active', t.dataset.type === annEditorState.type));
+    document.querySelectorAll('.scope-option').forEach(s => s.classList.toggle('active', s.dataset.scope === annEditorState.scope));
+    if (annEditorState.scope === 'specific') {
+      document.getElementById('annStoreCheckboxes').style.display = 'flex';
+      Object.entries(annEditorState.targetStores).forEach(([sid, on]) => {
+        if (on) {
+          const cb = document.querySelector(`#annStoreCheckboxes input[data-store="${sid}"]`);
+          if (cb) cb.checked = true;
+        }
+      });
+    }
+    if (pushTeamsEl) pushTeamsEl.checked = !!editingAnnouncement.pushTeams;
+    // 預約資料
+    if (editingAnnouncement.scheduled && editingAnnouncement.scheduledAt) {
+      if (schedEnabled) schedEnabled.checked = true;
+      if (schedWrap) schedWrap.style.display = 'block';
+      if (schedAt) {
+        // timestamp 轉成 datetime-local 格式
+        const d = new Date(editingAnnouncement.scheduledAt);
+        const pad = n => String(n).padStart(2, '0');
+        schedAt.value = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+      }
+    }
+    if (btnLabel) btnLabel.textContent = '更新預約';
+  }
+
   showScreen('announcementEditor');
 }
 
@@ -9797,6 +9946,32 @@ function setupAnnouncementEditor() {
 
   document.getElementById('annSaveDraftBtn').addEventListener('click', () => publishAnnouncement(false));
   document.getElementById('annPublishBtn').addEventListener('click', () => publishAnnouncement(true));
+
+  // ★ 預約勾選 → 顯示/隱藏時間選擇器、改按鈕文字
+  const schedEnabled = document.getElementById('annScheduleEnabled');
+  const schedWrap = document.getElementById('annScheduleTimeWrap');
+  const schedAt = document.getElementById('annScheduleAt');
+  const btnLabel = document.getElementById('annPublishBtnLabel');
+  if (schedEnabled) {
+    schedEnabled.addEventListener('change', () => {
+      if (schedWrap) schedWrap.style.display = schedEnabled.checked ? 'block' : 'none';
+      if (btnLabel) {
+        if (annEditorState.editingId) {
+          btnLabel.textContent = '更新預約';
+        } else {
+          btnLabel.textContent = schedEnabled.checked ? '預約發布' : '發布公告';
+        }
+      }
+      // 預設預約時間：明天早上 9:00
+      if (schedEnabled.checked && schedAt && !schedAt.value) {
+        const t = new Date();
+        t.setDate(t.getDate() + 1);
+        t.setHours(9, 0, 0, 0);
+        const pad = n => String(n).padStart(2, '0');
+        schedAt.value = `${t.getFullYear()}-${pad(t.getMonth() + 1)}-${pad(t.getDate())}T${pad(t.getHours())}:${pad(t.getMinutes())}`;
+      }
+    });
+  }
 }
 
 async function publishAnnouncement(publish) {
@@ -9809,30 +9984,80 @@ async function publishAnnouncement(publish) {
     showToast('請至少選一家店', 'error');
     return;
   }
-  if (publish && !confirm('確定發布公告嗎？\n發布後 7 店會立即看到。')) return;
+
+  // ★ 預約發布邏輯
+  const schedEnabled = document.getElementById('annScheduleEnabled');
+  const isScheduled = schedEnabled && schedEnabled.checked && canScheduleAnnouncement();
+  let scheduledAt = null;
+  if (isScheduled) {
+    const schedAt = document.getElementById('annScheduleAt');
+    const v = schedAt ? schedAt.value : '';
+    if (!v) {
+      showToast('請選擇預約時間', 'error');
+      return;
+    }
+    scheduledAt = new Date(v).getTime();
+    if (isNaN(scheduledAt)) {
+      showToast('預約時間格式錯誤', 'error');
+      return;
+    }
+    if (scheduledAt <= Date.now() + 60000) {
+      showToast('預約時間至少要在 1 分鐘後', 'error');
+      return;
+    }
+  }
+
+  if (publish && !isScheduled && !confirm('確定發布公告嗎？\n發布後 7 店會立即看到。')) return;
+  if (publish && isScheduled) {
+    const t = new Date(scheduledAt);
+    const tStr = `${t.getFullYear()}/${t.getMonth() + 1}/${t.getDate()} ${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}`;
+    if (!confirm(`確定預約發布？\n\n發布時間：${tStr}\n屆時 7 店會自動看到此公告。`)) return;
+  }
 
   setLoading(true);
   try {
-    const ref = db.ref('/global/announcements').push();
-    await ref.set({
+    const pushTeamsEl = document.getElementById('annPushTeams');
+    const pushTeams = pushTeamsEl ? !!pushTeamsEl.checked : true;
+
+    // 如果是編輯既有預約、用既有 id（更新）；否則新增
+    const ref = annEditorState.editingId
+      ? db.ref('/global/announcements/' + annEditorState.editingId)
+      : db.ref('/global/announcements').push();
+
+    const data = {
       title,
       content,
       type: annEditorState.type,
       scope: annEditorState.scope,
       targetStores: annEditorState.scope === 'specific' ? annEditorState.targetStores : null,
-      published: publish,
-      publishedAt: publish ? Date.now() : null,
+      published: publish && !isScheduled,  // ★ 預約的話 published=false
+      publishedAt: (publish && !isScheduled) ? Date.now() : null,
       publishedBy: state.currentStaff || 'V',
-      createdAt: Date.now(),
-      reads: {}
-    });
-    showToast(publish ? '✓ 公告已發布' : '草稿已儲存', 'success');
+      pushTeams: pushTeams,  // ★ 存起來、Cloud Function 之後讀
+      createdAt: annEditorState.editingExisting ? annEditorState.editingExisting.createdAt : Date.now(),
+      reads: annEditorState.editingExisting ? (annEditorState.editingExisting.reads || {}) : {},
+      // ★ 預約相關
+      scheduled: isScheduled,
+      scheduledAt: isScheduled ? scheduledAt : null,
+      status: isScheduled ? 'pending' : (publish ? 'published' : 'draft')
+    };
+
+    if (annEditorState.editingId) {
+      await ref.update(data);
+    } else {
+      await ref.set(data);
+    }
+
+    if (isScheduled) {
+      showToast('✓ 公告已預約', 'success');
+    } else {
+      showToast(publish ? '✓ 公告已發布' : '草稿已儲存', 'success');
+    }
 
     // ★ Phase 1.D+：發布公告 → Teams 通知（依用戶勾選）
-    if (publish) {
-      const pushTeamsEl = document.getElementById('annPushTeams');
-      const shouldPush = pushTeamsEl ? pushTeamsEl.checked : true;
-      if (shouldPush) {
+    // 預約的不在這裡發、由 Cloud Function 到時候發
+    if (publish && !isScheduled) {
+      if (pushTeams) {
         try { notifyAnnouncement(title, content, annEditorState.scope); } catch (e) {}
       }
     }
