@@ -2072,6 +2072,125 @@ input, textarea, select { font-family: inherit; }
   .sched-shift-btn { min-width: 36px; padding: 6px 10px; font-size: 12px; }
 }
 
+/* ============================================
+   PIN 驗證 modal（店長 / 幹部 進週報）
+   ============================================ */
+.pin-modal-box {
+  max-width: 340px;
+  padding: 0 !important;
+}
+.pin-modal-header {
+  padding: 24px 24px 16px 24px;
+  text-align: center;
+}
+.pin-modal-icon {
+  font-size: 40px;
+  margin-bottom: 8px;
+  line-height: 1;
+}
+.pin-modal-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+.pin-modal-subtitle {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+}
+
+.pin-modal-body {
+  padding: 0 24px 16px 24px;
+}
+.pin-modal-prompt {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  text-align: center;
+}
+.pin-dots {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+.pin-dot {
+  width: 38px;
+  height: 46px;
+  border: 2px solid var(--text-primary);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-primary);
+  transition: var(--transition);
+}
+.pin-dot.pin-dot-optional {
+  border-color: var(--border-light);
+  color: var(--text-tertiary);
+}
+.pin-dot.filled {
+  background: var(--bg-gray-50);
+}
+.pin-dot.filled::before {
+  content: '●';
+}
+.pin-dots.error .pin-dot {
+  border-color: var(--danger);
+  background: #FEF2F0;
+  animation: pinShake 0.4s;
+}
+@keyframes pinShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+.pin-hint {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  text-align: center;
+}
+.pin-hint.error {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.pin-keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border-light);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  overflow: hidden;
+}
+.pin-key {
+  background: white;
+  border: none;
+  padding: 18px 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.pin-key:hover {
+  background: var(--bg-gray-50);
+}
+.pin-key:active {
+  background: var(--primary-light);
+}
+.pin-key-action {
+  background: var(--bg-gray-50);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
 /* 響應式：手機 */
 @media (max-width: 600px) {
   .scope-options { grid-template-columns: 1fr; }
@@ -5536,10 +5655,15 @@ input, textarea, select { font-family: inherit; }
             <label class="form-label">職位 <span class="form-required">*</span></label>
             <select class="form-select" id="suEditRole">
               <option value="店員">店員</option>
-              <option value="店長">店長</option>
-              <option value="副店長">副店長</option>
               <option value="工讀生">工讀生</option>
+              <option value="幹部">幹部</option>
+              <option value="店長">店長</option>
             </select>
+          </div>
+          <div class="form-group" id="suEditPinGroup" style="display: none;">
+            <label class="form-label">個人 PIN（4-6 位數字）</label>
+            <input type="text" class="form-input" id="suEditPin" placeholder="例：660220" maxlength="6" inputmode="numeric" pattern="[0-9]*">
+            <div class="form-hint" style="font-size: 10px; color: var(--text-tertiary); margin-top: 6px;">店長 / 幹部 進入「店長週報」時要輸入此 PIN</div>
           </div>
           <div class="form-group">
             <label class="form-label">任職店家 <span class="form-required">*</span></label>
@@ -5872,6 +5996,45 @@ input, textarea, select { font-family: inherit; }
   </div>
 </div>
 
+<!-- ★ PIN 驗證 modal（店長 / 幹部 進入週報用） ★ -->
+<div class="modal-overlay" id="pinVerifyModal">
+  <div class="modal-box pin-modal-box">
+    <div class="pin-modal-header">
+      <div class="pin-modal-icon">🔒</div>
+      <div class="pin-modal-title">店長週報</div>
+      <div class="pin-modal-subtitle" id="pinModalSubtitle">此頁面僅限店長 / 幹部</div>
+    </div>
+
+    <div class="pin-modal-body">
+      <div class="pin-modal-prompt">請輸入個人 PIN</div>
+      <div class="pin-dots" id="pinDots">
+        <span class="pin-dot"></span>
+        <span class="pin-dot"></span>
+        <span class="pin-dot"></span>
+        <span class="pin-dot"></span>
+        <span class="pin-dot pin-dot-optional"></span>
+        <span class="pin-dot pin-dot-optional"></span>
+      </div>
+      <div class="pin-hint" id="pinHint">4 - 6 位數字</div>
+    </div>
+
+    <div class="pin-keypad">
+      <button class="pin-key" data-key="1">1</button>
+      <button class="pin-key" data-key="2">2</button>
+      <button class="pin-key" data-key="3">3</button>
+      <button class="pin-key" data-key="4">4</button>
+      <button class="pin-key" data-key="5">5</button>
+      <button class="pin-key" data-key="6">6</button>
+      <button class="pin-key" data-key="7">7</button>
+      <button class="pin-key" data-key="8">8</button>
+      <button class="pin-key" data-key="9">9</button>
+      <button class="pin-key pin-key-action" data-key="cancel">取消</button>
+      <button class="pin-key" data-key="0">0</button>
+      <button class="pin-key pin-key-action" data-key="backspace">⌫</button>
+    </div>
+  </div>
+</div>
+
 <!-- Loading Overlay -->
 <div class="loading-overlay" id="loadingOverlay">
   <div class="spinner"></div>
@@ -5904,16 +6067,16 @@ const FIREBASE_CONFIG = {
   measurementId: "G-RY8M3N40FR"
 };
 
-// 8 個帳號的密碼設定（部署前請更換為隨機字串）
-// 格式：店ID + 隨機字串
+// 9 個帳號的密碼（V、助理、7 家門市）· v3 · 2026-05-20 更新
 const STORE_PASSWORDS = {
-  zhongxiao: "zhongxiao-7K2P",
-  tongyi: "tongyi-3F9X",
-  taoyuan: "taoyuan-M8N4",
-  yizhong: "yizhong-5R2T",
-  xinyizhong: "xinyizhong-J6Q1",
-  xintiandi: "xintiandi-V7W3",
-  xinjuejiang: "xinjuejiang-B9D5",
+  zhongxiao: "tp90543547101",
+  tongyi: "90543547103tp",
+  taoyuan: "10690543547tt",
+  yizhong: "tc90543547105tc",
+  xinyizhong: "ntc90543547102",
+  xintiandi: "90543547tn107",
+  xinjuejiang: "90543547104ks",
+  assistant: "vv85072052wx",
   V: "yu713248yu"
 };
 
@@ -5935,6 +6098,38 @@ const STORE_ORDER = [
   "xintiandi", "xinjuejiang"
 ];
 
+// ★ 寫死的 4 位店長 / 幹部（含 PIN）· 系統首次啟動會自動同步到 /global/staff/
+const SEED_MANAGERS = [
+  {
+    seedId: 'seed_qsuan',
+    name: 'Q萱',
+    role: '店長',
+    stores: ['zhongxiao', 'tongyi', 'taoyuan'],
+    pin: '660220'
+  },
+  {
+    seedId: 'seed_youjia',
+    name: '又嘉',
+    role: '店長',
+    stores: ['yizhong', 'xinyizhong'],
+    pin: '881126'
+  },
+  {
+    seedId: 'seed_meiru',
+    name: '美儒',
+    role: '店長',
+    stores: ['xintiandi', 'xinjuejiang'],
+    pin: '990810'
+  },
+  {
+    seedId: 'seed_weiqi',
+    name: '媁淇',
+    role: '幹部',
+    stores: ['tongyi'],
+    pin: '980312'
+  }
+];
+
 // ============================================
 // 全域狀態
 // ============================================
@@ -5942,6 +6137,7 @@ const state = {
   storeId: null,         // 當前登入的店 ID
   isHQ: false,           // 是否為總部 V
   currentStaff: null,    // 當前值班人員姓名
+  currentStaffRole: null, // ★ 當前值班人員角色（店長/幹部/店員/工讀生）· 影響權限
   staffList: [],         // 該店員工列表（員工管理用）
   selectedStaffId: null, // 登入流程中選中的員工 ID
   theme: 'sunshine'      // 當前主題
@@ -6153,16 +6349,54 @@ async function handleLoginStep1() {
 
 async function loadStaffListForLogin() {
   if (!db) {
-    // Firebase 未設定，顯示提示
     renderStaffSelectList([]);
     return;
   }
-  const snapshot = await db.ref(`/stores/${state.storeId}/staff`).once('value');
-  const data = snapshot.val() || {};
-  state.staffList = Object.entries(data)
-    .map(([id, info]) => ({ id, ...info }))
-    .filter(s => s.active !== false);
-  renderStaffSelectList(state.staffList);
+  try {
+    // 讀兩個來源：舊路徑 /stores/{sid}/staff/ + 新路徑 /global/staff/
+    const [localSnap, globalSnap] = await Promise.all([
+      db.ref(`/stores/${state.storeId}/staff`).once('value'),
+      db.ref('/global/staff').once('value')
+    ]);
+    const localData = localSnap.val() || {};
+    const globalData = globalSnap.val() || {};
+
+    const merged = {};
+    // 先加全店資料（凡是 stores 含本店的）
+    Object.entries(globalData).forEach(([id, info]) => {
+      if (!info || info.active === false) return;
+      const stores = Array.isArray(info.stores) ? info.stores : [];
+      if (stores.includes(state.storeId)) {
+        merged[info.name] = {
+          id: id,
+          source: 'global',
+          name: info.name,
+          role: info.role || '店員',
+          pin: info.pin || null,
+          active: info.active !== false
+        };
+      }
+    });
+    // 補本店舊資料（同名以全店為主、不重複加）
+    Object.entries(localData).forEach(([id, info]) => {
+      if (!info || info.active === false) return;
+      if (merged[info.name]) return;
+      merged[info.name] = {
+        id: id,
+        source: 'local',
+        name: info.name,
+        role: info.role || '店員',
+        pin: null,
+        active: info.active !== false
+      };
+    });
+
+    state.staffList = Object.values(merged);
+    renderStaffSelectList(state.staffList);
+  } catch (e) {
+    console.warn('loadStaffListForLogin error:', e);
+    renderStaffSelectList([]);
+  }
 }
 
 function renderStaffSelectList(list) {
@@ -6176,7 +6410,7 @@ function renderStaffSelectList(list) {
   }
 
   container.innerHTML = list.map(s => `
-    <div class="staff-option" data-id="${s.id}" data-name="${escapeHtml(s.name)}">
+    <div class="staff-option" data-id="${s.id}" data-name="${escapeHtml(s.name)}" data-role="${escapeHtml(s.role || '店員')}">
       <div class="staff-avatar">${escapeHtml(getAvatarText(s.name))}</div>
       <div class="staff-info">
         <div class="staff-name">${escapeHtml(s.name)}</div>
@@ -6192,6 +6426,7 @@ function renderStaffSelectList(list) {
       el.classList.add('selected');
       state.selectedStaffId = el.dataset.id;
       state.currentStaff = el.dataset.name;
+      state.currentStaffRole = el.dataset.role || '店員';
       btn.disabled = false;
     });
   });
@@ -6210,6 +6445,7 @@ function handleLoginBack() {
   document.getElementById('loginStep2').style.display = 'none';
   state.selectedStaffId = null;
   state.currentStaff = null;
+  state.currentStaffRole = null;
 }
 
 function enterMainApp() {
@@ -6239,6 +6475,7 @@ function enterMainApp() {
       storeId: state.storeId,
       isHQ: state.isHQ,
       currentStaff: state.currentStaff,
+      currentStaffRole: state.currentStaffRole,
       selectedStaffId: state.selectedStaffId
     }));
   } catch (e) {}
@@ -6253,6 +6490,7 @@ function tryRestoreSession() {
     state.storeId = session.storeId;
     state.isHQ = session.isHQ;
     state.currentStaff = session.currentStaff;
+    state.currentStaffRole = session.currentStaffRole || null;
     state.selectedStaffId = session.selectedStaffId;
     enterMainApp();
     return true;
@@ -6270,6 +6508,7 @@ function handleLogout() {
   state.storeId = null;
   state.isHQ = false;
   state.currentStaff = null;
+  state.currentStaffRole = null;
   state.selectedStaffId = null;
   state.staffList = [];
 
@@ -6760,7 +6999,8 @@ const SCREENS = {
   weeklyReport: 'weeklyReportScreen',
   hqWeeklyOverview: 'hqWeeklyOverviewScreen',
   hqStoreDetail: 'hqStoreDetailScreen',
-  teamsNotify: 'teamsNotifyScreen'
+  teamsNotify: 'teamsNotifyScreen',
+  staffUnified: 'staffUnifiedScreen'
 };
 
 function showScreen(screenName) {
@@ -6967,7 +7207,17 @@ async function renderFeatureGrid() {
     } catch (e) {}
   }
 
-  grid.innerHTML = items.map(item => {
+  // ★ 依角色過濾卡片：店員 / 工讀生 看不到「店長週報」
+  let filteredItems = items;
+  if (!state.isHQ) {
+    const role = state.currentStaffRole || '';
+    const isManagerLike = (role === '店長' || role === '幹部');
+    if (!isManagerLike) {
+      filteredItems = items.filter(it => it.key !== 'weeklyReport');
+    }
+  }
+
+  grid.innerHTML = filteredItems.map(item => {
     let badge = '';
     let urgent = '';
     let descOverride = item.desc;
@@ -10404,12 +10654,160 @@ async function openWeeklyReport() {
     openHqWeeklyOverview();
     return;
   }
-  // 預設打開「上週」（如果上週週報未交、優先顯示上週）
+
+  // ★ 角色檢查 + PIN 驗證
+  const role = state.currentStaffRole || '';
+  const isManagerLike = (role === '店長' || role === '幹部');
+  if (!isManagerLike) {
+    showToast('此頁面僅限店長 / 幹部', 'error');
+    return;
+  }
+
+  // 查 PIN
+  const pinOk = await verifyManagerPin();
+  if (!pinOk) return;
+
+  // 預設打開「上週」
   currentWeeklyMonday = shiftWeek(getCurrentMonday(), -1);
   showScreen('weeklyReport');
   document.getElementById('wrSubtitle').textContent =
     `${STORE_NAMES[state.storeId]} · 店長：${state.currentStaff || '?'}`;
   await loadWeeklyReport();
+}
+
+// ★ 在 sessionStorage 記錄該員工本次工具開啟期間是否已驗過 PIN
+function isManagerPinVerifiedInSession() {
+  try {
+    const key = `vvds_pin_verified_${state.currentStaff}`;
+    return sessionStorage.getItem(key) === 'true';
+  } catch (e) { return false; }
+}
+function markManagerPinVerified() {
+  try {
+    const key = `vvds_pin_verified_${state.currentStaff}`;
+    sessionStorage.setItem(key, 'true');
+  } catch (e) {}
+}
+
+// ★ PIN 驗證主流程：回傳 Promise<boolean>
+async function verifyManagerPin() {
+  // 同一個 session 已驗過、不再問
+  if (isManagerPinVerifiedInSession()) return true;
+
+  // 從 Firebase 拿這位員工的 PIN
+  const myStaff = (state.staffList || []).find(s => s.name === state.currentStaff);
+  const correctPin = myStaff && myStaff.pin;
+  if (!correctPin) {
+    showToast('未設定 PIN，請洽總部 V', 'error');
+    return false;
+  }
+
+  return new Promise(resolve => {
+    openPinVerifyModal(correctPin, resolve);
+  });
+}
+
+let pinInputValue = '';
+let pinExpectedValue = '';
+let pinResolveCallback = null;
+let pinFailCount = 0;
+
+function openPinVerifyModal(correctPin, resolveCb) {
+  pinInputValue = '';
+  pinExpectedValue = correctPin;
+  pinResolveCallback = resolveCb;
+  pinFailCount = 0;
+
+  // 預設 subtitle
+  document.getElementById('pinModalSubtitle').textContent =
+    `${state.currentStaff || ''}（${state.currentStaffRole || ''}）`;
+
+  renderPinDots();
+  document.getElementById('pinVerifyModal').classList.add('show');
+
+  // 綁鍵盤事件（每次開都重綁、避免重複）
+  setupPinKeypadEvents();
+}
+
+function setupPinKeypadEvents() {
+  const keypad = document.querySelector('#pinVerifyModal .pin-keypad');
+  // 移除舊監聽器：用 clone 替換
+  const newKeypad = keypad.cloneNode(true);
+  keypad.parentNode.replaceChild(newKeypad, keypad);
+
+  newKeypad.querySelectorAll('.pin-key').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const k = btn.dataset.key;
+      if (k === 'cancel') {
+        closePinVerifyModal(false);
+      } else if (k === 'backspace') {
+        pinInputValue = pinInputValue.slice(0, -1);
+        renderPinDots();
+      } else if (/^\d$/.test(k)) {
+        if (pinInputValue.length >= 6) return;
+        pinInputValue += k;
+        renderPinDots();
+        // 達到 PIN 長度立即驗證
+        if (pinInputValue.length === pinExpectedValue.length) {
+          checkPinNow();
+        }
+      }
+    });
+  });
+}
+
+function renderPinDots() {
+  const dots = document.querySelectorAll('#pinVerifyModal .pin-dot');
+  const dotsContainer = document.getElementById('pinDots');
+  dotsContainer.classList.remove('error');
+
+  dots.forEach((dot, idx) => {
+    if (idx < pinInputValue.length) {
+      dot.classList.add('filled');
+      dot.textContent = '●';
+    } else {
+      dot.classList.remove('filled');
+      dot.textContent = '';
+    }
+  });
+
+  const hint = document.getElementById('pinHint');
+  hint.classList.remove('error');
+  hint.textContent = '4 - 6 位數字';
+}
+
+function checkPinNow() {
+  if (pinInputValue === pinExpectedValue) {
+    // 成功
+    markManagerPinVerified();
+    closePinVerifyModal(true);
+  } else {
+    // 失敗
+    pinFailCount++;
+    document.getElementById('pinDots').classList.add('error');
+    const hint = document.getElementById('pinHint');
+    hint.classList.add('error');
+    const remaining = 5 - pinFailCount;
+    if (pinFailCount >= 5) {
+      hint.textContent = '失敗次數過多、請稍後再試';
+      setTimeout(() => closePinVerifyModal(false), 1500);
+    } else {
+      hint.textContent = `PIN 錯誤、再試一次（剩 ${remaining} 次）`;
+      setTimeout(() => {
+        pinInputValue = '';
+        renderPinDots();
+        // 修正 hint（因為 renderPinDots 會清掉錯誤狀態）
+      }, 800);
+    }
+  }
+}
+
+function closePinVerifyModal(success) {
+  document.getElementById('pinVerifyModal').classList.remove('show');
+  if (pinResolveCallback) {
+    pinResolveCallback(success);
+    pinResolveCallback = null;
+  }
 }
 
 async function loadWeeklyReport() {
@@ -12342,6 +12740,8 @@ function initPhase1D() {
   loadTeamsRoutingConfig();
   // 載入店家營業時間（背景）
   loadStoreHoursConfig();
+  // ★ 自動建立 4 位店長/幹部（背景）
+  syncSeedManagers();
 }
 
 // ============================================
@@ -12353,6 +12753,39 @@ let suSearchKeyword = '';
 let suStoreFilter = '';
 let suRoleFilter = '';
 let suActiveFilter = 'active';
+
+// ★ 自動同步寫死的 4 位店長 / 幹部到 Firebase
+// 每次工具啟動都跑一次、已存在的不重複新增（用 seedId 識別）
+async function syncSeedManagers() {
+  if (!db) return;
+  try {
+    const snap = await db.ref('/global/staff').once('value');
+    const existing = snap.val() || {};
+    // 看哪些 seed 已經寫過
+    const existingSeedIds = new Set();
+    Object.values(existing).forEach(s => {
+      if (s && s.seedId) existingSeedIds.add(s.seedId);
+    });
+
+    for (const seed of SEED_MANAGERS) {
+      if (existingSeedIds.has(seed.seedId)) continue;
+      const newRef = db.ref('/global/staff').push();
+      await newRef.set({
+        seedId: seed.seedId,
+        name: seed.name,
+        role: seed.role,
+        stores: seed.stores,
+        pin: seed.pin,
+        active: true,
+        createdAt: Date.now(),
+        createdBy: 'seed-auto'
+      });
+      console.log(`✓ seed manager 已建立：${seed.name}`);
+    }
+  } catch (e) {
+    console.warn('syncSeedManagers error:', e.message);
+  }
+}
 
 function setupStaffUnifiedScreen() {
   // 注入店家篩選選項
@@ -12408,8 +12841,7 @@ async function openStaffUnified() {
     showToast('只有總部 V 可使用此功能', 'error');
     return;
   }
-  document.querySelectorAll('.subscreen').forEach(s => s.style.display = 'none');
-  document.getElementById('staffUnifiedScreen').style.display = 'flex';
+  showScreen('staffUnified');
   await loadStaffUnifiedList();
 }
 
@@ -12514,6 +12946,8 @@ function openSuEditModal(staffId) {
   const nameEl = document.getElementById('suEditName');
   const roleEl = document.getElementById('suEditRole');
   const storesEl = document.getElementById('suEditStores');
+  const pinEl = document.getElementById('suEditPin');
+  const pinGroupEl = document.getElementById('suEditPinGroup');
 
   // 渲染店家勾選
   storesEl.innerHTML = STORE_ORDER.map(sid => `
@@ -12522,6 +12956,16 @@ function openSuEditModal(staffId) {
       <span>${escapeHtml(STORE_NAMES[sid] || sid)}</span>
     </label>
   `).join('');
+
+  // ★ 角色切換：店長 / 幹部 才顯示 PIN 欄位
+  const togglePinField = () => {
+    const r = roleEl.value;
+    pinGroupEl.style.display = (r === '店長' || r === '幹部') ? 'block' : 'none';
+  };
+  // 重綁（clone 移除舊監聽器）
+  const newRoleEl = roleEl.cloneNode(true);
+  roleEl.parentNode.replaceChild(newRoleEl, roleEl);
+  newRoleEl.addEventListener('change', togglePinField);
 
   if (staffId) {
     // 編輯模式
@@ -12532,7 +12976,8 @@ function openSuEditModal(staffId) {
     }
     titleEl.textContent = `編輯：${staff.name}`;
     nameEl.value = staff.name;
-    roleEl.value = staff.role;
+    newRoleEl.value = staff.role;
+    pinEl.value = staff.pin || '';
     staff.stores.forEach(sid => {
       const cb = storesEl.querySelector(`input[data-store="${sid}"]`);
       if (cb) cb.checked = true;
@@ -12541,8 +12986,10 @@ function openSuEditModal(staffId) {
     // 新增模式
     titleEl.textContent = '新增員工';
     nameEl.value = '';
-    roleEl.value = '店員';
+    newRoleEl.value = '店員';
+    pinEl.value = '';
   }
+  togglePinField();
 
   document.getElementById('suEditModal').classList.add('show');
   setTimeout(() => nameEl.focus(), 100);
@@ -12556,6 +13003,7 @@ function closeSuEditModal() {
 async function saveSuStaff() {
   const name = document.getElementById('suEditName').value.trim();
   const role = document.getElementById('suEditRole').value;
+  const pinRaw = document.getElementById('suEditPin').value.trim();
   const stores = Array.from(document.querySelectorAll('#suEditStores input[type="checkbox"]:checked'))
     .map(cb => cb.dataset.store);
 
@@ -12572,17 +13020,33 @@ async function saveSuStaff() {
     return;
   }
 
+  // ★ PIN 驗證（店長 / 幹部 必填）
+  let pin = null;
+  const needsPin = (role === '店長' || role === '幹部');
+  if (needsPin) {
+    if (!pinRaw) {
+      showToast('店長 / 幹部 必須設定 PIN', 'error');
+      return;
+    }
+    if (!/^\d{4,6}$/.test(pinRaw)) {
+      showToast('PIN 必須是 4-6 位純數字', 'error');
+      return;
+    }
+    pin = pinRaw;
+  }
+
   setLoading(true);
   try {
     if (suEditingId) {
       // 編輯
-      await db.ref(`/global/staff/${suEditingId}`).update({ name, role, stores });
+      const updateData = { name, role, stores, pin };
+      await db.ref(`/global/staff/${suEditingId}`).update(updateData);
       showToast(`✓ 已更新：${name}`, 'success');
     } else {
       // 新增
       const newRef = db.ref('/global/staff').push();
       await newRef.set({
-        name, role, stores,
+        name, role, stores, pin,
         active: true,
         createdAt: Date.now(),
         createdBy: state.currentStaff || 'V'
