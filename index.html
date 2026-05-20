@@ -305,6 +305,92 @@ input, textarea, select { font-family: inherit; }
   box-shadow: var(--shadow-sm);
 }
 
+/* ★ 跑馬燈 bar（接在 header 下方、跟著置頂） */
+.marquee-bar {
+  background: #1A1A1A;
+  color: #FFD93D;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: sticky;
+  top: 56px; /* header 高度 */
+  z-index: 99;
+  overflow: hidden;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.marquee-bar.hidden { display: none; }
+
+.marquee-bar-icon {
+  flex-shrink: 0;
+  background: #FFD93D;
+  color: #1A1A1A;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-weight: 800;
+  font-size: 11px;
+}
+
+.marquee-bar-track {
+  flex: 1;
+  overflow: hidden;
+}
+
+.marquee-bar-content {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee-scroll-anim 30s linear infinite;
+  padding-left: 100%; /* 從右邊起跑 */
+}
+
+@keyframes marquee-scroll-anim {
+  0%   { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-100%, 0, 0); }
+}
+
+.marquee-bar-content:hover {
+  animation-play-state: paused;
+}
+
+.marquee-edit-btn {
+  flex-shrink: 0;
+  background: rgba(255, 217, 61, 0.15);
+  color: #FFD93D;
+  border: 1px solid rgba(255, 217, 61, 0.3);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.marquee-edit-btn:hover {
+  background: rgba(255, 217, 61, 0.3);
+}
+
+/* V 後台跑馬燈管理 */
+.marquee-item-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.marquee-item-row input[type="text"] {
+  flex: 1;
+}
+.marquee-item-remove {
+  background: #FFF0EC;
+  color: #D9462C;
+  border: 1px solid #F8D7DA;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+}
+
 .app-header-left {
   display: flex;
   align-items: center;
@@ -4402,6 +4488,50 @@ input, textarea, select { font-family: inherit; }
       </button>
     </div>
   </header>
+
+  <!-- ★ 跑馬燈 bar（V 設定的全站訊息、跟著置頂） -->
+  <div class="marquee-bar hidden" id="marqueeBar">
+    <span class="marquee-bar-icon">📢 通知</span>
+    <div class="marquee-bar-track">
+      <div class="marquee-bar-content" id="marqueeBarContent">—</div>
+    </div>
+    <button class="marquee-edit-btn" id="marqueeEditBtn" title="編輯跑馬燈" style="display: none;">⚙️</button>
+  </div>
+
+  <!-- ★ 跑馬燈管理 modal（V 專用） -->
+  <div class="modal-overlay hidden" id="marqueeModal">
+    <div class="modal-card" style="max-width: 480px;">
+      <div class="modal-header">
+        <div class="modal-title">📢 跑馬燈管理</div>
+        <button class="modal-close" id="marqueeModalClose">×</button>
+      </div>
+      <div class="modal-body">
+        <div style="margin-bottom: 16px;">
+          <label class="form-label" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <input type="checkbox" id="marqueeEnabled" style="width: 16px; height: 16px; accent-color: var(--primary-dark);">
+            <span style="font-size: 13px; font-weight: 700;">啟用跑馬燈</span>
+            <span style="font-size: 11px; color: var(--text-tertiary);">關閉的話、跑馬燈會隱藏</span>
+          </label>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label class="form-label">訊息（每條一行、會自動串成一長條跑）</label>
+          <div id="marqueeItemsList"></div>
+          <button class="btn-ghost" id="marqueeAddBtn" style="margin-top: 8px; font-size: 12px;">+ 新增一條訊息</button>
+        </div>
+
+        <div style="background: #FFF8E0; border-radius: 6px; padding: 8px 10px; font-size: 11px; color: #5C4A1A; line-height: 1.6;">
+          💡 提示：訊息可以包含 emoji（例如 ⚠️ 💐 📊 🎯）<br>
+          💡 留空的訊息會被忽略<br>
+          💡 7 店所有人（含店員）都看得到
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-ghost" id="marqueeCancelBtn">取消</button>
+        <button class="btn-primary" id="marqueeSaveBtn">儲存</button>
+      </div>
+    </div>
+  </div>
 
   <!-- 主題切換彈窗 -->
   <div class="theme-popup" id="themePopup">
@@ -10803,6 +10933,7 @@ function initPhase1C() {
   setupAnnouncementEditor();
   setupTaskScreen();
   setupScheduleScreen();
+  setupMarqueeEditor();  // ★ 跑馬燈
 }
 // ============================================
 // ★★★ Phase 1.D 新增邏輯：店長週報 + V 端總覽 ★★★
@@ -12211,6 +12342,152 @@ async function loadTeamsRoutingConfig() {
   }
 }
 
+// ============================================
+// ★ 跑馬燈系統
+// ============================================
+let marqueeConfig = {
+  enabled: false,
+  items: []  // ['訊息1', '訊息2', ...]
+};
+
+/** 即時監聽跑馬燈設定（V 改了大家都即時看到） */
+function listenMarqueeConfig() {
+  if (!db) return;
+  db.ref('/global/marquee').on('value', (snap) => {
+    const data = snap.val() || {};
+    marqueeConfig.enabled = !!data.enabled;
+    marqueeConfig.items = Array.isArray(data.items) ? data.items.filter(s => s && s.trim()) : [];
+    renderMarqueeBar();
+  });
+}
+
+/** 渲染跑馬燈到頁面上 */
+function renderMarqueeBar() {
+  const bar = document.getElementById('marqueeBar');
+  const content = document.getElementById('marqueeBarContent');
+  const editBtn = document.getElementById('marqueeEditBtn');
+  if (!bar || !content) return;
+
+  // 編輯按鈕只給 V 看
+  if (editBtn) {
+    editBtn.style.display = state.isHQ ? 'inline-block' : 'none';
+  }
+
+  const hasContent = marqueeConfig.enabled && marqueeConfig.items.length > 0;
+
+  if (hasContent) {
+    // ★ 正常顯示：跑馬燈內容
+    const merged = marqueeConfig.items.join('  ·  ');
+    content.textContent = merged;
+    const duration = Math.max(15, Math.min(60, Math.ceil(merged.length / 3)));
+    content.style.animationDuration = duration + 's';
+    content.style.animationPlayState = 'running';
+    bar.classList.remove('hidden');
+    bar.style.background = '#1A1A1A';
+  } else if (state.isHQ) {
+    // ★ V 沒設定時：顯示提示 bar、讓 V 知道怎麼設定
+    content.textContent = '點右側 ⚙️ 設定跑馬燈內容（店長/店員看不到此提示）';
+    content.style.animationPlayState = 'paused';  // 不動
+    content.style.transform = 'translate3d(0, 0, 0)';
+    content.style.paddingLeft = '0';
+    bar.classList.remove('hidden');
+    bar.style.background = '#444444';  // 灰色、跟啟用後的黑色區別
+  } else {
+    // ★ 店長/店員：沒內容就完全隱藏
+    bar.classList.add('hidden');
+  }
+}
+
+/** 開啟 V 的跑馬燈編輯 modal */
+function openMarqueeEditor() {
+  if (!state.isHQ) return;
+
+  document.getElementById('marqueeEnabled').checked = marqueeConfig.enabled;
+  renderMarqueeItemsList(marqueeConfig.items.length > 0 ? [...marqueeConfig.items] : ['']);
+  document.getElementById('marqueeModal').classList.remove('hidden');
+}
+
+/** 渲染 modal 內的訊息列表 */
+function renderMarqueeItemsList(items) {
+  const list = document.getElementById('marqueeItemsList');
+  if (!list) return;
+
+  list.innerHTML = items.map((text, idx) => `
+    <div class="marquee-item-row">
+      <input type="text" class="form-input marquee-item-input"
+             data-idx="${idx}"
+             value="${escapeHtml(text)}"
+             placeholder="例：⚠️ 5/21 起正式啟用每日填寫"
+             maxlength="100">
+      <button class="marquee-item-remove" data-idx="${idx}">刪除</button>
+    </div>
+  `).join('');
+
+  // 綁刪除
+  list.querySelectorAll('.marquee-item-remove').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = Number(btn.dataset.idx);
+      // 先把現在所有 input 的值收集起來
+      const current = collectMarqueeItems();
+      current.splice(idx, 1);
+      if (current.length === 0) current.push('');
+      renderMarqueeItemsList(current);
+    });
+  });
+}
+
+/** 從 modal 收集當前所有輸入的訊息（不過濾空） */
+function collectMarqueeItems() {
+  const inputs = document.querySelectorAll('.marquee-item-input');
+  return Array.from(inputs).map(i => i.value);
+}
+
+/** 儲存跑馬燈設定 */
+async function saveMarqueeConfig() {
+  if (!state.isHQ) return;
+  const enabled = document.getElementById('marqueeEnabled').checked;
+  const items = collectMarqueeItems().map(s => s.trim()).filter(s => s);
+
+  try {
+    await db.ref('/global/marquee').set({
+      enabled,
+      items,
+      updatedAt: Date.now(),
+      updatedBy: state.currentStaff || 'V'
+    });
+    showToast('✓ 跑馬燈已更新', 'success');
+    document.getElementById('marqueeModal').classList.add('hidden');
+  } catch (err) {
+    showToast('儲存失敗：' + err.message, 'error');
+  }
+}
+
+/** 設定跑馬燈相關按鈕 */
+function setupMarqueeEditor() {
+  const editBtn = document.getElementById('marqueeEditBtn');
+  if (editBtn) editBtn.addEventListener('click', openMarqueeEditor);
+
+  const closeBtn = document.getElementById('marqueeModalClose');
+  if (closeBtn) closeBtn.addEventListener('click', () => {
+    document.getElementById('marqueeModal').classList.add('hidden');
+  });
+
+  const cancelBtn = document.getElementById('marqueeCancelBtn');
+  if (cancelBtn) cancelBtn.addEventListener('click', () => {
+    document.getElementById('marqueeModal').classList.add('hidden');
+  });
+
+  const saveBtn = document.getElementById('marqueeSaveBtn');
+  if (saveBtn) saveBtn.addEventListener('click', saveMarqueeConfig);
+
+  const addBtn = document.getElementById('marqueeAddBtn');
+  if (addBtn) addBtn.addEventListener('click', () => {
+    const current = collectMarqueeItems();
+    current.push('');
+    renderMarqueeItemsList(current);
+  });
+}
+
 /** 通用：發送 webhook 到指定 URL */
 async function sendWebhook(url, payload) {
   if (!url) return false;
@@ -13023,6 +13300,8 @@ function initPhase1D() {
   loadStoreHoursConfig();
   // ★ 自動建立 4 位店長/幹部（背景）
   syncSeedManagers();
+  // ★ 跑馬燈即時監聽
+  listenMarqueeConfig();
 }
 
 // ============================================
