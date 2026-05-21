@@ -381,6 +381,17 @@ input, textarea, select { font-family: inherit; }
   margin-left: auto;
 }
 
+/* ★ 5/22：截至 X/X 標籤（最新業績日期不是今天時提示） */
+.hq-dash-card-asof {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--primary-text-on-primary, #C9905A);
+  background: var(--primary-bg, #FFF5E6);
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: auto;
+}
+
 /* Metrics grid */
 .hq-metrics-grid {
   display: grid;
@@ -4996,10 +5007,11 @@ input, textarea, select { font-family: inherit; }
         <div class="hq-dash-card">
           <div class="hq-dash-card-title">
             <span class="hq-dash-card-emoji">📊</span> 今日即時數據
+            <span class="hq-dash-card-asof" id="hqTodayAsOf" style="display: none;"></span>
           </div>
           <div class="hq-metrics-grid">
             <div class="hq-metric">
-              <div class="hq-metric-label">今日總業績（7 店）</div>
+              <div class="hq-metric-label">最新業績（7 店）</div>
               <div class="hq-metric-value" id="hqTodaySales">$ —</div>
               <div class="hq-metric-delta" id="hqTodayDelta">— vs 近 30 日均</div>
             </div>
@@ -5014,6 +5026,19 @@ input, textarea, select { font-family: inherit; }
               <div class="hq-metric-delta" id="hqMonthDelta">—</div>
             </div>
           </div>
+        </div>
+
+        <!-- ★ 5/22 改版：V 端營運教練（搬到今日即時數據下方）-->
+        <div class="ac-coach-card" id="hqAiCoachCard" style="display: none;">
+          <div class="ac-coach-header">
+            <div class="ac-coach-icon">💡</div>
+            <div class="ac-coach-title-block">
+              <div class="ac-coach-title">營運教練</div>
+              <div class="ac-coach-subtitle">根據 7 店近 7 天整體狀況產生</div>
+            </div>
+          </div>
+          <div class="ac-coach-tips" id="hqAiCoachTips"></div>
+          <div class="ac-coach-footer">建議僅供參考 · 依現場狀況靈活調整</div>
         </div>
 
         <!-- 🅱 業績排行榜 -->
@@ -8267,17 +8292,22 @@ async function renderAiCoachAdvice() {
 
 /**
  * V 端營運教練：根據 7 店近 7 天整體狀況產生建議
+ * ★ 5/22 改版：渲染目標改成「今日即時數據」下方的 hqAiCoachCard
  */
 async function renderHqAiCoachAdvice() {
-  const card = document.getElementById('aiCoachCard');
-  const placeholder = document.getElementById('aiCoachPlaceholder');
-  const tipsContainer = document.getElementById('aiCoachTips');
+  const card = document.getElementById('hqAiCoachCard');
+  const tipsContainer = document.getElementById('hqAiCoachTips');
+
+  // 把原本 V 端會用到的舊位置卡片強制隱藏（避免雙顯示）
+  const oldCard = document.getElementById('aiCoachCard');
+  const oldPlaceholder = document.getElementById('aiCoachPlaceholder');
+  if (oldCard) oldCard.style.display = 'none';
+  if (oldPlaceholder) oldPlaceholder.style.display = 'none';
 
   if (!card || !tipsContainer) return;
   if (!db) return;
 
   card.style.display = 'block';
-  placeholder.style.display = 'none';
 
   try {
     // 並行抓 7 店各自近 7 天統計
@@ -8399,10 +8429,7 @@ async function renderHqAiCoachAdvice() {
     tips.sort((a, b) => a.priority - b.priority);
     const topTips = tips.slice(0, 3);
 
-    const now = new Date();
-    const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-    document.getElementById('aiCoachSubtitle').textContent =
-      `7 店近 7 天狀況分析 · ${timeStr} 更新 · ${topTips.length} 條建議`;
+    // ★ 新位置 hqAiCoachCard 的 subtitle 是寫死的，不需要動態設定
 
     if (topTips.length === 0) {
       tipsContainer.innerHTML = `
@@ -13257,7 +13284,19 @@ function parseHqStats(reads, today, ym) {
   const storeStats = {};
   for (const r of reads) {
     let monthSales = 0;
-    let todaySales = Number(r.logs[today]?.sales || 0);
+    // ★ 改版：todaySales 改抓「最近一筆有業績的日期」，跨夜不歸零
+    // 從今天往前找 14 天內最後一筆 sales > 0 的紀錄
+    let todaySales = 0;
+    let latestSalesDate = null;
+    for (let i = 0; i < 14; i++) {
+      const checkDate = getDateNDaysAgo(today, i);
+      const log = r.logs[checkDate];
+      if (log && Number(log.sales) > 0) {
+        todaySales = Number(log.sales);
+        latestSalesDate = checkDate;
+        break;
+      }
+    }
     let monthCustomers = 0;
     let monthItems = 0;
     let customerSegments = { vip: 0, new: 0, regular: 0, tourist: 0, none: 0 };
@@ -13299,6 +13338,7 @@ function parseHqStats(reads, today, ym) {
     storeStats[r.storeId] = {
       monthSales,
       todaySales,
+      latestSalesDate,  // ★ 最近一筆有業績的日期（用於顯示「截至 X/X」）
       monthCustomers,
       monthItems,
       avgPrice: monthCustomers > 0 ? monthSales / monthCustomers : 0,
@@ -13316,6 +13356,7 @@ function parseHqStats(reads, today, ym) {
   let totalTodaySales = 0;
   let totalPast30Avg = 0;
   let unfilledStores = [];
+  let latestDataDate = null;  // ★ 全 7 店最新一筆有業績的日期（取最近的）
   const now = new Date();
 
   for (const sid of STORE_ORDER) {
@@ -13323,12 +13364,19 @@ function parseHqStats(reads, today, ym) {
     totalTodaySales += s.todaySales;
     totalPast30Avg += s.past30Avg;
 
-    // 「未填」定義：打烊後 1 小時還沒填
+    // 更新「全 7 店最新業績日期」
+    if (s.latestSalesDate && (!latestDataDate || s.latestSalesDate > latestDataDate)) {
+      latestDataDate = s.latestSalesDate;
+    }
+
+    // 「未填」定義：打烊後 1 小時還沒填「今天」（注意：這個還是用今天日期判斷，因為未填提醒只在打烊後才出現）
     const closeHour = (storeHoursConfig && storeHoursConfig[sid]?.close) || 22; // 預設 22 點打烊
     const closeTime = new Date();
     closeTime.setHours(closeHour, 0, 0, 0);
     const overdue = new Date(closeTime.getTime() + 60 * 60 * 1000); // 打烊後 1 小時
-    if (now >= overdue && s.todaySales === 0) {
+    const todayLog = (reads.find(rr => rr.storeId === sid)?.logs?.[today]) || null;
+    const todayHasSales = todayLog && Number(todayLog.sales) > 0;
+    if (now >= overdue && !todayHasSales) {
       unfilledStores.push(sid);
     }
   }
@@ -13351,13 +13399,30 @@ function parseHqStats(reads, today, ym) {
     totalMonthTarget,
     monthRate: totalMonthTarget > 0 ? totalMonthSales / totalMonthTarget * 100 : 0,
     monthDates,
-    today
+    today,
+    latestDataDate  // ★ 全 7 店最新業績日期
   };
 }
 
 // ---------- 區塊 1：今日即時數據 ----------
 function renderHqTodayMetrics(stats) {
   document.getElementById('hqTodaySales').textContent = '$' + formatMoney(Math.round(stats.totalTodaySales));
+
+  // ★ 改版：在標題旁邊顯示「截至 X/X」（如果最新業績日期不是今天）
+  const asOfEl = document.getElementById('hqTodayAsOf');
+  if (asOfEl) {
+    if (stats.latestDataDate && stats.latestDataDate !== stats.today) {
+      const mm = parseInt(stats.latestDataDate.substring(5, 7));
+      const dd = parseInt(stats.latestDataDate.substring(8, 10));
+      asOfEl.textContent = `截至 ${mm}/${dd}`;
+      asOfEl.style.display = 'inline-block';
+    } else if (stats.latestDataDate === stats.today) {
+      asOfEl.textContent = '今天';
+      asOfEl.style.display = 'inline-block';
+    } else {
+      asOfEl.style.display = 'none';
+    }
+  }
 
   const deltaPct = Math.round(stats.todayDelta * 100);
   const deltaEl = document.getElementById('hqTodayDelta');
