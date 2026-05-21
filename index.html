@@ -355,6 +355,168 @@ input, textarea, select { font-family: inherit; }
   animation-play-state: paused;
 }
 
+/* ★★★ V 端進階儀表板 ★★★ */
+.hq-dash-card {
+  background: var(--bg-white);
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.hq-dash-card-title {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+.hq-dash-card-emoji { font-size: 16px; }
+.hq-dash-card-subtitle {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  margin-left: auto;
+}
+
+/* Metrics grid */
+.hq-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+@media (max-width: 700px) {
+  .hq-metrics-grid { grid-template-columns: 1fr; }
+}
+.hq-metric {
+  background: var(--bg-gray-50);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.hq-metric-label {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+.hq-metric-value {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+.hq-metric-delta {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+}
+.hq-metric-delta.up { color: #1B5E20; }
+.hq-metric-delta.down { color: #D9462C; }
+
+/* Ranking */
+.hq-rank-row {
+  display: grid;
+  grid-template-columns: 28px 1fr 90px 64px 56px;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--bg-gray-50);
+  border-radius: 6px;
+  margin-bottom: 4px;
+  align-items: center;
+  font-size: 12.5px;
+}
+.hq-rank-row.top1 { background: #FFFBEC; border-left: 2px solid #FFD93D; }
+.hq-rank-num {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  text-align: center;
+}
+.hq-rank-row.top1 .hq-rank-num { color: #B8860B; }
+.hq-rank-store { font-weight: 600; }
+.hq-rank-sales { text-align: right; font-variant-numeric: tabular-nums; }
+.hq-rank-rate { font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+.hq-rank-delta { text-align: right; font-size: 11px; font-variant-numeric: tabular-nums; }
+.hq-rank-delta.up { color: #1B5E20; }
+.hq-rank-delta.down { color: #D9462C; }
+.hq-rank-delta.flat { color: var(--text-tertiary); }
+.hq-rank-rate.good { color: #1B5E20; }
+.hq-rank-rate.mid { color: var(--text-primary); }
+.hq-rank-rate.bad { color: #D9462C; }
+
+/* Trend chart */
+#hqTrendChart {
+  width: 100%;
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+}
+.hq-trend-legend {
+  display: flex;
+  gap: 14px;
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  flex-wrap: wrap;
+}
+.hq-trend-legend-dot {
+  display: inline-block;
+  width: 14px;
+  height: 3px;
+  vertical-align: middle;
+  margin-right: 5px;
+  border-radius: 2px;
+}
+
+/* Quality grid */
+.hq-quality-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+@media (max-width: 700px) {
+  .hq-quality-grid { grid-template-columns: 1fr; }
+  .hq-quality-card { grid-column: span 1 !important; }
+}
+.hq-quality-card {
+  background: var(--bg-gray-50);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.hq-quality-label {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.hq-quality-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 0;
+  font-size: 12.5px;
+}
+.hq-quality-row-rank {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-right: 6px;
+}
+.hq-quality-row-value {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.hq-customer-segment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: white;
+  white-space: nowrap;
+  padding: 0 4px;
+}
+
 .marquee-edit-btn {
   flex-shrink: 0;
   background: rgba(255, 217, 61, 0.15);
@@ -2546,6 +2708,103 @@ input, textarea, select { font-family: inherit; }
   border-color: var(--primary);
 }
 
+/* ★ Mockup 1: 首頁待辦事項摘要區塊 */
+.rv-home-todo-section {
+  background: var(--bg-white);
+  border-radius: 14px;
+  padding: 16px 18px;
+  border: 1px solid var(--primary-light);
+  margin-bottom: 12px;
+}
+.rv-home-todo-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.rv-home-todo-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.rv-home-todo-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+.rv-home-todo-badge {
+  font-size: 11px;
+  padding: 2px 10px;
+  border-radius: 10px;
+  background: var(--primary-bg);
+  color: var(--primary-text-on-primary);
+  font-weight: 700;
+}
+.rv-home-todo-link {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.rv-home-todo-link:hover { background: var(--bg-gray-100); }
+.rv-home-todo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.rv-home-todo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 13px;
+  background: var(--bg-white);
+}
+.rv-home-todo-item.overdue {
+  border-color: var(--danger);
+  background: var(--danger-bg);
+}
+.rv-home-todo-item-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+.rv-home-todo-overdue-tag {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: var(--danger);
+  color: #FFF;
+  flex-shrink: 0;
+}
+.rv-home-todo-item-title {
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.rv-home-todo-deadline {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+  margin-left: 10px;
+}
+.rv-home-todo-deadline.overdue {
+  color: var(--danger);
+  font-weight: 700;
+}
+
 /* 主畫面業績概況改版 */
 .rv-home-summary-card {
   background: var(--bg-white);
@@ -3176,6 +3435,141 @@ input, textarea, select { font-family: inherit; }
 
 .td-kpi-card.auto {
   background: var(--warning-bg);
+}
+
+/* ★ Mockup 2: 來客數明細卡 */
+.td-visitor-card {
+  background: var(--primary-bg);
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin-bottom: 8px;
+}
+.td-visitor-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.td-visitor-icon { font-size: 16px; }
+.td-visitor-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+.td-visitor-grid {
+  display: grid;
+  grid-template-columns: 1fr 20px 1fr 20px 1fr;
+  gap: 8px;
+  align-items: end;
+}
+.td-visitor-field { display: flex; flex-direction: column; }
+.td-visitor-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+.td-visitor-op {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  text-align: center;
+  padding-bottom: 8px;
+}
+.td-visitor-readonly {
+  background: var(--bg-gray-100) !important;
+  color: var(--text-primary);
+  font-weight: 700;
+  cursor: not-allowed;
+}
+.td-visitor-hint {
+  margin: 10px 0 0;
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+@media (max-width: 480px) {
+  .td-visitor-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .td-visitor-op { display: none; }
+}
+
+/* ★ Mockup 3: 打烊回報複製卡 */
+.td-closing-report-section { margin-top: 16px; }
+.td-closing-status {
+  background: var(--success-bg);
+  border: 1px solid var(--success);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.td-closing-icon { font-size: 22px; }
+.td-closing-status-text { flex: 1; }
+.td-closing-status-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--success-text);
+}
+.td-closing-status-meta {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+.td-closing-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  padding: 14px;
+}
+.td-closing-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.td-closing-card-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+.td-closing-card-hint {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+.td-closing-text {
+  background: var(--bg-gray-50);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin: 0 0 12px;
+  font-family: "SF Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.85;
+  color: var(--text-primary);
+  white-space: pre-wrap;
+  border: 1px solid var(--border-light);
+}
+.td-closing-copy-btn {
+  width: 100%;
+  padding: 11px;
+  font-size: 13px;
+  font-weight: 800;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--primary-dark);
+  color: var(--primary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.td-closing-copy-btn:hover { opacity: 0.88; }
+.td-closing-copy-btn:active { transform: scale(0.98); }
+.td-closing-copy-btn.copied {
+  background: var(--success);
+  color: #FFF;
 }
 
 .td-kpi-row {
@@ -4429,7 +4823,7 @@ input, textarea, select { font-family: inherit; }
           <option value="xinyizhong">台中新一中</option>
           <option value="xintiandi">台南門市</option>
           <option value="xinjuejiang">高雄門市</option>
-          <option value="V">總部 V</option>
+          <option value="V">公司總部</option>
         </select>
       </div>
       <div class="login-step">
@@ -4440,7 +4834,7 @@ input, textarea, select { font-family: inherit; }
       <button class="login-button" id="loginBtnStep1">下一步</button>
     </div>
 
-    <!-- Step 2: 選值班人員（總部 V 跳過） -->
+    <!-- Step 2: 選值班人員（公司總部 跳過） -->
     <div id="loginStep2" style="display: none;">
       <div class="login-step">
         <label class="login-label">選擇今天值班的我是誰</label>
@@ -4595,6 +4989,78 @@ input, textarea, select { font-family: inherit; }
         </div>
       </div>
 
+      <!-- ★★★ V 端進階儀表板（4 個區塊、只有 V 看得到）★★★ -->
+      <div id="hqDashboard" style="display: none;">
+
+        <!-- 🅰 即時數據儀表板 -->
+        <div class="hq-dash-card">
+          <div class="hq-dash-card-title">
+            <span class="hq-dash-card-emoji">📊</span> 今日即時數據
+          </div>
+          <div class="hq-metrics-grid">
+            <div class="hq-metric">
+              <div class="hq-metric-label">今日總業績（7 店）</div>
+              <div class="hq-metric-value" id="hqTodaySales">$ —</div>
+              <div class="hq-metric-delta" id="hqTodayDelta">— vs 近 30 日均</div>
+            </div>
+            <div class="hq-metric">
+              <div class="hq-metric-label">未填寫店家</div>
+              <div class="hq-metric-value" id="hqUnfilledCount">— / 7</div>
+              <div class="hq-metric-delta" id="hqUnfilledDetail">—</div>
+            </div>
+            <div class="hq-metric">
+              <div class="hq-metric-label">本月達成率</div>
+              <div class="hq-metric-value" id="hqMonthRate">— %</div>
+              <div class="hq-metric-delta" id="hqMonthDelta">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 🅱 業績排行榜 -->
+        <div class="hq-dash-card">
+          <div class="hq-dash-card-title">
+            <span class="hq-dash-card-emoji">🏆</span> 本月業績排行榜
+            <span class="hq-dash-card-subtitle">含 vs 上週同期</span>
+          </div>
+          <div id="hqRankingList"></div>
+        </div>
+
+        <!-- 🅔 歷史趨勢圖 -->
+        <div class="hq-dash-card">
+          <div class="hq-dash-card-title">
+            <span class="hq-dash-card-emoji">📈</span> 本月業績趨勢
+            <span class="hq-dash-card-subtitle">7 店每日業績</span>
+          </div>
+          <div id="hqTrendChart"></div>
+          <div class="hq-trend-legend" id="hqTrendLegend"></div>
+        </div>
+
+        <!-- 🅕 業績品質分析 -->
+        <div class="hq-dash-card">
+          <div class="hq-dash-card-title">
+            <span class="hq-dash-card-emoji">💎</span> 業績品質分析
+            <span class="hq-dash-card-subtitle">客單價・UPT・客群</span>
+          </div>
+          <div class="hq-quality-grid">
+            <div class="hq-quality-card">
+              <div class="hq-quality-label">客單價排名（高 → 低）</div>
+              <div id="hqAvgPriceRanking"></div>
+            </div>
+            <div class="hq-quality-card">
+              <div class="hq-quality-label">UPT 排名（每客件數）</div>
+              <div id="hqUPTRanking"></div>
+            </div>
+            <div class="hq-quality-card" style="grid-column: span 2;">
+              <div class="hq-quality-label">本月客群結構（7 店合計）</div>
+              <div id="hqCustomerStructure" style="height: 28px; border-radius: 6px; overflow: hidden; display: flex; gap: 2px; margin-bottom: 4px;"></div>
+              <div id="hqCustomerLegend" style="display: flex; gap: 12px; font-size: 11px; color: var(--text-secondary); flex-wrap: wrap;"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- ★★★ V 端進階儀表板 END ★★★ -->
+
       <!-- ★ 改版：本月業績概況（自動載入今日紀錄資料） -->
       <div class="rv-home-summary-card" id="kpiSummary" style="display: none;">
         <div class="rv-home-summary-header">
@@ -4643,6 +5109,18 @@ input, textarea, select { font-family: inherit; }
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- ★ Mockup 1: 待辦事項首頁摘要區塊（V/店長/店員皆可見、無未完成則隱藏） -->
+      <div id="homeTodoSection" class="rv-home-todo-section" style="display: none;">
+        <div class="rv-home-todo-header">
+          <div class="rv-home-todo-title-wrap">
+            <div class="rv-home-todo-title">📋 待辦事項</div>
+            <span class="rv-home-todo-badge" id="homeTodoBadge"></span>
+          </div>
+          <button class="rv-home-todo-link" id="homeTodoViewAll" type="button">查看全部 ›</button>
+        </div>
+        <div class="rv-home-todo-list" id="homeTodoList"></div>
       </div>
 
       <!-- ★ 新增：今天還沒填提醒卡（已填則隱藏） -->
@@ -4935,8 +5413,8 @@ input, textarea, select { font-family: inherit; }
         <button id="dailyLogAmendmentBtn">申請補登</button>
       </div>
 
-      <!-- 1. 數字 3 格 -->
-      <h3 style="font-size: 13px; font-weight: 800; margin: 0 0 10px;">▸ 今日數字（3 格）</h3>
+      <!-- 1. 數字 → 業績/件數 2 格 + 來客數明細（會員/非會員/來客數自動）-->
+      <h3 style="font-size: 13px; font-weight: 800; margin: 0 0 10px;">▸ 今日數字</h3>
       <div class="td-kpi-card">
         <div class="td-kpi-row">
           <div class="td-kpi-label">業績（含稅）</div>
@@ -4945,17 +5423,36 @@ input, textarea, select { font-family: inherit; }
           </div>
         </div>
         <div class="td-kpi-row">
-          <div class="td-kpi-label">結帳人數</div>
-          <div class="td-kpi-input-wrap">
-            <input type="number" class="td-kpi-input" id="kpiCustomersInput" placeholder="0" min="0">
-          </div>
-        </div>
-        <div class="td-kpi-row">
           <div class="td-kpi-label">件數（不含贈品）</div>
           <div class="td-kpi-input-wrap">
             <input type="number" class="td-kpi-input" id="kpiItemsInput" placeholder="0" min="0">
           </div>
         </div>
+      </div>
+
+      <!-- ★ Mockup 2: 來客數明細（會員 + 非會員 = 來客數 自動）-->
+      <div class="td-visitor-card">
+        <div class="td-visitor-header">
+          <span class="td-visitor-icon">👥</span>
+          <span class="td-visitor-title">來客數明細</span>
+        </div>
+        <div class="td-visitor-grid">
+          <div class="td-visitor-field">
+            <label class="td-visitor-label">會員</label>
+            <input type="number" class="td-kpi-input" id="kpiMemberInput" min="0" placeholder="0">
+          </div>
+          <div class="td-visitor-op">＋</div>
+          <div class="td-visitor-field">
+            <label class="td-visitor-label">非會員</label>
+            <input type="number" class="td-kpi-input" id="kpiNonMemberInput" min="0" placeholder="0">
+          </div>
+          <div class="td-visitor-op">＝</div>
+          <div class="td-visitor-field">
+            <label class="td-visitor-label">來客數（自動）</label>
+            <input type="number" class="td-kpi-input td-visitor-readonly" id="kpiCustomersInput" disabled>
+          </div>
+        </div>
+        <p class="td-visitor-hint">會員 + 非會員 自動加總，來客數不需手動輸入</p>
       </div>
 
       <!-- 2. 自動算 3 格 -->
@@ -5103,6 +5600,27 @@ input, textarea, select { font-family: inherit; }
         </button>
       </div>
       <div class="td-submit-meta" id="dailyLogSubmitMeta">大概 2 分鐘搞定</div>
+
+      <!-- ★ Mockup 3: 打烊回報複製卡片（送出後顯示）-->
+      <div id="closingReportSection" class="td-closing-report-section" style="display: none;">
+        <div class="td-closing-status">
+          <span class="td-closing-icon">✅</span>
+          <div class="td-closing-status-text">
+            <div class="td-closing-status-title">日報已送出</div>
+            <div class="td-closing-status-meta" id="closingReportStatusMeta">—</div>
+          </div>
+        </div>
+        <div class="td-closing-card">
+          <div class="td-closing-card-header">
+            <div class="td-closing-card-title">打烊回報內容</div>
+            <span class="td-closing-card-hint">複製後貼到 Teams 群組</span>
+          </div>
+          <pre class="td-closing-text" id="closingReportText"></pre>
+          <button class="td-closing-copy-btn" id="closingReportCopyBtn" type="button">
+            📋 複製打烊回報
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- ★ 事件紀錄列表 ★ -->
@@ -5254,7 +5772,7 @@ input, textarea, select { font-family: inherit; }
       <div class="subscreen-header">
         <div class="subscreen-title-block">
           <div class="subscreen-title">📋 7 店週報總覽</div>
-          <div class="subscreen-subtitle">總部 V · 看 7 店週報狀態與內容</div>
+          <div class="subscreen-subtitle">公司總部 · 看 7 店週報狀態與內容</div>
         </div>
         <button class="btn-back" data-screen="home">‹ 返回</button>
       </div>
@@ -5393,7 +5911,7 @@ input, textarea, select { font-family: inherit; }
       <div class="subscreen-header">
         <div class="subscreen-title-block">
           <div class="subscreen-title">📡 Teams 通知設定</div>
-          <div class="subscreen-subtitle">總部 V · 11 個 URL 智慧路由</div>
+          <div class="subscreen-subtitle">公司總部 · 11 個 URL 智慧路由</div>
         </div>
         <button class="btn-back" data-screen="home">‹ 返回</button>
       </div>
@@ -5433,7 +5951,7 @@ input, textarea, select { font-family: inherit; }
         <div class="tn-card-title">🏢 總部群組 URL（1 個）</div>
         <div class="tn-card-desc">給總部訊息、補登申請 → 同步發到此給 V</div>
         <div class="tn-url-row">
-          <div class="tn-url-label">總部 V</div>
+          <div class="tn-url-label">公司總部</div>
           <input type="url" class="tn-url-input compact" id="tnUrl_hq"
                  placeholder="https://...">
           <button class="btn-ghost tn-url-test" data-target="hq">🧪</button>
@@ -6270,7 +6788,7 @@ const STORE_NAMES = {
   xinyizhong: "台中新一中",
   xintiandi: "台南門市",
   xinjuejiang: "高雄門市",
-  V: "總部 V"
+  V: "公司總部"
 };
 
 const STORE_ORDER = [
@@ -6316,7 +6834,7 @@ const SEED_MANAGERS = [
 // ============================================
 const state = {
   storeId: null,         // 當前登入的店 ID
-  isHQ: false,           // 是否為總部 V
+  isHQ: false,           // 是否為公司總部
   currentStaff: null,    // 當前值班人員姓名
   currentStaffRole: null, // ★ 當前值班人員角色（店長/幹部/店員/工讀生）· 影響權限
   staffList: [],         // 該店員工列表（員工管理用）
@@ -6507,9 +7025,16 @@ async function handleLoginStep1() {
   state.storeId = storeId;
   state.isHQ = (storeId === 'V');
 
-  // 總部 V 直接進入主畫面（不需選值班人員）
+  // 公司總部 直接進入主畫面（不需選值班人員）
   if (state.isHQ) {
-    state.currentStaff = 'VVN';
+    state.currentStaff = '公司總部';
+    enterMainApp();
+    return;
+  }
+
+  // ★ 助理也直接進主畫面（不需選值班人員）
+  if (storeId === 'assistant') {
+    state.currentStaff = '助理';
     enterMainApp();
     return;
   }
@@ -6636,7 +7161,7 @@ function enterMainApp() {
   // 更新 header 資訊
   document.getElementById('appTitle').textContent = STORE_NAMES[state.storeId] || '店長中心';
   document.getElementById('appSubtitle').textContent = state.isHQ
-    ? `總部視角 · ${state.currentStaff}`
+    ? '總部視角'
     : `值班：${state.currentStaff}`;
 
   // 更新歡迎詞（隨機池：每次登入隨機抽一句）
@@ -7196,6 +7721,7 @@ function showScreen(screenName) {
   if (screenName === 'home') {
     renderFeatureGrid();
     refreshHomeKpiSummary();
+    refreshHomeTodos();  // ★ Mockup 1: 載入首頁待辦摘要
   }
 }
 
@@ -7265,7 +7791,7 @@ const featureGridHTML = {
       action: () => openEventList()
     }
   ],
-  // 總部 V
+  // 公司總部
   hq: [
     {
       key: 'hqWeeklyOverview',
@@ -7294,13 +7820,6 @@ const featureGridHTML = {
       title: '公告',
       desc: '發布全站或店家公告',
       action: () => openAnnouncementList()
-    },
-    {
-      key: 'tasksHealth',
-      icon: '<svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
-      title: '待辦健康度',
-      desc: '看 7 店員工負荷',
-      action: () => openTasksHealth()
     },
     {
       key: 'schedule',
@@ -7906,17 +8425,17 @@ async function renderHqAiCoachAdvice() {
   }
 }
 async function refreshHomeKpiSummary() {
-  // V 端：載入 7 店達成率快覽 + V 端營運教練
+  // V 端：載入 7 店達成率快覽 + V 端營運教練 + 新的進階儀表板
   if (state.isHQ) {
     document.getElementById('kpiSummary').style.display = 'none';
     document.getElementById('rvMiniKpiGrid').style.display = 'none';
     await loadHqStoresOverview();
     await renderHqAiCoachAdvice();
-    // 註：Teams 自動通知（未填提醒、週報逾期）已移到「立即檢查並推送」按鈕
-    // 或交由 Cloud Functions 排程處理，不在 V 登入時自動觸發
+    await loadHqDashboard();  // ★ 新增：4 個進階區塊
     return;
   }
   document.getElementById('rvHqStoresOverview').style.display = 'none';
+  document.getElementById('hqDashboard').style.display = 'none';  // 非 V 隱藏
 
   if (!db) return;
 
@@ -9034,7 +9553,7 @@ async function loadDailyLog(date) {
   document.getElementById('dailyLogLockedBanner').style.display = isLocked ? 'flex' : 'none';
 
   // 設定欄位 readonly
-  ['kpiSalesInput', 'kpiCustomersInput', 'kpiItemsInput'].forEach(id => {
+  ['kpiSalesInput', 'kpiCustomersInput', 'kpiItemsInput', 'kpiMemberInput', 'kpiNonMemberInput'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.readOnly = isLocked;
   });
@@ -9070,6 +9589,11 @@ async function loadDailyLog(date) {
     document.getElementById('kpiSalesInput').value = currentDailyLog.sales || '';
     document.getElementById('kpiCustomersInput').value = currentDailyLog.customers || '';
     document.getElementById('kpiItemsInput').value = currentDailyLog.items || '';
+    // ★ Mockup 2: 帶入 來客數明細
+    document.getElementById('kpiMemberInput').value = currentDailyLog.memberCount || '';
+    document.getElementById('kpiNonMemberInput').value = currentDailyLog.nonMemberCount || '';
+    // 觸發一次自動加總（會員/非會員 → 來客數）
+    updateVisitorCount();
 
     // 帶入既有勾選
     if (currentDailyLog.crowd) selectChip('tdCrowdChips', 'crowd', currentDailyLog.crowd);
@@ -9106,6 +9630,9 @@ async function loadDailyLog(date) {
 
     // 載入天氣
     await loadWeatherForDailyLog(date);
+
+    // ★ Mockup 3: 載入完成後檢查打烊回報卡顯示
+    refreshClosingReportCard();
 
   } catch (err) {
     console.error('loadDailyLog error', err);
@@ -9192,6 +9719,63 @@ function updateKpiCalculations() {
     customers > 0 ? (items / customers).toFixed(1) : '—';
 }
 
+// ★ Mockup 2: 會員 + 非會員 自動加總成來客數，並觸發 KPI 計算
+function updateVisitorCount() {
+  const m = parseFloat(document.getElementById('kpiMemberInput').value) || 0;
+  const n = parseFloat(document.getElementById('kpiNonMemberInput').value) || 0;
+  document.getElementById('kpiCustomersInput').value = (m + n) || '';
+  updateKpiCalculations();
+}
+
+// ★ Mockup 3: 組裝打烊回報文字（門市名 / 日期 / 業績 / 來客數明細 / 平均客單）
+function buildClosingReportText() {
+  const storeName = STORE_NAMES[state.storeId] || '';
+  const dateStr = currentDailyLogDate
+    ? `${parseInt(currentDailyLogDate.substring(5, 7))}/${parseInt(currentDailyLogDate.substring(8, 10))}`
+    : '';
+  const sales = parseFloat(document.getElementById('kpiSalesInput').value) || 0;
+  const customers = parseFloat(document.getElementById('kpiCustomersInput').value) || 0;
+  const member = parseFloat(document.getElementById('kpiMemberInput').value) || 0;
+  const nonMember = parseFloat(document.getElementById('kpiNonMemberInput').value) || 0;
+  const avgTicket = customers > 0 ? Math.round(sales / customers) : 0;
+
+  return `${storeName}
+日期：${dateStr}
+總業績：$${sales}
+來客數${customers} 會員${member} 非會員${nonMember}
+平均客單：$${avgTicket}`;
+}
+
+// ★ Mockup 3: 根據當前日報送出狀態決定是否顯示打烊回報卡
+function refreshClosingReportCard() {
+  const section = document.getElementById('closingReportSection');
+  const textEl = document.getElementById('closingReportText');
+  const metaEl = document.getElementById('closingReportStatusMeta');
+  if (!section || !textEl) return;
+
+  const submitted = currentDailyLog && currentDailyLog.submitted === true;
+  if (!submitted) {
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = 'block';
+  textEl.textContent = buildClosingReportText();
+
+  if (metaEl) {
+    const ts = currentDailyLog._firstSubmittedAt || currentDailyLog._lastModified;
+    const by = currentDailyLog._firstSubmittedBy || currentDailyLog._modifiedBy || '—';
+    if (ts) {
+      const d = new Date(ts);
+      const dateStr = `${d.getMonth() + 1}/${d.getDate()}`;
+      const timeStr = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+      metaEl.textContent = `${dateStr} ${timeStr} · 由 ${by} 送出`;
+    } else {
+      metaEl.textContent = `由 ${by} 送出`;
+    }
+  }
+}
+
 function collectDailyLogData() {
   // 收集天氣資料
   let weather = null;
@@ -9214,6 +9798,8 @@ function collectDailyLogData() {
     // KPI
     sales: parseFloat(document.getElementById('kpiSalesInput').value) || 0,
     customers: parseFloat(document.getElementById('kpiCustomersInput').value) || 0,
+    memberCount: parseFloat(document.getElementById('kpiMemberInput').value) || 0,
+    nonMemberCount: parseFloat(document.getElementById('kpiNonMemberInput').value) || 0,
     items: parseFloat(document.getElementById('kpiItemsInput').value) || 0,
     // 天氣
     weather,
@@ -9284,8 +9870,14 @@ async function saveDailyLog(submit) {
       } catch (e) {}
     }
 
+    // ★ Mockup 3: 提交後顯示打烊回報複製卡（不自動跳首頁，讓店員可以複製到 Teams）
     if (submit) {
-      setTimeout(() => showScreen('home'), 800);
+      refreshClosingReportCard();
+      // 滾動到打烊回報卡讓店員看見
+      setTimeout(() => {
+        const el = document.getElementById('closingReportSection');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 200);
     }
   } catch (err) {
     showToast('儲存失敗：' + err.message, 'error');
@@ -9295,9 +9887,13 @@ async function saveDailyLog(submit) {
 }
 
 function setupDailyLogScreen() {
-  // KPI 即時計算
-  ['kpiSalesInput', 'kpiCustomersInput', 'kpiItemsInput'].forEach(id => {
+  // KPI 即時計算（業績/件數會直接觸發；來客數由會員+非會員自動加總後再觸發）
+  ['kpiSalesInput', 'kpiItemsInput'].forEach(id => {
     document.getElementById(id).addEventListener('input', updateKpiCalculations);
+  });
+  // ★ Mockup 2: 會員 + 非會員 自動加總成來客數
+  ['kpiMemberInput', 'kpiNonMemberInput'].forEach(id => {
+    document.getElementById(id).addEventListener('input', updateVisitorCount);
   });
 
   // 補填昨天切換
@@ -9378,6 +9974,36 @@ function setupDailyLogScreen() {
   document.getElementById('amendmentReqCloseBtn').addEventListener('click', closeAmendmentRequestModal);
   document.getElementById('amendmentReqCancelBtn').addEventListener('click', closeAmendmentRequestModal);
   document.getElementById('amendmentReqConfirmBtn').addEventListener('click', submitAmendmentRequest);
+
+  // ★ Mockup 3: 打烊回報複製按鈕
+  document.getElementById('closingReportCopyBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('closingReportCopyBtn');
+    const text = document.getElementById('closingReportText').textContent;
+    try {
+      // 優先用 Clipboard API；失敗就用 fallback
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      btn.classList.add('copied');
+      btn.textContent = '✓ 已複製';
+      showToast('✓ 已複製到剪貼簿', 'success');
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.textContent = '📋 複製打烊回報';
+      }, 2500);
+    } catch (err) {
+      showToast('複製失敗，請手動選取', 'error');
+    }
+  });
 }
 
 function closeAmendmentRequestModal() {
@@ -10205,6 +10831,67 @@ async function publishAnnouncement(publish) {
 let currentTaskFilter = 'all';
 let allTasks = [];
 
+// ★ Mockup 1: 首頁待辦事項摘要（未完成 + 逾期最近 3 筆，逾期排最上）
+async function refreshHomeTodos() {
+  const section = document.getElementById('homeTodoSection');
+  const list = document.getElementById('homeTodoList');
+  const badge = document.getElementById('homeTodoBadge');
+  if (!section || !list) return;
+
+  // V 端跳過（V 看的是「待辦健康度」7 店總覽，不是單店待辦）
+  if (state.isHQ || !db || !state.storeId) {
+    section.style.display = 'none';
+    return;
+  }
+
+  try {
+    const snap = await db.ref(`/stores/${state.storeId}/tasks`).once('value');
+    const data = snap.val() || {};
+    const today = getTodayString();
+
+    const pending = Object.entries(data)
+      .map(([id, t]) => ({ id, ...t }))
+      .filter(t => t && !t.completed)
+      .map(t => ({ ...t, isOverdue: t.dueDate && t.dueDate < today }))
+      .sort((a, b) => {
+        if (a.isOverdue !== b.isOverdue) return a.isOverdue ? -1 : 1;
+        return (a.dueDate || '').localeCompare(b.dueDate || '');
+      });
+
+    if (pending.length === 0) {
+      section.style.display = 'none';
+      return;
+    }
+
+    const overdueCount = pending.filter(t => t.isOverdue).length;
+    section.style.display = 'block';
+    badge.textContent = overdueCount > 0
+      ? `未完成 ${pending.length} · 逾期 ${overdueCount}`
+      : `未完成 ${pending.length}`;
+
+    list.innerHTML = pending.slice(0, 3).map(t => {
+      const dueDate = t.dueDate || '';
+      const monthDay = dueDate
+        ? `${parseInt(dueDate.substring(5, 7))}/${parseInt(dueDate.substring(8, 10))}`
+        : '';
+      return `
+        <div class="rv-home-todo-item ${t.isOverdue ? 'overdue' : ''}">
+          <div class="rv-home-todo-item-main">
+            ${t.isOverdue ? '<span class="rv-home-todo-overdue-tag">逾期</span>' : ''}
+            <span class="rv-home-todo-item-title">${escapeHtml(t.title || '(無標題)')}</span>
+          </div>
+          <span class="rv-home-todo-deadline ${t.isOverdue ? 'overdue' : ''}">
+            ${monthDay ? (t.isOverdue ? monthDay : `截止 ${monthDay}`) : ''}
+          </span>
+        </div>
+      `;
+    }).join('');
+  } catch (err) {
+    console.error('refreshHomeTodos error', err);
+    section.style.display = 'none';
+  }
+}
+
 async function getTaskStats() {
   if (!db || state.isHQ) return { overdue: 0, pending: 0 };
   try {
@@ -10402,6 +11089,12 @@ function setupTaskScreen() {
   document.getElementById('addTaskCloseBtn').addEventListener('click', closeAddTaskModal);
   document.getElementById('addTaskCancelBtn').addEventListener('click', closeAddTaskModal);
   document.getElementById('addTaskConfirmBtn').addEventListener('click', confirmAddTask);
+
+  // ★ Mockup 1: 首頁待辦摘要的「查看全部 ›」按鈕
+  const homeTodoViewAll = document.getElementById('homeTodoViewAll');
+  if (homeTodoViewAll) {
+    homeTodoViewAll.addEventListener('click', () => openTaskList());
+  }
 
   // 類別 chips
   document.querySelectorAll('#newTaskCatRow .cat-chip').forEach(c => {
@@ -11110,7 +11803,7 @@ async function verifyManagerPin() {
   const myStaff = (state.staffList || []).find(s => s.name === state.currentStaff);
   const correctPin = myStaff && myStaff.pin;
   if (!correctPin) {
-    showToast('未設定 PIN，請洽總部 V', 'error');
+    showToast('未設定 PIN，請洽公司總部', 'error');
     return false;
   }
 
@@ -12311,7 +13004,7 @@ function isInReminderWindow(storeId) {
 let teamsRoutingConfig = {
   channels: {},       // { zhongxiao: <URL>, ... } 7 店
   managers: {},       // { qsuan: <URL>, ... } 3 店長
-  hq: null,           // 總部 V URL
+  hq: null,           // 公司總部 URL
   enabledEvents: {
     message: true,
     amendment: true,
@@ -12486,6 +13179,430 @@ function setupMarqueeEditor() {
     current.push('');
     renderMarqueeItemsList(current);
   });
+}
+
+// ============================================
+// ★★★ V 端進階儀表板（HQ Dashboard）★★★
+// 4 個區塊：今日即時數據 / 業績排行榜 / 趨勢圖 / 業績品質分析
+// ============================================
+const HQ_TREND_COLORS = {
+  zhongxiao:   '#FFD93D',   // 黃
+  tongyi:      '#FF6B35',   // 橘
+  taoyuan:     '#7F77DD',   // 紫
+  yizhong:     '#5DCAA5',   // 綠
+  xinyizhong:  '#3F88C5',   // 藍
+  xintiandi:   '#F09975',   // 珊瑚
+  xinjuejiang: '#E24B4A'    // 紅
+};
+
+let hqDashboardLoading = false;
+let hqDashboardLastLoad = 0;
+
+/** 公司總部主畫面入口：載入 4 個區塊 */
+async function loadHqDashboard() {
+  if (!state.isHQ) return;
+  if (hqDashboardLoading) return;
+  // 60 秒內不重複載入
+  if (Date.now() - hqDashboardLastLoad < 60 * 1000) return;
+  hqDashboardLoading = true;
+  hqDashboardLastLoad = Date.now();
+
+  try {
+    document.getElementById('hqDashboard').style.display = 'block';
+
+    // 同時讀 7 店資料、3 個月份（今天 + 月初 + 30 天前可能跨月）
+    const ym = getCurrentYM(); // 2026-05
+    const today = getTodayStr();
+
+    // 1. 讀所有店家 dailyLogs + targets（並行）
+    const reads = await Promise.all(
+      STORE_ORDER.map(async (sid) => {
+        const [logsSnap, targetSnap, monthlyTargetSnap] = await Promise.all([
+          db.ref(`/stores/${sid}/dailyLogs`).once('value'),
+          db.ref(`/stores/${sid}/targets/${ym}`).once('value'),
+          db.ref(`/global/monthlyTargets/${ym}/${sid}`).once('value')
+        ]);
+        return {
+          storeId: sid,
+          logs: logsSnap.val() || {},
+          targets: targetSnap.val() || {},
+          monthlyTarget: monthlyTargetSnap.val() || 0
+        };
+      })
+    );
+
+    // 2. 解析資料、產生統計
+    const stats = parseHqStats(reads, today, ym);
+
+    // 3. 渲染 4 個區塊
+    renderHqTodayMetrics(stats);
+    renderHqRanking(stats);
+    renderHqTrendChart(stats);
+    renderHqQuality(stats);
+
+  } catch (err) {
+    console.warn('loadHqDashboard error:', err);
+  } finally {
+    hqDashboardLoading = false;
+  }
+}
+
+/** 解析 7 店資料、產生統計 */
+function parseHqStats(reads, today, ym) {
+  const monthDates = enumerateMonthDates(ym); // [2026-05-01, ...]
+  const past30 = enumeratePastNDays(today, 30); // [今天前30天日期...]
+  const pastWeekStart = getDateNDaysAgo(today, 7);  // 上週同日
+
+  // 各店本月累積、今日業績、本月目標、客單價、UPT、客群結構
+  const storeStats = {};
+  for (const r of reads) {
+    let monthSales = 0;
+    let todaySales = Number(r.logs[today]?.sales || 0);
+    let monthCustomers = 0;
+    let monthItems = 0;
+    let customerSegments = { vip: 0, new: 0, regular: 0, tourist: 0, none: 0 };
+
+    // 本月累積
+    for (const d of monthDates) {
+      const log = r.logs[d];
+      if (log && log.sales) {
+        monthSales += Number(log.sales) || 0;
+        monthCustomers += Number(log.customers) || 0;
+        monthItems += Number(log.items) || 0;
+        // 客群（從 customerType 欄位）
+        const ct = log.customerType;
+        if (ct && customerSegments[ct] != null) customerSegments[ct]++;
+        else customerSegments.none++;
+      }
+    }
+
+    // 上週同期業績（用來算 vs 上週趨勢）
+    let lastWeekMonthSales = 0;
+    const lastWeekMonthDates = monthDates.filter(d => d <= pastWeekStart);
+    for (const d of lastWeekMonthDates) {
+      const log = r.logs[d];
+      if (log && log.sales) lastWeekMonthSales += Number(log.sales) || 0;
+    }
+
+    // 過去 30 天平均業績
+    let past30Sales = 0;
+    let past30Days = 0;
+    for (const d of past30) {
+      const log = r.logs[d];
+      if (log && log.sales) {
+        past30Sales += Number(log.sales) || 0;
+        past30Days++;
+      }
+    }
+    const past30Avg = past30Days > 0 ? past30Sales / past30Days : 0;
+
+    storeStats[r.storeId] = {
+      monthSales,
+      todaySales,
+      monthCustomers,
+      monthItems,
+      avgPrice: monthCustomers > 0 ? monthSales / monthCustomers : 0,
+      upt: monthCustomers > 0 ? monthItems / monthCustomers : 0,
+      monthlyTarget: Number(r.monthlyTarget) || 0,
+      lastWeekMonthSales,
+      past30Avg,
+      customerSegments,
+      logs: r.logs,
+      targets: r.targets
+    };
+  }
+
+  // 今日總業績、未填店家
+  let totalTodaySales = 0;
+  let totalPast30Avg = 0;
+  let unfilledStores = [];
+  const now = new Date();
+
+  for (const sid of STORE_ORDER) {
+    const s = storeStats[sid];
+    totalTodaySales += s.todaySales;
+    totalPast30Avg += s.past30Avg;
+
+    // 「未填」定義：打烊後 1 小時還沒填
+    const closeHour = (storeHoursConfig && storeHoursConfig[sid]?.close) || 22; // 預設 22 點打烊
+    const closeTime = new Date();
+    closeTime.setHours(closeHour, 0, 0, 0);
+    const overdue = new Date(closeTime.getTime() + 60 * 60 * 1000); // 打烊後 1 小時
+    if (now >= overdue && s.todaySales === 0) {
+      unfilledStores.push(sid);
+    }
+  }
+
+  // 本月達成率（7 店合計）
+  let totalMonthSales = 0;
+  let totalMonthTarget = 0;
+  for (const sid of STORE_ORDER) {
+    totalMonthSales += storeStats[sid].monthSales;
+    totalMonthTarget += storeStats[sid].monthlyTarget;
+  }
+
+  return {
+    storeStats,
+    totalTodaySales,
+    totalPast30Avg,
+    todayDelta: totalPast30Avg > 0 ? (totalTodaySales - totalPast30Avg) / totalPast30Avg : 0,
+    unfilledStores,
+    totalMonthSales,
+    totalMonthTarget,
+    monthRate: totalMonthTarget > 0 ? totalMonthSales / totalMonthTarget * 100 : 0,
+    monthDates,
+    today
+  };
+}
+
+// ---------- 區塊 1：今日即時數據 ----------
+function renderHqTodayMetrics(stats) {
+  document.getElementById('hqTodaySales').textContent = '$' + formatMoney(Math.round(stats.totalTodaySales));
+
+  const deltaPct = Math.round(stats.todayDelta * 100);
+  const deltaEl = document.getElementById('hqTodayDelta');
+  if (stats.totalPast30Avg === 0) {
+    deltaEl.textContent = '近 30 日無資料';
+    deltaEl.className = 'hq-metric-delta';
+  } else if (deltaPct > 0) {
+    deltaEl.textContent = '↑ +' + deltaPct + '% vs 近 30 日均';
+    deltaEl.className = 'hq-metric-delta up';
+  } else if (deltaPct < 0) {
+    deltaEl.textContent = '↓ ' + deltaPct + '% vs 近 30 日均';
+    deltaEl.className = 'hq-metric-delta down';
+  } else {
+    deltaEl.textContent = '→ 與近 30 日均持平';
+    deltaEl.className = 'hq-metric-delta';
+  }
+
+  document.getElementById('hqUnfilledCount').textContent = stats.unfilledStores.length + ' / 7';
+  const unfilledEl = document.getElementById('hqUnfilledDetail');
+  if (stats.unfilledStores.length === 0) {
+    unfilledEl.textContent = '全店已填寫 ✓';
+    unfilledEl.className = 'hq-metric-delta up';
+  } else {
+    const names = stats.unfilledStores.map(sid => STORE_NAMES[sid]).join('、');
+    unfilledEl.textContent = '未填：' + names;
+    unfilledEl.className = 'hq-metric-delta down';
+  }
+
+  document.getElementById('hqMonthRate').textContent = Math.round(stats.monthRate) + ' %';
+  const rateDelta = document.getElementById('hqMonthDelta');
+  if (stats.monthRate >= 100) {
+    rateDelta.textContent = '✓ 已超標 ' + (Math.round(stats.monthRate) - 100) + '%';
+    rateDelta.className = 'hq-metric-delta up';
+  } else {
+    const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+    const daysLeft = daysInMonth - new Date().getDate();
+    rateDelta.textContent = '本月剩 ' + daysLeft + ' 天';
+    rateDelta.className = 'hq-metric-delta';
+  }
+}
+
+// ---------- 區塊 2：業績排行榜 ----------
+function renderHqRanking(stats) {
+  const ranked = STORE_ORDER.map(sid => ({
+    storeId: sid,
+    name: STORE_NAMES[sid],
+    sales: stats.storeStats[sid].monthSales,
+    target: stats.storeStats[sid].monthlyTarget,
+    lastWeekSales: stats.storeStats[sid].lastWeekMonthSales,
+    rate: stats.storeStats[sid].monthlyTarget > 0
+      ? stats.storeStats[sid].monthSales / stats.storeStats[sid].monthlyTarget * 100
+      : 0
+  })).sort((a, b) => b.rate - a.rate);
+
+  const html = ranked.map((s, idx) => {
+    const rateClass = s.rate >= 100 ? 'good' : (s.rate >= 80 ? 'mid' : 'bad');
+    // 趨勢（本月累積 vs 上週同期累積、% 變化）
+    let trendText = '→';
+    let trendClass = 'flat';
+    if (s.lastWeekSales > 0) {
+      const change = (s.sales - s.lastWeekSales) / s.lastWeekSales * 100;
+      if (change > 5) {
+        trendText = '↑ +' + Math.round(change) + '%';
+        trendClass = 'up';
+      } else if (change < -5) {
+        trendText = '↓ ' + Math.round(change) + '%';
+        trendClass = 'down';
+      }
+    }
+    return `
+      <div class="hq-rank-row ${idx === 0 ? 'top1' : ''}">
+        <div class="hq-rank-num">${idx + 1}</div>
+        <div class="hq-rank-store">${escapeHtml(s.name)}</div>
+        <div class="hq-rank-sales">$${formatMoney(Math.round(s.sales))}</div>
+        <div class="hq-rank-rate ${rateClass}">${Math.round(s.rate)}%</div>
+        <div class="hq-rank-delta ${trendClass}">${trendText}</div>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('hqRankingList').innerHTML = html;
+}
+
+// ---------- 區塊 3：趨勢圖（純 SVG）----------
+function renderHqTrendChart(stats) {
+  const W = 600, H = 200;
+  const PL = 40, PR = 10, PT = 14, PB = 28;
+  const innerW = W - PL - PR;
+  const innerH = H - PT - PB;
+
+  // 找最大值
+  let maxSales = 0;
+  for (const sid of STORE_ORDER) {
+    for (const d of stats.monthDates) {
+      const v = Number(stats.storeStats[sid].logs[d]?.sales) || 0;
+      if (v > maxSales) maxSales = v;
+    }
+  }
+  if (maxSales === 0) maxSales = 100000;
+  const yMax = Math.ceil(maxSales / 50000) * 50000;
+  const dayCount = stats.monthDates.length;
+
+  // 軸線
+  let svg = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;">`;
+  // 背景格線
+  for (let i = 0; i <= 4; i++) {
+    const y = PT + (innerH * i / 4);
+    svg += `<line x1="${PL}" y1="${y}" x2="${W - PR}" y2="${y}" stroke="#eee" stroke-width="1"/>`;
+    const yVal = yMax * (1 - i / 4);
+    svg += `<text x="${PL - 4}" y="${y + 3}" font-size="9" fill="#999" text-anchor="end">${formatShortNum(yVal)}</text>`;
+  }
+  // x 軸文字
+  svg += `<text x="${PL}" y="${H - 8}" font-size="9" fill="#999">${stats.monthDates[0]?.substring(5)}</text>`;
+  svg += `<text x="${W / 2}" y="${H - 8}" font-size="9" fill="#999" text-anchor="middle">${stats.monthDates[Math.floor(dayCount / 2)]?.substring(5)}</text>`;
+  svg += `<text x="${W - PR}" y="${H - 8}" font-size="9" fill="#999" text-anchor="end">${stats.monthDates[dayCount - 1]?.substring(5)}</text>`;
+
+  // 7 條折線
+  for (const sid of STORE_ORDER) {
+    const color = HQ_TREND_COLORS[sid] || '#888';
+    let points = [];
+    for (let i = 0; i < dayCount; i++) {
+      const d = stats.monthDates[i];
+      const v = Number(stats.storeStats[sid].logs[d]?.sales) || 0;
+      if (v > 0) {
+        const x = PL + (innerW * i / Math.max(1, dayCount - 1));
+        const y = PT + innerH * (1 - v / yMax);
+        points.push(`${x.toFixed(0)},${y.toFixed(0)}`);
+      }
+    }
+    if (points.length > 1) {
+      svg += `<polyline points="${points.join(' ')}" stroke="${color}" stroke-width="2" fill="none" stroke-linejoin="round"/>`;
+    } else if (points.length === 1) {
+      const [x, y] = points[0].split(',');
+      svg += `<circle cx="${x}" cy="${y}" r="3" fill="${color}"/>`;
+    }
+  }
+  svg += '</svg>';
+  document.getElementById('hqTrendChart').innerHTML = svg;
+
+  // 圖例
+  const legendHtml = STORE_ORDER.map(sid => `
+    <span><span class="hq-trend-legend-dot" style="background:${HQ_TREND_COLORS[sid]};"></span>${escapeHtml(STORE_NAMES[sid])}</span>
+  `).join('');
+  document.getElementById('hqTrendLegend').innerHTML = legendHtml;
+}
+
+// ---------- 區塊 4：業績品質分析 ----------
+function renderHqQuality(stats) {
+  // 客單價排名
+  const avgPriceRanked = STORE_ORDER
+    .map(sid => ({ sid, name: STORE_NAMES[sid], value: stats.storeStats[sid].avgPrice }))
+    .filter(s => s.value > 0)
+    .sort((a, b) => b.value - a.value);
+  document.getElementById('hqAvgPriceRanking').innerHTML = avgPriceRanked.slice(0, 7).map((s, i) => `
+    <div class="hq-quality-row">
+      <span><span class="hq-quality-row-rank">${i + 1}</span>${escapeHtml(s.name)}</span>
+      <span class="hq-quality-row-value">$${formatMoney(Math.round(s.value))}</span>
+    </div>
+  `).join('') || '<div style="font-size:12px; color:#999;">尚無資料</div>';
+
+  // UPT 排名
+  const uptRanked = STORE_ORDER
+    .map(sid => ({ sid, name: STORE_NAMES[sid], value: stats.storeStats[sid].upt }))
+    .filter(s => s.value > 0)
+    .sort((a, b) => b.value - a.value);
+  document.getElementById('hqUPTRanking').innerHTML = uptRanked.slice(0, 7).map((s, i) => `
+    <div class="hq-quality-row">
+      <span><span class="hq-quality-row-rank">${i + 1}</span>${escapeHtml(s.name)}</span>
+      <span class="hq-quality-row-value">${s.value.toFixed(2)} 件</span>
+    </div>
+  `).join('') || '<div style="font-size:12px; color:#999;">尚無資料</div>';
+
+  // 客群結構（7 店合計、依「人潮類型」記錄數比例）
+  let totalSegments = { vip: 0, new: 0, regular: 0, tourist: 0, none: 0 };
+  for (const sid of STORE_ORDER) {
+    for (const k in stats.storeStats[sid].customerSegments) {
+      totalSegments[k] += stats.storeStats[sid].customerSegments[k] || 0;
+    }
+  }
+  const totalRecords = totalSegments.vip + totalSegments.new + totalSegments.regular + totalSegments.tourist;
+  const segmentDefs = [
+    { key: 'vip', label: 'VIP', color: '#7F77DD' },
+    { key: 'new', label: '新客', color: '#5DCAA5' },
+    { key: 'regular', label: '回頭', color: '#FFD93D' },
+    { key: 'tourist', label: '遊客', color: '#F09975' }
+  ];
+
+  if (totalRecords === 0) {
+    document.getElementById('hqCustomerStructure').innerHTML = '<div style="flex:1; background:#F5F5F5; display:flex; align-items:center; justify-content:center; font-size:11px; color:#999;">尚無客群資料</div>';
+    document.getElementById('hqCustomerLegend').innerHTML = '';
+  } else {
+    let barsHtml = '';
+    let legendHtml = '';
+    for (const def of segmentDefs) {
+      const cnt = totalSegments[def.key];
+      const pct = Math.round(cnt / totalRecords * 100);
+      if (pct > 0) {
+        const isLight = def.color === '#FFD93D';
+        barsHtml += `<div class="hq-customer-segment" style="background:${def.color}; width:${pct}%; color:${isLight ? '#1A1A1A' : 'white'};">${def.label} ${pct}%</div>`;
+      }
+      legendHtml += `<span><span style="display:inline-block; width:10px; height:10px; background:${def.color}; vertical-align:middle; border-radius:2px; margin-right:4px;"></span>${def.label} ${cnt} 次</span>`;
+    }
+    document.getElementById('hqCustomerStructure').innerHTML = barsHtml;
+    document.getElementById('hqCustomerLegend').innerHTML = legendHtml;
+  }
+}
+
+// ---------- 日期工具 ----------
+function enumerateMonthDates(ym) {
+  // ym = "2026-05"
+  const [y, m] = ym.split('-').map(Number);
+  const daysInMonth = new Date(y, m, 0).getDate();
+  const result = [];
+  for (let d = 1; d <= daysInMonth; d++) {
+    result.push(`${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`);
+  }
+  return result;
+}
+
+function enumeratePastNDays(today, n) {
+  const result = [];
+  const d = new Date(today);
+  for (let i = 1; i <= n; i++) {
+    const t = new Date(d);
+    t.setDate(t.getDate() - i);
+    result.push(t.toISOString().substring(0, 10));
+  }
+  return result;
+}
+
+function getDateNDaysAgo(today, n) {
+  const d = new Date(today);
+  d.setDate(d.getDate() - n);
+  return d.toISOString().substring(0, 10);
+}
+
+function formatShortNum(n) {
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+  if (n >= 1000) return Math.round(n / 1000) + 'K';
+  return Math.round(n).toString();
+}
+
+function getTodayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
 /** 通用：發送 webhook 到指定 URL */
@@ -13064,7 +14181,7 @@ async function testSingleUrl(targetId) {
   let label = '';
   if (targetId === 'hq') {
     url = document.getElementById('tnUrl_hq').value.trim();
-    label = '總部 V';
+    label = '公司總部';
   } else if (targetId.startsWith('channel_')) {
     const sid = targetId.replace('channel_', '');
     url = document.getElementById(`tnUrl_${targetId}`).value.trim();
@@ -13398,7 +14515,7 @@ function setupStaffUnifiedScreen() {
 
 async function openStaffUnified() {
   if (!state.isHQ) {
-    showToast('只有總部 V 可使用此功能', 'error');
+    showToast('只有公司總部 可使用此功能', 'error');
     return;
   }
   showScreen('staffUnified');
