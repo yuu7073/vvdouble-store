@@ -7199,6 +7199,7 @@ function enterMainApp() {
   // ★ Phase 1.B：渲染主畫面功能卡片 + KPI 摘要
   renderFeatureGrid();
   refreshHomeKpiSummary();
+  refreshHomeTodos();  // ★ 修 bug：F5 重整後待辦摘要不出現
 
   // 儲存登入狀態到 sessionStorage（refresh 後保持）
   try {
