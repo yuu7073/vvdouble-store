@@ -10860,15 +10860,25 @@ let currentTaskFilter = 'all';
 let allTasks = [];
 
 // ★ Mockup 1: 首頁待辦事項摘要（未完成 + 逾期最近 3 筆，逾期排最上）
-async function refreshHomeTodos() {
+async function refreshHomeTodos(_retried) {
   const section = document.getElementById('homeTodoSection');
   const list = document.getElementById('homeTodoList');
   const badge = document.getElementById('homeTodoBadge');
   if (!section || !list) return;
 
   // V 端跳過（V 看的是「待辦健康度」7 店總覽，不是單店待辦）
-  if (state.isHQ || !db || !state.storeId) {
+  if (state.isHQ) {
     section.style.display = 'none';
+    return;
+  }
+
+  // ★ 修 race condition：F5 重整時 db 可能還沒初始化、等 500ms 重試 1 次
+  if (!db || !state.storeId) {
+    if (!_retried) {
+      setTimeout(() => refreshHomeTodos(true), 500);
+    } else {
+      section.style.display = 'none';
+    }
     return;
   }
 
