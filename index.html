@@ -10905,7 +10905,7 @@ async function refreshHomeTodos() {
         <div class="rv-home-todo-item ${t.isOverdue ? 'overdue' : ''}">
           <div class="rv-home-todo-item-main">
             ${t.isOverdue ? '<span class="rv-home-todo-overdue-tag">逾期</span>' : ''}
-            <span class="rv-home-todo-item-title">${escapeHtml(t.title || '(無標題)')}</span>
+            <span class="rv-home-todo-item-title">${escapeHtml(t.content || t.title || '(無內容)')}</span>
           </div>
           <span class="rv-home-todo-deadline ${t.isOverdue ? 'overdue' : ''}">
             ${monthDay ? (t.isOverdue ? monthDay : `截止 ${monthDay}`) : ''}
