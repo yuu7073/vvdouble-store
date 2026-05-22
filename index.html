@@ -3817,9 +3817,9 @@ input, textarea, select { font-family: inherit; }
 /* 本月每日業績月曆 */
 .rv-daily-calendar-section {
   background: var(--bg-white);
-  border-radius: 14px;
+  border-radius: 10px;
   border: 1px solid var(--border-light);
-  padding: 14px 16px;
+  padding: 10px 12px;
   margin-bottom: 12px;
 }
 .rv-daily-calendar-header {
@@ -3827,24 +3827,24 @@ input, textarea, select { font-family: inherit; }
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: 6px;
+  margin-bottom: 8px;
 }
 .rv-daily-calendar-title {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 800;
   color: var(--text-primary);
 }
 .rv-daily-calendar-legend {
   display: flex;
-  gap: 10px;
-  font-size: 10.5px;
+  gap: 8px;
+  font-size: 9.5px;
   color: var(--text-tertiary);
 }
 .rv-cal-legend-item {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
 }
 .rv-cal-dot {
   display: inline-block;
@@ -3852,11 +3852,8 @@ input, textarea, select { font-family: inherit; }
   height: 8px;
   border-radius: 2px;
 }
-.rv-cal-dot.low { background: #B6E2BB; }
-.rv-cal-dot.high {
-  background: #FFFFFF;
-  border: 1.5px solid #E24B4A;
-}
+.rv-cal-dot.low { background: #D8F0DC; }
+.rv-cal-dot.high { background: #FBE0E0; }
 .rv-daily-calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -3866,19 +3863,16 @@ input, textarea, select { font-family: inherit; }
   text-align: center;
   font-size: 10px;
   color: var(--text-tertiary);
-  padding-bottom: 4px;
+  padding-bottom: 2px;
   font-weight: 700;
 }
 .rv-cal-cell {
-  aspect-ratio: 1;
+  min-height: 22px;
   background: var(--bg-gray-50);
-  border-radius: 5px;
-  padding: 5px 4px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  cursor: pointer;
+  border-radius: 4px;
+  padding: 4px 6px;
   position: relative;
+  cursor: pointer;
   border: 1.5px solid transparent;
 }
 .rv-cal-cell:hover { background: var(--bg-gray-100); }
@@ -3888,29 +3882,37 @@ input, textarea, select { font-family: inherit; }
   visibility: hidden;
 }
 .rv-cal-cell.no-data {
-  background: var(--bg-gray-50);
+  background: #FAFAF5;
   cursor: default;
 }
 .rv-cal-cell.low { background: #D8F0DC; }
-.rv-cal-cell.high { border-color: #E24B4A; }
-.rv-cal-cell.today { box-shadow: 0 0 0 2px var(--primary) inset; }
+.rv-cal-cell.high { background: #FBE0E0; }
+.rv-cal-cell.today {
+  background: #FFFFFF;
+  border-color: var(--primary, #FFD93D);
+  border-width: 2px;
+}
 .rv-cal-day {
   font-size: 10px;
   color: var(--text-tertiary);
   font-weight: 700;
   line-height: 1;
+  position: absolute;
+  left: 6px;
+  top: 4px;
 }
+.rv-cal-cell.today .rv-cal-day { color: var(--text-primary); font-weight: 800; }
 .rv-cal-sales {
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--text-primary);
-  line-height: 1.1;
-  word-break: break-all;
+  text-align: center;
+  line-height: 1.4;
 }
-.rv-cal-cell.no-data .rv-cal-sales { color: var(--text-tertiary); font-weight: 400; }
+.rv-cal-cell.no-data .rv-cal-sales { color: var(--text-tertiary); font-weight: 400; font-size: 10px; }
 .rv-daily-calendar-foot {
-  margin-top: 10px;
-  font-size: 10.5px;
+  margin-top: 6px;
+  font-size: 9.5px;
   color: var(--text-tertiary);
   text-align: center;
 }
@@ -10763,7 +10765,7 @@ async function refreshDailyCalendar() {
       : 0;
     document.getElementById('dailyCalendarFoot').textContent =
       past30Avg > 0
-        ? `基準：近 30 日日均 $${formatMoney(Math.round(past30Avg))}　·　偏低 = 比基準少 20%　·　偏高 = 比基準多 20%`
+        ? `基準：近 30 日日均 $${formatMoney(Math.round(past30Avg))}　·　偏低 -20%　偏高 +20%`
         : '基準：近 30 日無資料、暫不標記高低';
 
     // 渲染月曆
@@ -10783,22 +10785,28 @@ async function refreshDailyCalendar() {
       const isFuture = ds > today;
 
       let cls = 'rv-cal-cell';
-      let salesText = '—';
+      let salesText = '';
+      let clickAttr = `onclick="openDailyLogFromCalendar('${ds}')"`;
 
       if (isFuture) {
         cls += ' no-data';
+        salesText = '';
+        clickAttr = '';
+      } else if (isToday && sales === 0) {
+        salesText = '<span style="color: #BBB; font-size: 10px;">今日</span>';
       } else if (sales > 0) {
-        salesText = '$' + formatMoneyShort(sales);
+        salesText = '$' + formatMoney(sales);
         if (past30Avg > 0) {
           if (sales < past30Avg * 0.8) cls += ' low';
           else if (sales > past30Avg * 1.2) cls += ' high';
         }
       } else {
         cls += ' no-data';
+        clickAttr = '';
       }
       if (isToday) cls += ' today';
 
-      html += `<div class="${cls}" onclick="openDailyLogFromCalendar('${ds}')">
+      html += `<div class="${cls}" ${clickAttr}>
         <div class="rv-cal-day">${d}</div>
         <div class="rv-cal-sales">${salesText}</div>
       </div>`;
