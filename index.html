@@ -5388,8 +5388,8 @@ input, textarea, select { font-family: inherit; }
       </div>
     </div>
     <div class="app-header-right">
-      <!-- 員工管理 (只店長/V 顯示) -->
-      <button class="header-btn" id="staffMgmtBtn" title="員工管理">
+      <!-- 員工管理 (★ v30 改：只 V 顯示) -->
+      <button class="header-btn" id="staffMgmtBtn" title="員工管理" style="display: none;">
         <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
       </button>
 
@@ -7765,52 +7765,66 @@ async function handleLoginStep1() {
   }
 }
 
+// ★ v30：即時監聽 staff、避免 once 抓一次後總部改動店鋪看不到
+let _staffListListenerRef = null;
+
 async function loadStaffListForLogin() {
   if (!db) {
     renderStaffSelectList([]);
     return;
   }
+  // 先關掉舊的監聽，避免重複
+  if (_staffListListenerRef) {
+    try { _staffListListenerRef.off(); } catch (e) {}
+    _staffListListenerRef = null;
+  }
   try {
-    // 讀兩個來源：舊路徑 /stores/{sid}/staff/ + 新路徑 /global/staff/
-    const [localSnap, globalSnap] = await Promise.all([
-      db.ref(`/stores/${state.storeId}/staff`).once('value'),
-      db.ref('/global/staff').once('value')
-    ]);
-    const localData = localSnap.val() || {};
-    const globalData = globalSnap.val() || {};
+    // 即時監聽 /global/staff/、有變動就重渲染
+    const globalRef = db.ref('/global/staff');
+    _staffListListenerRef = globalRef;
+    globalRef.on('value', async (globalSnap) => {
+      try {
+        // 同時抓本店舊路徑（一次性、不需要監聽）
+        const localSnap = await db.ref(`/stores/${state.storeId}/staff`).once('value');
+        const localData = localSnap.val() || {};
+        const globalData = globalSnap.val() || {};
 
-    const merged = {};
-    // 先加全店資料（凡是 stores 含本店的）
-    Object.entries(globalData).forEach(([id, info]) => {
-      if (!info || info.active === false) return;
-      const stores = Array.isArray(info.stores) ? info.stores : [];
-      if (stores.includes(state.storeId)) {
-        merged[info.name] = {
-          id: id,
-          source: 'global',
-          name: info.name,
-          role: info.role || '店員',
-          pin: info.pin || null,
-          active: info.active !== false
-        };
+        const merged = {};
+        // 先加全店資料（凡是 stores 含本店的）
+        Object.entries(globalData).forEach(([id, info]) => {
+          if (!info || info.active === false) return;
+          const stores = Array.isArray(info.stores) ? info.stores : [];
+          if (stores.includes(state.storeId)) {
+            merged[info.name] = {
+              id: id,
+              source: 'global',
+              name: info.name,
+              role: info.role || '店員',
+              pin: info.pin || null,
+              active: info.active !== false
+            };
+          }
+        });
+        // 補本店舊資料（同名以全店為主、不重複加）
+        Object.entries(localData).forEach(([id, info]) => {
+          if (!info || info.active === false) return;
+          if (merged[info.name]) return;
+          merged[info.name] = {
+            id: id,
+            source: 'local',
+            name: info.name,
+            role: info.role || '店員',
+            pin: null,
+            active: info.active !== false
+          };
+        });
+
+        state.staffList = Object.values(merged);
+        renderStaffSelectList(state.staffList);
+      } catch (e) {
+        console.warn('staff listener inner error', e);
       }
     });
-    // 補本店舊資料（同名以全店為主、不重複加）
-    Object.entries(localData).forEach(([id, info]) => {
-      if (!info || info.active === false) return;
-      if (merged[info.name]) return;
-      merged[info.name] = {
-        id: id,
-        source: 'local',
-        name: info.name,
-        role: info.role || '店員',
-        pin: null,
-        active: info.active !== false
-      };
-    });
-
-    state.staffList = Object.values(merged);
-    renderStaffSelectList(state.staffList);
   } catch (e) {
     console.warn('loadStaffListForLogin error:', e);
     renderStaffSelectList([]);
@@ -7925,6 +7939,11 @@ function handleLogout() {
   try {
     sessionStorage.removeItem('vvds_session');
   } catch (e) {}
+  // ★ v30：關掉 staff 即時監聽
+  if (_staffListListenerRef) {
+    try { _staffListListenerRef.off(); } catch (e) {}
+    _staffListListenerRef = null;
+  }
   // 重置狀態
   state.storeId = null;
   state.isHQ = false;
@@ -16216,7 +16235,36 @@ function setupStaffUnifiedScreen() {
     if (action === 'edit') openSuEditModal(id);
     if (action === 'deactivate') toggleSuStaffActive(id, false);
     if (action === 'reactivate') toggleSuStaffActive(id, true);
+    if (action === 'delete') deleteSuStaff(id);
   });
+}
+
+// ★ v30：徹底刪除員工（彈窗確認、無法復原）
+async function deleteSuStaff(staffId) {
+  if (!db) return;
+  // 先抓員工資料來顯示名字
+  try {
+    const snap = await db.ref(`/global/staff/${staffId}`).once('value');
+    const staff = snap.val();
+    if (!staff) {
+      showToast('找不到該員工', 'error');
+      return;
+    }
+    const confirmed = confirm(
+      `⚠️ 你確定要永久刪除「${staff.name}」嗎？\n\n` +
+      `此動作無法復原。如果只是暫時離職、請用「停用」即可。\n\n` +
+      `（資料會從總部名冊永久移除）`
+    );
+    if (!confirmed) return;
+
+    // 從 global staff 刪除
+    await db.ref(`/global/staff/${staffId}`).remove();
+    showToast(`✓ 已刪除「${staff.name}」`, 'success');
+    await loadStaffUnifiedList();
+  } catch (e) {
+    console.error(e);
+    showToast('刪除失敗：' + e.message, 'error');
+  }
 }
 
 async function openStaffUnified() {
@@ -16316,8 +16364,10 @@ function renderStaffUnifiedList() {
           ${s.active ? `
             <button data-action="edit" data-id="${s.id}">編輯</button>
             <button data-action="deactivate" data-id="${s.id}" class="danger">停用</button>
+            <button data-action="delete" data-id="${s.id}" class="danger" style="background: var(--danger); color: #FFF; border-color: var(--danger);">🗑️ 刪除</button>
           ` : `
             <button data-action="reactivate" data-id="${s.id}">重新啟用</button>
+            <button data-action="delete" data-id="${s.id}" class="danger" style="background: var(--danger); color: #FFF; border-color: var(--danger);">🗑️ 刪除</button>
           `}
         </div>
       </div>
