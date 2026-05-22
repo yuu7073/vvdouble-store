@@ -12,6 +12,7 @@
 <!-- Firebase compat 版（依 skill 規範，禁用 modular） -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
 <style>
 /* ============================================
@@ -3583,6 +3584,404 @@ input, textarea, select { font-family: inherit; }
   color: #FFF;
 }
 
+/* ===== ★ v30 新增樣式 ===== */
+
+/* 業績拆款明細表（行動支付 / 其他支付）*/
+.td-paydetail-section {
+  background: var(--bg-gray-50);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  margin-top: 10px;
+}
+.td-paydetail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.td-paydetail-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+.td-paydetail-sum {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary-text-on-primary);
+}
+.td-paydetail-list { display: flex; flex-direction: column; gap: 6px; }
+.td-paydetail-row {
+  display: grid;
+  grid-template-columns: 1fr 90px 24px;
+  gap: 6px;
+  align-items: center;
+}
+.td-paydetail-row.custom {
+  grid-template-columns: 1fr 90px 24px;
+}
+.td-paydetail-select,
+.td-paydetail-custom {
+  background: var(--bg-white);
+  border: 1px solid var(--border-medium);
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 12px;
+  color: var(--text-primary);
+  width: 100%;
+}
+.td-paydetail-amt {
+  background: var(--bg-white);
+  border: 1px solid var(--border-medium);
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 12px;
+  text-align: right;
+}
+.td-paydetail-del {
+  background: transparent;
+  border: none;
+  color: var(--danger);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0;
+}
+.td-paydetail-add {
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px;
+  background: transparent;
+  border: 1px dashed var(--border-medium);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.td-paydetail-add:hover { background: var(--bg-gray-100); }
+
+/* 總業績卡 */
+.td-total-sales-card {
+  background: var(--primary-bg);
+  border: 1.5px solid var(--primary);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.td-total-sales-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+.td-total-sales-value {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+/* 零用金記錄 */
+.td-pettycash-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin-top: 14px;
+}
+.td-pettycash-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.td-pettycash-row {
+  display: grid;
+  grid-template-columns: 75px 80px 1fr 90px 24px;
+  gap: 6px;
+  align-items: center;
+}
+.td-pettycash-row input,
+.td-pettycash-row select {
+  background: var(--bg-white);
+  border: 1px solid var(--border-medium);
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 11.5px;
+  width: 100%;
+}
+.td-pettycash-row .pc-del {
+  background: transparent;
+  border: none;
+  color: var(--danger);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0;
+}
+.td-pettycash-add {
+  width: 100%;
+  margin-top: 10px;
+  padding: 9px;
+  background: transparent;
+  border: 1px dashed var(--border-medium);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.td-pettycash-add:hover { background: var(--bg-gray-100); }
+.td-pettycash-hint {
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+@media (max-width: 480px) {
+  .td-pettycash-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .td-pettycash-row > *:nth-child(3) { grid-column: 1 / -1; }
+}
+
+/* 現金月結 */
+.td-cashclose-card {
+  background: var(--warning-bg, #FFF8E0);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin-top: 14px;
+}
+.td-cashclose-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  font-size: 12px;
+}
+.td-cashclose-row.total {
+  border-top: 1px dashed var(--border-medium);
+  margin-top: 4px;
+  padding-top: 8px;
+  font-weight: 800;
+  font-size: 14px;
+}
+.td-cashclose-label { color: var(--text-secondary); }
+.td-cashclose-value {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+.td-cashclose-extras { margin-top: 10px; }
+.td-cashclose-diff {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+.td-cashclose-diff.over { color: var(--success); }
+.td-cashclose-diff.under { color: var(--danger); }
+
+/* 確認金額視窗 */
+.td-confirm-modal-content {
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  max-width: 380px;
+  width: 92%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.td-confirm-modal-title {
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+.td-confirm-modal-warning {
+  font-size: 12px;
+  color: var(--danger);
+  margin-bottom: 14px;
+}
+.td-confirm-breakdown {
+  background: var(--bg-gray-50);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+.td-confirm-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  font-size: 12px;
+}
+.td-confirm-row.total {
+  border-top: 1px solid var(--border-medium);
+  margin-top: 6px;
+  padding-top: 8px;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+/* 本月每日業績月曆 */
+.rv-daily-calendar-section {
+  background: var(--bg-white);
+  border-radius: 14px;
+  border: 1px solid var(--border-light);
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+.rv-daily-calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.rv-daily-calendar-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+.rv-daily-calendar-legend {
+  display: flex;
+  gap: 10px;
+  font-size: 10.5px;
+  color: var(--text-tertiary);
+}
+.rv-cal-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.rv-cal-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+.rv-cal-dot.low { background: #B6E2BB; }
+.rv-cal-dot.high {
+  background: #FFFFFF;
+  border: 1.5px solid #E24B4A;
+}
+.rv-daily-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.rv-cal-weekday {
+  text-align: center;
+  font-size: 10px;
+  color: var(--text-tertiary);
+  padding-bottom: 4px;
+  font-weight: 700;
+}
+.rv-cal-cell {
+  aspect-ratio: 1;
+  background: var(--bg-gray-50);
+  border-radius: 5px;
+  padding: 5px 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  position: relative;
+  border: 1.5px solid transparent;
+}
+.rv-cal-cell:hover { background: var(--bg-gray-100); }
+.rv-cal-cell.empty {
+  background: transparent;
+  cursor: default;
+  visibility: hidden;
+}
+.rv-cal-cell.no-data {
+  background: var(--bg-gray-50);
+  cursor: default;
+}
+.rv-cal-cell.low { background: #D8F0DC; }
+.rv-cal-cell.high { border-color: #E24B4A; }
+.rv-cal-cell.today { box-shadow: 0 0 0 2px var(--primary) inset; }
+.rv-cal-day {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  font-weight: 700;
+  line-height: 1;
+}
+.rv-cal-sales {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.1;
+  word-break: break-all;
+}
+.rv-cal-cell.no-data .rv-cal-sales { color: var(--text-tertiary); font-weight: 400; }
+.rv-daily-calendar-foot {
+  margin-top: 10px;
+  font-size: 10.5px;
+  color: var(--text-tertiary);
+  text-align: center;
+}
+@media (max-width: 480px) {
+  .rv-cal-sales { font-size: 9.5px; }
+  .rv-cal-day { font-size: 9px; }
+}
+
+/* 獎金門檻 */
+.rv-bonus-tier-section {
+  background: var(--bg-white);
+  border-radius: 14px;
+  border: 1px solid var(--primary-light);
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+.rv-bonus-tier-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+.rv-bonus-tier-list { display: flex; flex-direction: column; gap: 8px; }
+.rv-bonus-tier-row {
+  display: grid;
+  grid-template-columns: 70px 1fr auto;
+  gap: 8px;
+  align-items: center;
+  padding: 9px 12px;
+  background: var(--bg-gray-50);
+  border-radius: 8px;
+  font-size: 12px;
+}
+.rv-bonus-tier-row.achieved {
+  background: var(--success-bg);
+}
+.rv-bonus-tier-pct {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+.rv-bonus-tier-target {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+}
+.rv-bonus-tier-status {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-align: right;
+  white-space: nowrap;
+}
+.rv-bonus-tier-status.achieved {
+  color: var(--success);
+}
+.rv-bonus-tier-status.gap {
+  color: var(--danger);
+}
+@media (max-width: 480px) {
+  .rv-bonus-tier-row {
+    grid-template-columns: 55px 1fr;
+    gap: 6px;
+  }
+  .rv-bonus-tier-status {
+    grid-column: 1 / -1;
+    text-align: left;
+  }
+}
+
+/* === ★ v30 結束 === */
+
 .td-kpi-row {
   display: flex;
   align-items: center;
@@ -5136,6 +5535,25 @@ input, textarea, select { font-family: inherit; }
         </div>
       </div>
 
+      <!-- ★ v30：本月每日業績月曆（位置：業績概況下面、待辦上面）-->
+      <div class="rv-daily-calendar-section" id="dailyCalendarSection" style="display: none;">
+        <div class="rv-daily-calendar-header">
+          <div class="rv-daily-calendar-title">📅 本月每日業績</div>
+          <div class="rv-daily-calendar-legend">
+            <span class="rv-cal-legend-item"><span class="rv-cal-dot low"></span>偏低 -20%</span>
+            <span class="rv-cal-legend-item"><span class="rv-cal-dot high"></span>偏高 +20%</span>
+          </div>
+        </div>
+        <div class="rv-daily-calendar-grid" id="dailyCalendarGrid"></div>
+        <div class="rv-daily-calendar-foot" id="dailyCalendarFoot">基準：近 30 日日均</div>
+      </div>
+
+      <!-- ★ v30：獎金門檻（位置：月曆下面、待辦上面、需店長月初已鎖定目標才顯示）-->
+      <div class="rv-bonus-tier-section" id="bonusTierSection" style="display: none;">
+        <div class="rv-bonus-tier-title">🎯 獎金門檻進度</div>
+        <div class="rv-bonus-tier-list" id="bonusTierList"></div>
+      </div>
+
       <!-- ★ Mockup 1: 待辦事項首頁摘要區塊（V/店長/店員皆可見、無未完成則隱藏） -->
       <div id="homeTodoSection" class="rv-home-todo-section" style="display: none;">
         <div class="rv-home-todo-header">
@@ -5438,15 +5856,84 @@ input, textarea, select { font-family: inherit; }
         <button id="dailyLogAmendmentBtn">申請補登</button>
       </div>
 
-      <!-- 1. 數字 → 業績/件數 2 格 + 來客數明細（會員/非會員/來客數自動）-->
-      <h3 style="font-size: 13px; font-weight: 800; margin: 0 0 10px;">▸ 今日數字</h3>
-      <div class="td-kpi-card">
+      <!-- ★ v30：業績拆款區塊（街邊店：現金+刷卡；百貨：完整 6 欄）-->
+      <h3 style="font-size: 13px; font-weight: 800; margin: 0 0 10px;">▸ 今日業績</h3>
+
+      <!-- 街邊店版（4 家）-->
+      <div class="td-kpi-card" id="paymentStreetBlock" style="display: none;">
         <div class="td-kpi-row">
-          <div class="td-kpi-label">業績（含稅）</div>
+          <div class="td-kpi-label">現金（含稅）</div>
           <div class="td-kpi-input-wrap">
-            <input type="number" class="td-kpi-input" id="kpiSalesInput" placeholder="0" min="0">
+            <input type="number" class="td-kpi-input payment-input" id="payCash" data-pay-key="cash" placeholder="0" min="0">
           </div>
         </div>
+        <div class="td-kpi-row">
+          <div class="td-kpi-label">刷卡（含稅）</div>
+          <div class="td-kpi-input-wrap">
+            <input type="number" class="td-kpi-input payment-input" id="payCard" data-pay-key="card" placeholder="0" min="0">
+          </div>
+        </div>
+      </div>
+
+      <!-- 百貨店版（3 家）-->
+      <div class="td-kpi-card" id="paymentDeptBlock" style="display: none;">
+        <div class="td-kpi-row">
+          <div class="td-kpi-label">現金</div>
+          <div class="td-kpi-input-wrap">
+            <input type="number" class="td-kpi-input payment-input" id="payCashDept" data-pay-key="cash" placeholder="0" min="0">
+          </div>
+        </div>
+        <div class="td-kpi-row">
+          <div class="td-kpi-label">刷卡</div>
+          <div class="td-kpi-input-wrap">
+            <input type="number" class="td-kpi-input payment-input" id="payCardDept" data-pay-key="card" placeholder="0" min="0">
+          </div>
+        </div>
+        <div class="td-kpi-row">
+          <div class="td-kpi-label">電子抵用券</div>
+          <div class="td-kpi-input-wrap">
+            <input type="number" class="td-kpi-input payment-input" id="payVoucherE" data-pay-key="voucherE" placeholder="0" min="0">
+          </div>
+        </div>
+        <div class="td-kpi-row">
+          <div class="td-kpi-label">商品抵用券</div>
+          <div class="td-kpi-input-wrap">
+            <input type="number" class="td-kpi-input payment-input" id="payVoucherG" data-pay-key="voucherG" placeholder="0" min="0">
+          </div>
+        </div>
+
+        <!-- 行動支付（明細表）-->
+        <div class="td-paydetail-section">
+          <div class="td-paydetail-header">
+            <div class="td-paydetail-title">行動支付</div>
+            <div class="td-paydetail-sum">小計 $<span id="payMobileSum">0</span></div>
+          </div>
+          <div class="td-paydetail-list" id="payMobileList"></div>
+          <button type="button" class="td-paydetail-add" id="payMobileAddBtn">+ 新增行動支付明細</button>
+        </div>
+
+        <!-- 其他支付（明細表）-->
+        <div class="td-paydetail-section">
+          <div class="td-paydetail-header">
+            <div class="td-paydetail-title">其他支付</div>
+            <div class="td-paydetail-sum">小計 $<span id="payOtherSum">0</span></div>
+          </div>
+          <div class="td-paydetail-list" id="payOtherList"></div>
+          <button type="button" class="td-paydetail-add" id="payOtherAddBtn">+ 新增其他支付明細</button>
+        </div>
+      </div>
+
+      <!-- 總業績（自動加總、唯讀）-->
+      <div class="td-total-sales-card">
+        <div class="td-total-sales-label">今日總業績（自動加總）</div>
+        <div class="td-total-sales-value">$ <span id="kpiSalesAutoTotal">0</span></div>
+        <!-- 隱藏舊欄位、給其他既有邏輯讀取（保留相容）-->
+        <input type="hidden" id="kpiSalesInput" value="0">
+      </div>
+
+      <!-- 件數（保留）-->
+      <h3 style="font-size: 13px; font-weight: 800; margin: 14px 0 10px;">▸ 今日件數</h3>
+      <div class="td-kpi-card">
         <div class="td-kpi-row">
           <div class="td-kpi-label">件數（不含贈品）</div>
           <div class="td-kpi-input-wrap">
@@ -5605,6 +6092,43 @@ input, textarea, select { font-family: inherit; }
           <div class="td-supplement-row">
             <span class="td-supplement-label">補充說明：</span>
             <input class="td-supplement-input" id="tdTrySupp" placeholder="例：版型不合身">
+          </div>
+        </div>
+      </div>
+
+      <!-- ★ v30：零用金記錄（動態多筆）-->
+      <div class="td-pettycash-card">
+        <div class="td-section-label">▸ 零用金記錄（沒有就空著）</div>
+        <div class="td-pettycash-list" id="pettyCashList"></div>
+        <button type="button" class="td-pettycash-add" id="pettyCashAddBtn">+ 新增一筆</button>
+        <div class="td-pettycash-hint">日期、金額、用途、經手人都要填齊</div>
+      </div>
+
+      <!-- ★ v30：現金月結（基於業績拆款自動算）-->
+      <div class="td-cashclose-card">
+        <div class="td-section-label">▸ 現金月結</div>
+        <div class="td-cashclose-row">
+          <div class="td-cashclose-label">今日現金業績</div>
+          <div class="td-cashclose-value" id="cashCloseToday">$ 0</div>
+        </div>
+        <div class="td-cashclose-row">
+          <div class="td-cashclose-label">減去零用金支出</div>
+          <div class="td-cashclose-value" id="cashClosePetty">- $ 0</div>
+        </div>
+        <div class="td-cashclose-row total">
+          <div class="td-cashclose-label">應投庫金額</div>
+          <div class="td-cashclose-value" id="cashCloseDeposit">$ 0</div>
+        </div>
+        <div class="td-cashclose-extras">
+          <div class="td-kpi-row">
+            <div class="td-kpi-label">實際投庫金額</div>
+            <div class="td-kpi-input-wrap">
+              <input type="number" class="td-kpi-input" id="cashCloseActualInput" placeholder="0" min="0">
+            </div>
+          </div>
+          <div class="td-kpi-row">
+            <div class="td-kpi-label">盤溢 / 盤損</div>
+            <div class="td-cashclose-diff" id="cashCloseDiff">—</div>
           </div>
         </div>
       </div>
@@ -6355,6 +6879,42 @@ input, textarea, select { font-family: inherit; }
       </div>
     </div>
 
+    <!-- ★ v30：V 端零用金管理頁 -->
+    <div id="pettyCashAdminScreen" class="subscreen" style="display: none;">
+      <div class="subscreen-header">
+        <div class="subscreen-title-block">
+          <div class="subscreen-title">💰 零用金管理</div>
+          <div class="subscreen-subtitle">公司總部 · 撈 7 店零用金、一鍵匯出 Excel</div>
+        </div>
+        <button class="btn-back" data-screen="home">‹ 返回</button>
+      </div>
+      <div class="subscreen-body">
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; align-items: center;">
+          <label style="font-size: 12px; color: var(--text-secondary); font-weight: 700;">月份：</label>
+          <input type="month" id="pcAdminMonthInput" class="su-select" style="max-width: 160px;">
+          <label style="font-size: 12px; color: var(--text-secondary); font-weight: 700;">店家：</label>
+          <select id="pcAdminStoreFilter" class="su-select">
+            <option value="">全部 7 店</option>
+          </select>
+          <button class="btn-ghost" id="pcAdminLoadBtn">查詢</button>
+          <button class="btn-primary" id="pcAdminExportBtn">📥 匯出 Excel</button>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px;">
+          <div style="background: var(--bg-gray-50); padding: 10px 14px; border-radius: 8px; flex: 1; min-width: 140px;">
+            <div style="font-size: 11px; color: var(--text-tertiary);">本月支出筆數</div>
+            <div style="font-size: 18px; font-weight: 800;" id="pcAdminCount">—</div>
+          </div>
+          <div style="background: var(--bg-gray-50); padding: 10px 14px; border-radius: 8px; flex: 1; min-width: 140px;">
+            <div style="font-size: 11px; color: var(--text-tertiary);">本月支出總額</div>
+            <div style="font-size: 18px; font-weight: 800;" id="pcAdminTotal">$ —</div>
+          </div>
+        </div>
+        <div id="pcAdminList" style="background: var(--bg-white); border-radius: 8px; overflow: hidden;">
+          <div class="su-empty" style="padding: 30px; text-align: center; color: var(--text-tertiary);">選擇月份後查詢</div>
+        </div>
+      </div>
+    </div>
+
     <!-- 新增/編輯員工 modal -->
     <div class="modal-overlay" id="suEditModal">
       <div class="modal-box" style="max-width: 420px;">
@@ -6822,6 +7382,20 @@ const STORE_ORDER = [
   "xintiandi", "xinjuejiang"
 ];
 
+// ★ v30：百貨門市（收款方式複雜、業績要拆 6 欄）
+const DEPARTMENT_STORES = ['tongyi', 'taoyuan', 'xintiandi'];
+
+// ★ v30：行動支付選項
+const MOBILE_PAY_OPTIONS = ['LINE PAY', 'ICP', '悠遊付', 'PAYEASY', '愛金卡'];
+
+// ★ v30：其他支付選項
+const OTHER_PAY_OPTIONS = ['7-11 禮券', '商品禮券', '限定優惠券', '即享抵用券', '一點一元', '一點兩元', '點數活動'];
+
+// ★ v30：判斷某店是不是百貨
+function isDepartmentStore(storeId) {
+  return DEPARTMENT_STORES.indexOf(storeId) >= 0;
+}
+
 // ★ 寫死的 4 位店長 / 幹部（含 PIN）· 系統首次啟動會自動同步到 /global/staff/
 const SEED_MANAGERS = [
   {
@@ -7200,6 +7774,8 @@ function enterMainApp() {
   renderFeatureGrid();
   refreshHomeKpiSummary();
   refreshHomeTodos();  // ★ 修 bug：F5 重整後待辦摘要不出現
+  refreshDailyCalendar();  // ★ v30: 月曆
+  refreshBonusTiers();  // ★ v30: 獎金門檻
 
   // 儲存登入狀態到 sessionStorage（refresh 後保持）
   try {
@@ -7732,7 +8308,8 @@ const SCREENS = {
   hqWeeklyOverview: 'hqWeeklyOverviewScreen',
   hqStoreDetail: 'hqStoreDetailScreen',
   teamsNotify: 'teamsNotifyScreen',
-  staffUnified: 'staffUnifiedScreen'
+  staffUnified: 'staffUnifiedScreen',
+  pettyCashAdmin: 'pettyCashAdminScreen'
 };
 
 function showScreen(screenName) {
@@ -7748,6 +8325,8 @@ function showScreen(screenName) {
     renderFeatureGrid();
     refreshHomeKpiSummary();
     refreshHomeTodos();  // ★ Mockup 1: 載入首頁待辦摘要
+    refreshDailyCalendar();  // ★ v30: 本月每日業績月曆
+    refreshBonusTiers();  // ★ v30: 獎金門檻
   }
 }
 
@@ -7867,6 +8446,13 @@ const featureGridHTML = {
       title: '全店員工',
       desc: '統一管理 7 店員工名冊',
       action: () => openStaffUnified()
+    },
+    {
+      key: 'pettyCashAdmin',
+      icon: '<svg viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>',
+      title: '零用金管理',
+      desc: '撈 7 店零用金、一鍵匯出 Excel',
+      action: () => openPettyCashAdmin()
     }
   ]
 };
@@ -9622,6 +10208,9 @@ async function loadDailyLog(date) {
     document.getElementById('kpiNonMemberInput').value = currentDailyLog.nonMemberCount || '';
     // 觸發一次自動加總（會員/非會員 → 來客數）
     updateVisitorCount();
+    // ★ v30：切換街邊/百貨版型 + 載入拆款明細
+    setupPaymentBlockByStore();
+    loadPaymentBreakdownFromLog(currentDailyLog);
 
     // 帶入既有勾選
     if (currentDailyLog.crowd) selectChip('tdCrowdChips', 'crowd', currentDailyLog.crowd);
@@ -9755,6 +10344,748 @@ function updateVisitorCount() {
   updateKpiCalculations();
 }
 
+// ============================================
+// ★ v30：業績拆款 + 零用金 + 現金月結
+// ============================================
+
+// 全域狀態：當前日報的「行動支付明細 / 其他支付明細 / 零用金清單」
+let payMobileItems = [];      // [{key, amount}]
+let payOtherItems = [];       // [{key, customName, amount}]
+let pettyCashItems = [];      // [{date, amount, note, handler}]
+
+// 切換街邊店 / 百貨店版本
+function setupPaymentBlockByStore() {
+  const street = document.getElementById('paymentStreetBlock');
+  const dept = document.getElementById('paymentDeptBlock');
+  if (!street || !dept) return;
+
+  if (isDepartmentStore(state.storeId)) {
+    street.style.display = 'none';
+    dept.style.display = 'block';
+  } else {
+    street.style.display = 'block';
+    dept.style.display = 'none';
+  }
+}
+
+// 渲染行動支付明細列
+function renderPayMobileList() {
+  const list = document.getElementById('payMobileList');
+  if (!list) return;
+  if (payMobileItems.length === 0) {
+    list.innerHTML = '';
+    document.getElementById('payMobileSum').textContent = '0';
+    updateSalesAutoTotal();
+    return;
+  }
+  list.innerHTML = payMobileItems.map((it, i) => {
+    const opts = MOBILE_PAY_OPTIONS.map(o =>
+      `<option value="${o}" ${o === it.key ? 'selected' : ''}>${o}</option>`).join('');
+    return `
+      <div class="td-paydetail-row">
+        <select class="td-paydetail-select" onchange="payMobileItems[${i}].key = this.value; updateSalesAutoTotal();">
+          <option value="">選擇支付方式...</option>
+          ${opts}
+        </select>
+        <input type="number" class="td-paydetail-amt" min="0" placeholder="0" value="${it.amount || ''}"
+          oninput="payMobileItems[${i}].amount = parseFloat(this.value) || 0; updateSalesAutoTotal();">
+        <button type="button" class="td-paydetail-del" onclick="removePayMobile(${i})">×</button>
+      </div>
+    `;
+  }).join('');
+  updateSalesAutoTotal();
+}
+
+function addPayMobile() {
+  payMobileItems.push({ key: '', amount: 0 });
+  renderPayMobileList();
+}
+function removePayMobile(i) {
+  payMobileItems.splice(i, 1);
+  renderPayMobileList();
+}
+
+// 渲染其他支付明細列
+function renderPayOtherList() {
+  const list = document.getElementById('payOtherList');
+  if (!list) return;
+  if (payOtherItems.length === 0) {
+    list.innerHTML = '';
+    document.getElementById('payOtherSum').textContent = '0';
+    updateSalesAutoTotal();
+    return;
+  }
+  list.innerHTML = payOtherItems.map((it, i) => {
+    const opts = OTHER_PAY_OPTIONS.map(o =>
+      `<option value="${o}" ${o === it.key ? 'selected' : ''}>${o}</option>`).join('');
+    const isCustom = it.key === '其他';
+    return `
+      <div class="td-paydetail-row${isCustom ? ' custom' : ''}">
+        <div style="display: grid; ${isCustom ? 'grid-template-columns: 1fr 1fr; gap: 4px;' : ''}">
+          <select class="td-paydetail-select" onchange="payOtherItems[${i}].key = this.value; if (this.value !== '其他') payOtherItems[${i}].customName = ''; renderPayOtherList();">
+            <option value="">選擇支付方式...</option>
+            ${opts}
+            <option value="其他" ${isCustom ? 'selected' : ''}>其他（手動輸入）</option>
+          </select>
+          ${isCustom ? `<input type="text" class="td-paydetail-custom" placeholder="名稱" value="${escapeHtml(it.customName || '')}"
+            oninput="payOtherItems[${i}].customName = this.value;">` : ''}
+        </div>
+        <input type="number" class="td-paydetail-amt" min="0" placeholder="0" value="${it.amount || ''}"
+          oninput="payOtherItems[${i}].amount = parseFloat(this.value) || 0; updateSalesAutoTotal();">
+        <button type="button" class="td-paydetail-del" onclick="removePayOther(${i})">×</button>
+      </div>
+    `;
+  }).join('');
+  updateSalesAutoTotal();
+}
+
+function addPayOther() {
+  payOtherItems.push({ key: '', customName: '', amount: 0 });
+  renderPayOtherList();
+}
+function removePayOther(i) {
+  payOtherItems.splice(i, 1);
+  renderPayOtherList();
+}
+
+// 計算總業績（自動加總所有拆款）
+function updateSalesAutoTotal() {
+  let total = 0;
+  let cashSum = 0;  // 現金小計（用於現金月結）
+
+  if (isDepartmentStore(state.storeId)) {
+    const cash = parseFloat(document.getElementById('payCashDept').value) || 0;
+    const card = parseFloat(document.getElementById('payCardDept').value) || 0;
+    const ve = parseFloat(document.getElementById('payVoucherE').value) || 0;
+    const vg = parseFloat(document.getElementById('payVoucherG').value) || 0;
+    cashSum = cash;
+    total = cash + card + ve + vg;
+
+    const mobileSum = payMobileItems.reduce((s, it) => s + (Number(it.amount) || 0), 0);
+    const otherSum = payOtherItems.reduce((s, it) => s + (Number(it.amount) || 0), 0);
+    total += mobileSum + otherSum;
+
+    document.getElementById('payMobileSum').textContent = formatMoney(Math.round(mobileSum));
+    document.getElementById('payOtherSum').textContent = formatMoney(Math.round(otherSum));
+  } else {
+    const cash = parseFloat(document.getElementById('payCash').value) || 0;
+    const card = parseFloat(document.getElementById('payCard').value) || 0;
+    cashSum = cash;
+    total = cash + card;
+  }
+
+  document.getElementById('kpiSalesAutoTotal').textContent = formatMoney(Math.round(total));
+  document.getElementById('kpiSalesInput').value = total; // 同步給其他邏輯讀
+  updateCashCloseSummary(cashSum);
+  updateKpiCalculations(); // 觸發既有的 KPI 連動
+}
+
+// 零用金記錄列表渲染
+function renderPettyCashList() {
+  const list = document.getElementById('pettyCashList');
+  if (!list) return;
+  if (pettyCashItems.length === 0) {
+    list.innerHTML = '<div style="font-size: 11px; color: var(--text-tertiary); padding: 4px 0;">今日無零用金支出</div>';
+    updateCashCloseSummary();
+    return;
+  }
+  const staffOpts = (state.staffList || []).map(s =>
+    `<option value="${escapeHtml(s.name)}">${escapeHtml(s.name)}</option>`).join('');
+  list.innerHTML = pettyCashItems.map((it, i) => `
+    <div class="td-pettycash-row">
+      <input type="date" value="${it.date || ''}" onchange="pettyCashItems[${i}].date = this.value;">
+      <input type="number" min="0" placeholder="金額" value="${it.amount || ''}"
+        oninput="pettyCashItems[${i}].amount = parseFloat(this.value) || 0; updateCashCloseSummary();">
+      <input type="text" placeholder="用途（如：買垃圾袋）" value="${escapeHtml(it.note || '')}"
+        oninput="pettyCashItems[${i}].note = this.value;">
+      <select onchange="pettyCashItems[${i}].handler = this.value;">
+        <option value="">經手人...</option>
+        ${staffOpts.replace(`value="${escapeHtml(it.handler || '')}"`, `value="${escapeHtml(it.handler || '')}" selected`)}
+      </select>
+      <button type="button" class="pc-del" onclick="removePettyCash(${i})">×</button>
+    </div>
+  `).join('');
+  updateCashCloseSummary();
+}
+
+function addPettyCash() {
+  const today = currentDailyLogDate || getTodayString();
+  pettyCashItems.push({
+    date: today,
+    amount: 0,
+    note: '',
+    handler: state.currentStaff || ''
+  });
+  renderPettyCashList();
+}
+function removePettyCash(i) {
+  pettyCashItems.splice(i, 1);
+  renderPettyCashList();
+}
+
+// 現金月結摘要（自動）
+function updateCashCloseSummary(cashSumOverride) {
+  let cashSum = cashSumOverride;
+  if (typeof cashSum !== 'number') {
+    if (isDepartmentStore(state.storeId)) {
+      cashSum = parseFloat(document.getElementById('payCashDept').value) || 0;
+    } else {
+      cashSum = parseFloat(document.getElementById('payCash').value) || 0;
+    }
+  }
+  const pettySum = pettyCashItems.reduce((s, it) => s + (Number(it.amount) || 0), 0);
+  const deposit = Math.max(0, cashSum - pettySum);
+
+  const todayEl = document.getElementById('cashCloseToday');
+  const pettyEl = document.getElementById('cashClosePetty');
+  const depositEl = document.getElementById('cashCloseDeposit');
+  if (todayEl) todayEl.textContent = '$ ' + formatMoney(Math.round(cashSum));
+  if (pettyEl) pettyEl.textContent = '- $ ' + formatMoney(Math.round(pettySum));
+  if (depositEl) depositEl.textContent = '$ ' + formatMoney(Math.round(deposit));
+
+  // 盤溢盤損
+  const actualInput = document.getElementById('cashCloseActualInput');
+  const diffEl = document.getElementById('cashCloseDiff');
+  if (actualInput && diffEl) {
+    const actual = parseFloat(actualInput.value);
+    if (!isNaN(actual)) {
+      const diff = actual - deposit;
+      if (diff > 0) {
+        diffEl.textContent = '盤溢 +$' + formatMoney(diff);
+        diffEl.className = 'td-cashclose-diff over';
+      } else if (diff < 0) {
+        diffEl.textContent = '盤損 -$' + formatMoney(Math.abs(diff));
+        diffEl.className = 'td-cashclose-diff under';
+      } else {
+        diffEl.textContent = '✓ 帳實相符';
+        diffEl.className = 'td-cashclose-diff';
+      }
+    } else {
+      diffEl.textContent = '—';
+      diffEl.className = 'td-cashclose-diff';
+    }
+  }
+}
+
+// 載入既有日報的拆款 + 零用金資料
+function loadPaymentBreakdownFromLog(log) {
+  payMobileItems = [];
+  payOtherItems = [];
+  pettyCashItems = [];
+
+  if (!log) {
+    // 全部歸零顯示
+    const ids = ['payCash', 'payCard', 'payCashDept', 'payCardDept', 'payVoucherE', 'payVoucherG', 'cashCloseActualInput'];
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    renderPayMobileList();
+    renderPayOtherList();
+    renderPettyCashList();
+    updateSalesAutoTotal();
+    return;
+  }
+
+  const p = log.payment || {};
+  if (isDepartmentStore(state.storeId)) {
+    if (document.getElementById('payCashDept')) document.getElementById('payCashDept').value = p.cash || '';
+    if (document.getElementById('payCardDept')) document.getElementById('payCardDept').value = p.card || '';
+    if (document.getElementById('payVoucherE')) document.getElementById('payVoucherE').value = p.voucherE || '';
+    if (document.getElementById('payVoucherG')) document.getElementById('payVoucherG').value = p.voucherG || '';
+    payMobileItems = Array.isArray(p.mobile) ? p.mobile.map(x => ({ ...x })) : [];
+    payOtherItems = Array.isArray(p.other) ? p.other.map(x => ({ ...x })) : [];
+  } else {
+    if (document.getElementById('payCash')) document.getElementById('payCash').value = p.cash || '';
+    if (document.getElementById('payCard')) document.getElementById('payCard').value = p.card || '';
+  }
+
+  pettyCashItems = Array.isArray(log.pettyCash) ? log.pettyCash.map(x => ({ ...x })) : [];
+
+  const cashCloseEl = document.getElementById('cashCloseActualInput');
+  if (cashCloseEl) cashCloseEl.value = (log.cashClose && log.cashClose.actual) || '';
+
+  renderPayMobileList();
+  renderPayOtherList();
+  renderPettyCashList();
+  updateSalesAutoTotal();
+}
+
+// 收集拆款資料給日報儲存
+function collectPaymentBreakdown() {
+  if (isDepartmentStore(state.storeId)) {
+    return {
+      cash: parseFloat(document.getElementById('payCashDept').value) || 0,
+      card: parseFloat(document.getElementById('payCardDept').value) || 0,
+      voucherE: parseFloat(document.getElementById('payVoucherE').value) || 0,
+      voucherG: parseFloat(document.getElementById('payVoucherG').value) || 0,
+      mobile: payMobileItems.filter(it => it.amount > 0 && it.key).map(it => ({ key: it.key, amount: it.amount })),
+      other: payOtherItems.filter(it => it.amount > 0 && (it.key || it.customName)).map(it => ({
+        key: it.key, customName: it.customName || '', amount: it.amount
+      }))
+    };
+  } else {
+    return {
+      cash: parseFloat(document.getElementById('payCash').value) || 0,
+      card: parseFloat(document.getElementById('payCard').value) || 0
+    };
+  }
+}
+
+// 收集零用金資料
+function collectPettyCash() {
+  return pettyCashItems.filter(it => it.amount > 0 && it.note && it.handler).map(it => ({
+    date: it.date || getTodayString(),
+    amount: it.amount,
+    note: it.note,
+    handler: it.handler,
+    enteredBy: state.currentStaff || '',
+    storeId: state.storeId
+  }));
+}
+
+// 收集現金月結資料
+function collectCashClose(payment) {
+  const cashSum = (payment && Number(payment.cash)) || 0;
+  const pettySum = pettyCashItems.reduce((s, it) => s + (Number(it.amount) || 0), 0);
+  const deposit = Math.max(0, cashSum - pettySum);
+  const actual = parseFloat(document.getElementById('cashCloseActualInput').value);
+  return {
+    cashSales: cashSum,
+    pettyTotal: pettySum,
+    expectedDeposit: deposit,
+    actual: isNaN(actual) ? null : actual,
+    diff: isNaN(actual) ? null : (actual - deposit)
+  };
+}
+
+// ★ 確認金額視窗（提交前彈出）
+function showSubmitConfirmModal(callback) {
+  const payment = collectPaymentBreakdown();
+  const total = parseFloat(document.getElementById('kpiSalesInput').value) || 0;
+  const items = [];
+  if (isDepartmentStore(state.storeId)) {
+    items.push(['現金', payment.cash]);
+    items.push(['刷卡', payment.card]);
+    if (payment.voucherE > 0) items.push(['電子抵用券', payment.voucherE]);
+    if (payment.voucherG > 0) items.push(['商品抵用券', payment.voucherG]);
+    const ms = payment.mobile.reduce((s, x) => s + x.amount, 0);
+    if (ms > 0) items.push(['行動支付', ms]);
+    const os = payment.other.reduce((s, x) => s + x.amount, 0);
+    if (os > 0) items.push(['其他支付', os]);
+  } else {
+    items.push(['現金', payment.cash]);
+    items.push(['刷卡', payment.card]);
+  }
+
+  const rowsHtml = items.map(([k, v]) =>
+    `<div class="td-confirm-row"><span>${k}</span><span>$${formatMoney(Math.round(v))}</span></div>`
+  ).join('');
+
+  const modal = document.createElement('div');
+  modal.className = 'modal-overlay';
+  modal.style.display = 'flex';
+  modal.innerHTML = `
+    <div class="td-confirm-modal-content">
+      <div class="td-confirm-modal-title">⚠️ 請再次確認金額是否正確</div>
+      <div class="td-confirm-modal-warning">以上為自動加總、如不正確請重新檢查相關數字</div>
+      <div class="td-confirm-breakdown">
+        ${rowsHtml}
+        <div class="td-confirm-row total">
+          <span>今日總業績</span>
+          <span>$${formatMoney(Math.round(total))}</span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn-ghost" id="tdConfirmCancelBtn" style="flex: 1;">取消</button>
+        <button class="btn-primary" id="tdConfirmOkBtn" style="flex: 1; justify-content: center;">確認提交</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  document.getElementById('tdConfirmCancelBtn').addEventListener('click', () => {
+    document.body.removeChild(modal);
+  });
+  document.getElementById('tdConfirmOkBtn').addEventListener('click', () => {
+    document.body.removeChild(modal);
+    callback();
+  });
+}
+
+// ============================================
+// ★ v30：本月每日業績月曆
+// ============================================
+async function refreshDailyCalendar() {
+  const section = document.getElementById('dailyCalendarSection');
+  const grid = document.getElementById('dailyCalendarGrid');
+  if (!section || !grid) return;
+
+  if (state.isHQ) {
+    section.style.display = 'none';
+    return;
+  }
+  if (!db || !state.storeId) {
+    setTimeout(refreshDailyCalendar, 500);
+    return;
+  }
+
+  try {
+    section.style.display = 'block';
+
+    // 抓本月所有日報
+    const today = getTodayString();
+    const yyyy = parseInt(today.substring(0, 4));
+    const mm = parseInt(today.substring(5, 7));
+    const firstDay = new Date(yyyy, mm - 1, 1);
+    const lastDay = new Date(yyyy, mm, 0).getDate();
+
+    // 也抓近 30 天用來算基準
+    const past30 = [];
+    for (let i = 1; i <= 30; i++) {
+      past30.push(getDateNDaysAgo(today, i));
+    }
+    const allDates = new Set([...past30]);
+    for (let d = 1; d <= lastDay; d++) {
+      const ds = `${yyyy}-${String(mm).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      allDates.add(ds);
+    }
+
+    const reads = await Promise.all([...allDates].map(d =>
+      db.ref(`/stores/${state.storeId}/dailyLogs/${d}`).once('value').then(s => ({ date: d, log: s.val() }))
+    ));
+    const logMap = {};
+    reads.forEach(r => { logMap[r.date] = r.log; });
+
+    // 算近 30 日日均（只算有業績的）
+    const past30Sales = past30.map(d => Number(logMap[d]?.sales) || 0).filter(v => v > 0);
+    const past30Avg = past30Sales.length > 0
+      ? past30Sales.reduce((a, b) => a + b, 0) / past30Sales.length
+      : 0;
+    document.getElementById('dailyCalendarFoot').textContent =
+      past30Avg > 0
+        ? `基準：近 30 日日均 $${formatMoney(Math.round(past30Avg))}　·　偏低 = 比基準少 20%　·　偏高 = 比基準多 20%`
+        : '基準：近 30 日無資料、暫不標記高低';
+
+    // 渲染月曆
+    let html = ['一', '二', '三', '四', '五', '六', '日']
+      .map(w => `<div class="rv-cal-weekday">${w}</div>`).join('');
+
+    const firstWeekday = (firstDay.getDay() + 6) % 7; // 一=0 / 日=6
+    for (let i = 0; i < firstWeekday; i++) {
+      html += '<div class="rv-cal-cell empty"></div>';
+    }
+
+    for (let d = 1; d <= lastDay; d++) {
+      const ds = `${yyyy}-${String(mm).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      const log = logMap[ds];
+      const sales = Number(log?.sales) || 0;
+      const isToday = ds === today;
+      const isFuture = ds > today;
+
+      let cls = 'rv-cal-cell';
+      let salesText = '—';
+
+      if (isFuture) {
+        cls += ' no-data';
+      } else if (sales > 0) {
+        salesText = '$' + formatMoneyShort(sales);
+        if (past30Avg > 0) {
+          if (sales < past30Avg * 0.8) cls += ' low';
+          else if (sales > past30Avg * 1.2) cls += ' high';
+        }
+      } else {
+        cls += ' no-data';
+      }
+      if (isToday) cls += ' today';
+
+      html += `<div class="${cls}" onclick="openDailyLogFromCalendar('${ds}')">
+        <div class="rv-cal-day">${d}</div>
+        <div class="rv-cal-sales">${salesText}</div>
+      </div>`;
+    }
+
+    grid.innerHTML = html;
+  } catch (e) {
+    console.error('refreshDailyCalendar', e);
+  }
+}
+
+function formatMoneyShort(v) {
+  if (v >= 1000000) return (v / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+  if (v >= 10000) return Math.round(v / 1000) + 'K';
+  if (v >= 1000) return (v / 1000).toFixed(1) + 'K';
+  return formatMoney(v);
+}
+
+function openDailyLogFromCalendar(dateStr) {
+  if (dateStr > getTodayString()) return; // 未來不能點
+  currentDailyLogDate = dateStr;
+  showScreen('dailyLog');
+  loadDailyLog(dateStr);
+}
+
+// ============================================
+// ★ v30：獎金門檻
+// ============================================
+async function refreshBonusTiers() {
+  const section = document.getElementById('bonusTierSection');
+  const list = document.getElementById('bonusTierList');
+  if (!section || !list) return;
+
+  if (state.isHQ) {
+    section.style.display = 'none';
+    return;
+  }
+  if (!db || !state.storeId) {
+    setTimeout(refreshBonusTiers, 500);
+    return;
+  }
+
+  try {
+    // 抓本月鎖定目標
+    const today = getTodayString();
+    const yyyy = today.substring(0, 4);
+    const mm = today.substring(5, 7);
+    const targetKey = `${yyyy}-${mm}`;
+    const targetSnap = await db.ref(`/stores/${state.storeId}/targets/${targetKey}`).once('value');
+    const targetData = targetSnap.val();
+
+    if (!targetData || !targetData.locked || !targetData.amount) {
+      section.style.display = 'none';
+      return;
+    }
+
+    const base = Number(targetData.amount);
+
+    // 抓本月已累積業績
+    const lastDay = new Date(parseInt(yyyy), parseInt(mm), 0).getDate();
+    let monthSales = 0;
+    let daysFilled = 0;
+    const logsSnap = await db.ref(`/stores/${state.storeId}/dailyLogs`).once('value');
+    const logs = logsSnap.val() || {};
+    for (let d = 1; d <= lastDay; d++) {
+      const ds = `${yyyy}-${mm}-${String(d).padStart(2, '0')}`;
+      const s = Number(logs[ds]?.sales) || 0;
+      if (s > 0) {
+        monthSales += s;
+        daysFilled++;
+      }
+    }
+
+    const todayDay = parseInt(today.substring(8, 10));
+    const daysRemaining = lastDay - todayDay + 1;
+
+    section.style.display = 'block';
+    const tiers = [
+      { pct: 100, amount: base, label: '達標' },
+      { pct: 105, amount: Math.round(base * 1.05), label: '105%' },
+      { pct: 110, amount: Math.round(base * 1.10), label: '110%' },
+      { pct: 120, amount: Math.round(base * 1.20), label: '120%' }
+    ];
+
+    list.innerHTML = tiers.map(t => {
+      const achieved = monthSales >= t.amount;
+      const gap = t.amount - monthSales;
+      const dailyAvg = daysRemaining > 0 ? Math.ceil(gap / daysRemaining) : gap;
+
+      let status;
+      if (achieved) {
+        status = '<span class="rv-bonus-tier-status achieved">✓ 已達標</span>';
+      } else if (daysRemaining <= 0) {
+        status = `<span class="rv-bonus-tier-status gap">差 $${formatMoney(gap)}</span>`;
+      } else {
+        status = `<span class="rv-bonus-tier-status gap">還差 $${formatMoney(gap)}　·　日均 $${formatMoney(dailyAvg)}</span>`;
+      }
+
+      return `
+        <div class="rv-bonus-tier-row ${achieved ? 'achieved' : ''}">
+          <div class="rv-bonus-tier-pct">${t.pct}%</div>
+          <div class="rv-bonus-tier-target">$${formatMoney(t.amount)}</div>
+          ${status}
+        </div>
+      `;
+    }).join('');
+  } catch (e) {
+    console.error('refreshBonusTiers', e);
+  }
+}
+
+// ============================================
+// ★ v30：V 端零用金管理（撈 7 店 + 匯出 Excel）
+// ============================================
+let pcAdminCurrentData = []; // 當前載入的資料
+
+function openPettyCashAdmin() {
+  showScreen('pettyCashAdmin');
+  // 初始化月份選 = 本月
+  const today = getTodayString();
+  const yyyymm = today.substring(0, 7);
+  const monthInput = document.getElementById('pcAdminMonthInput');
+  if (monthInput && !monthInput.value) monthInput.value = yyyymm;
+
+  // 店家下拉填入
+  const storeSel = document.getElementById('pcAdminStoreFilter');
+  if (storeSel && storeSel.children.length <= 1) {
+    STORE_ORDER.forEach(sid => {
+      const opt = document.createElement('option');
+      opt.value = sid;
+      opt.textContent = STORE_NAMES[sid] || sid;
+      storeSel.appendChild(opt);
+    });
+  }
+
+  // 自動載一次
+  loadPettyCashAdmin();
+}
+
+async function loadPettyCashAdmin() {
+  const month = document.getElementById('pcAdminMonthInput').value;
+  const storeFilter = document.getElementById('pcAdminStoreFilter').value;
+  const listEl = document.getElementById('pcAdminList');
+
+  if (!month) {
+    showToast('請選擇月份', 'error');
+    return;
+  }
+
+  listEl.innerHTML = '<div class="su-empty" style="padding: 30px; text-align: center;">載入中...</div>';
+
+  try {
+    const targetStores = storeFilter ? [storeFilter] : STORE_ORDER;
+    const reads = await Promise.all(targetStores.map(sid =>
+      db.ref(`/stores/${sid}/pettyCash/${month}`).once('value')
+        .then(s => ({ sid, data: s.val() || {} }))
+    ));
+
+    // 攤平：每筆變成一個列
+    const rows = [];
+    reads.forEach(r => {
+      const storeName = STORE_NAMES[r.sid] || r.sid;
+      Object.entries(r.data).forEach(([date, items]) => {
+        if (Array.isArray(items)) {
+          items.forEach(it => {
+            rows.push({
+              storeName,
+              storeId: r.sid,
+              date: it.date || date,
+              amount: Number(it.amount) || 0,
+              note: it.note || '',
+              handler: it.handler || '',
+              enteredBy: it.enteredBy || ''
+            });
+          });
+        }
+      });
+    });
+
+    // 排序：店家 → 日期
+    rows.sort((a, b) => {
+      if (a.storeName !== b.storeName) return a.storeName.localeCompare(b.storeName);
+      return (a.date || '').localeCompare(b.date || '');
+    });
+
+    pcAdminCurrentData = rows;
+
+    // 統計
+    const totalCount = rows.length;
+    const totalAmount = rows.reduce((s, r) => s + r.amount, 0);
+    document.getElementById('pcAdminCount').textContent = totalCount + ' 筆';
+    document.getElementById('pcAdminTotal').textContent = '$ ' + formatMoney(totalAmount);
+
+    if (rows.length === 0) {
+      listEl.innerHTML = '<div class="su-empty" style="padding: 30px; text-align: center; color: var(--text-tertiary);">此月份沒有零用金支出紀錄</div>';
+      return;
+    }
+
+    // 用表格列出
+    let html = `
+      <div style="display: grid; grid-template-columns: 110px 90px 90px 1fr 90px 90px; gap: 0; font-size: 12px; background: var(--bg-gray-50); padding: 10px 14px; font-weight: 800; border-bottom: 1px solid var(--border-light);">
+        <div>店家</div>
+        <div>日期</div>
+        <div style="text-align: right;">金額</div>
+        <div style="padding-left: 8px;">用途</div>
+        <div>經手人</div>
+        <div>填寫人</div>
+      </div>
+    `;
+    rows.forEach((r, i) => {
+      const bg = i % 2 === 0 ? 'var(--bg-white)' : 'var(--bg-gray-50)';
+      html += `
+        <div style="display: grid; grid-template-columns: 110px 90px 90px 1fr 90px 90px; gap: 0; font-size: 12px; padding: 9px 14px; background: ${bg}; border-bottom: 1px solid var(--border-light);">
+          <div>${escapeHtml(r.storeName)}</div>
+          <div>${escapeHtml(r.date.substring(5))}</div>
+          <div style="text-align: right; font-weight: 700;">$${formatMoney(r.amount)}</div>
+          <div style="padding-left: 8px;">${escapeHtml(r.note)}</div>
+          <div>${escapeHtml(r.handler)}</div>
+          <div style="color: var(--text-tertiary);">${escapeHtml(r.enteredBy)}</div>
+        </div>
+      `;
+    });
+    listEl.innerHTML = html;
+  } catch (e) {
+    console.error(e);
+    listEl.innerHTML = `<div class="su-empty" style="padding: 30px; text-align: center; color: var(--danger);">載入失敗：${e.message}</div>`;
+  }
+}
+
+function exportPettyCashExcel() {
+  if (!pcAdminCurrentData || pcAdminCurrentData.length === 0) {
+    showToast('沒有資料可以匯出，請先查詢', 'error');
+    return;
+  }
+  if (typeof XLSX === 'undefined') {
+    showToast('Excel 套件載入失敗，請重新整理頁面', 'error');
+    return;
+  }
+
+  const month = document.getElementById('pcAdminMonthInput').value || getTodayString().substring(0, 7);
+  const storeFilter = document.getElementById('pcAdminStoreFilter').value;
+  const storeName = storeFilter ? (STORE_NAMES[storeFilter] || storeFilter) : '全店';
+
+  // 組 sheet data
+  const sheetData = [
+    ['零用金支出明細表'],
+    [`月份：${month}　店家：${storeName}　筆數：${pcAdminCurrentData.length}　總額：$${formatMoney(pcAdminCurrentData.reduce((s, r) => s + r.amount, 0))}`],
+    [], // 空行
+    ['店家', '日期', '金額', '用途', '經手人', '填寫人']
+  ];
+  pcAdminCurrentData.forEach(r => {
+    sheetData.push([r.storeName, r.date, r.amount, r.note, r.handler, r.enteredBy]);
+  });
+
+  const ws = XLSX.utils.aoa_to_sheet(sheetData);
+
+  // 欄寬
+  ws['!cols'] = [
+    { wch: 16 }, // 店家
+    { wch: 12 }, // 日期
+    { wch: 10 }, // 金額
+    { wch: 28 }, // 用途
+    { wch: 12 }, // 經手人
+    { wch: 12 }  // 填寫人
+  ];
+
+  // 合併 A1:F1 標題、A2:F2 摘要
+  ws['!merges'] = [
+    { s: { r: 0, c: 0 }, e: { r: 0, c: 5 } },
+    { s: { r: 1, c: 0 }, e: { r: 1, c: 5 } }
+  ];
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, '零用金明細');
+
+  const filename = `零用金支出_${month}_${storeName}.xlsx`;
+  XLSX.writeFile(wb, filename);
+  showToast('✓ Excel 已下載：' + filename, 'success');
+}
+
+function setupPettyCashAdmin() {
+  const loadBtn = document.getElementById('pcAdminLoadBtn');
+  const exportBtn = document.getElementById('pcAdminExportBtn');
+  if (loadBtn) loadBtn.addEventListener('click', loadPettyCashAdmin);
+  if (exportBtn) exportBtn.addEventListener('click', exportPettyCashExcel);
+}
+
 // ★ Mockup 3: 組裝打烊回報文字（門市名 / 日期 / 業績 / 來客數明細 / 平均客單）
 function buildClosingReportText() {
   const storeName = STORE_NAMES[state.storeId] || '';
@@ -9822,6 +11153,11 @@ function collectDailyLogData() {
     weather = currentDailyLog.weather;
   }
 
+  // ★ v30：收集拆款 / 零用金 / 現金月結
+  const paymentBreakdown = collectPaymentBreakdown();
+  const pettyCashData = collectPettyCash();
+  const cashCloseData = collectCashClose(paymentBreakdown);
+
   return {
     // KPI
     sales: parseFloat(document.getElementById('kpiSalesInput').value) || 0,
@@ -9829,6 +11165,10 @@ function collectDailyLogData() {
     memberCount: parseFloat(document.getElementById('kpiMemberInput').value) || 0,
     nonMemberCount: parseFloat(document.getElementById('kpiNonMemberInput').value) || 0,
     items: parseFloat(document.getElementById('kpiItemsInput').value) || 0,
+    // ★ v30：業績拆款
+    payment: paymentBreakdown,
+    pettyCash: pettyCashData,
+    cashClose: cashCloseData,
     // 天氣
     weather,
     weatherSupp: document.getElementById('tdWeatherSupp').value.trim(),
@@ -9882,6 +11222,17 @@ async function saveDailyLog(submit) {
   setLoading(true);
   try {
     await db.ref(`/stores/${state.storeId}/dailyLogs/${date}`).set(dataToSave);
+
+    // ★ v30：零用金獨立寫一份到 /pettyCash/{yyyy-mm}/{date} 給 V 後台撈
+    if (Array.isArray(newData.pettyCash) && newData.pettyCash.length > 0) {
+      const ym = date.substring(0, 7);
+      await db.ref(`/stores/${state.storeId}/pettyCash/${ym}/${date}`).set(newData.pettyCash);
+    } else {
+      // 沒有零用金的日子也要清掉舊紀錄
+      const ym = date.substring(0, 7);
+      await db.ref(`/stores/${state.storeId}/pettyCash/${ym}/${date}`).remove();
+    }
+
     currentDailyLog = dataToSave;
     showToast(submit ? '✓ 已提交今日數字' : '草稿已儲存', 'success');
 
@@ -9923,6 +11274,23 @@ function setupDailyLogScreen() {
   ['kpiMemberInput', 'kpiNonMemberInput'].forEach(id => {
     document.getElementById(id).addEventListener('input', updateVisitorCount);
   });
+
+  // ★ v30：業績拆款 input 觸發自動加總
+  ['payCash', 'payCard', 'payCashDept', 'payCardDept', 'payVoucherE', 'payVoucherG'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', updateSalesAutoTotal);
+  });
+  // ★ v30：行動支付 / 其他支付 新增按鈕
+  const payMobileBtn = document.getElementById('payMobileAddBtn');
+  const payOtherBtn = document.getElementById('payOtherAddBtn');
+  if (payMobileBtn) payMobileBtn.addEventListener('click', addPayMobile);
+  if (payOtherBtn) payOtherBtn.addEventListener('click', addPayOther);
+  // ★ v30：零用金 新增按鈕
+  const pcBtn = document.getElementById('pettyCashAddBtn');
+  if (pcBtn) pcBtn.addEventListener('click', addPettyCash);
+  // ★ v30：實際投庫金額觸發盤溢/盤損
+  const cashCloseEl = document.getElementById('cashCloseActualInput');
+  if (cashCloseEl) cashCloseEl.addEventListener('input', () => updateCashCloseSummary());
 
   // 補填昨天切換
   document.getElementById('dailyLogTodayBtn').addEventListener('click', () => {
@@ -9969,8 +11337,10 @@ function setupDailyLogScreen() {
 
   document.getElementById('dailyLogSaveDraftBtn').addEventListener('click', () => saveDailyLog(false));
   document.getElementById('dailyLogSubmitBtn').addEventListener('click', () => {
-    if (!confirm('確定提交今日數字嗎？\n（提交後仍可在當日內無限修改）')) return;
-    saveDailyLog(true);
+    // ★ v30：使用拆款確認視窗
+    showSubmitConfirmModal(() => {
+      saveDailyLog(true);
+    });
   });
 
   document.getElementById('dailyLogHistoryBtn').addEventListener('click', () => {
@@ -14487,6 +15857,7 @@ function initPhase1D() {
   setupHqStoreDetailScreen();
   setupTeamsNotifyScreen();
   setupStaffUnifiedScreen();
+  setupPettyCashAdmin();  // ★ v30
   // 載入 Teams 設定（背景）
   loadTeamsRoutingConfig();
   // 載入店家營業時間（背景）
