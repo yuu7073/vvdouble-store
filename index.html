@@ -396,10 +396,13 @@ input, textarea, select { font-family: inherit; }
 /* Metrics grid */
 .hq-metrics-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
 }
-@media (max-width: 700px) {
+@media (max-width: 900px) {
+  .hq-metrics-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
   .hq-metrics-grid { grid-template-columns: 1fr; }
 }
 .hq-metric {
@@ -5527,6 +5530,11 @@ input, textarea, select { font-family: inherit; }
               <div class="hq-metric-label">最新業績（7 店）</div>
               <div class="hq-metric-value" id="hqTodaySales">$ —</div>
               <div class="hq-metric-delta" id="hqTodayDelta">— vs 近 30 日均</div>
+            </div>
+            <div class="hq-metric">
+              <div class="hq-metric-label">本月累積（7 店）</div>
+              <div class="hq-metric-value" id="hqMonthSales">$ —</div>
+              <div class="hq-metric-delta" id="hqMonthSalesDelta">—</div>
             </div>
             <div class="hq-metric">
               <div class="hq-metric-label">未填寫店家</div>
@@ -15120,6 +15128,28 @@ function renderHqTodayMetrics(stats) {
     const daysLeft = daysInMonth - new Date().getDate();
     rateDelta.textContent = '本月剩 ' + daysLeft + ' 天';
     rateDelta.className = 'hq-metric-delta';
+  }
+
+  // ★ v30：本月累積（總部 7 店相加）
+  const monthSalesEl = document.getElementById('hqMonthSales');
+  const monthSalesDeltaEl = document.getElementById('hqMonthSalesDelta');
+  if (monthSalesEl) {
+    monthSalesEl.textContent = '$' + formatMoney(Math.round(stats.totalMonthSales));
+  }
+  if (monthSalesDeltaEl) {
+    if (stats.totalMonthTarget > 0) {
+      const gap = stats.totalMonthTarget - stats.totalMonthSales;
+      if (gap <= 0) {
+        monthSalesDeltaEl.textContent = '已達 ' + formatMoney(Math.round(stats.totalMonthTarget)) + ' 目標';
+        monthSalesDeltaEl.className = 'hq-metric-delta up';
+      } else {
+        monthSalesDeltaEl.textContent = '距月目標還差 $' + formatMoney(Math.round(gap));
+        monthSalesDeltaEl.className = 'hq-metric-delta';
+      }
+    } else {
+      monthSalesDeltaEl.textContent = '本月目標未設定';
+      monthSalesDeltaEl.className = 'hq-metric-delta';
+    }
   }
 }
 
