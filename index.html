@@ -5590,14 +5590,16 @@ input, textarea, select { font-family: inherit; }
           <div class="hq-quality-grid">
             <div class="hq-quality-card">
               <div class="hq-quality-label">客單價排名（高 → 低）</div>
+              <div style="font-size: 10.5px; color: var(--text-tertiary); margin-top: -2px; margin-bottom: 6px;">= 業績 ÷ 來客數（會員+非會員）</div>
               <div id="hqAvgPriceRanking"></div>
             </div>
             <div class="hq-quality-card">
               <div class="hq-quality-label">UPT 排名（每客件數）</div>
+              <div style="font-size: 10.5px; color: var(--text-tertiary); margin-top: -2px; margin-bottom: 6px;">= 件數 ÷ 來客數（會員+非會員）</div>
               <div id="hqUPTRanking"></div>
             </div>
             <div class="hq-quality-card" style="grid-column: span 2;">
-              <div class="hq-quality-label">本月客群結構（7 店合計）</div>
+              <div class="hq-quality-label">本月會員結構（7 店合計）</div>
               <div id="hqCustomerStructure" style="height: 28px; border-radius: 6px; overflow: hidden; display: flex; gap: 2px; margin-bottom: 4px;"></div>
               <div id="hqCustomerLegend" style="display: flex; gap: 12px; font-size: 11px; color: var(--text-secondary); flex-wrap: wrap;"></div>
             </div>
@@ -10679,10 +10681,10 @@ function updateCashCloseSummary(cashSumOverride) {
   // 零用金獨立顯示小計（不影響任何計算）
   const pettySum = pettyCashItems.reduce((s, it) => s + (Number(it.amount) || 0), 0);
   const pettyTotalEl = document.getElementById('pettyCashTotalText');
-  if (pettyTotalEl) pettyTotalEl.textContent = '$ ' + formatMoney(Math.round(pettySum));
+  if (pettyTotalEl) pettyTotalEl.textContent = formatMoney(Math.round(pettySum));
 
   const depositEl = document.getElementById('cashCloseDeposit');
-  if (depositEl) depositEl.textContent = '$ ' + formatMoney(Math.round(deposit));
+  if (depositEl) depositEl.textContent = formatMoney(Math.round(deposit));
 
   // 盤溢盤損
   const actualInput = document.getElementById('cashCloseActualInput');
@@ -10820,7 +10822,7 @@ function showSubmitConfirmModal(callback) {
   }
 
   const rowsHtml = items.map(([k, v]) =>
-    `<div class="td-confirm-row"><span>${k}</span><span>$${formatMoney(Math.round(v))}</span></div>`
+    `<div class="td-confirm-row"><span>${k}</span><span>${formatMoney(Math.round(v))}</span></div>`
   ).join('');
 
   const modal = document.createElement('div');
@@ -10834,7 +10836,7 @@ function showSubmitConfirmModal(callback) {
         ${rowsHtml}
         <div class="td-confirm-row total">
           <span>今日總業績</span>
-          <span>$${formatMoney(Math.round(total))}</span>
+          <span>${formatMoney(Math.round(total))}</span>
         </div>
       </div>
       <div style="display: flex; gap: 8px;">
@@ -10904,7 +10906,7 @@ async function refreshDailyCalendar() {
       : 0;
     document.getElementById('dailyCalendarFoot').textContent =
       past30Avg > 0
-        ? `基準：近 30 日日均 $${formatMoney(Math.round(past30Avg))}　·　偏低 -20%　偏高 +20%`
+        ? `基準：近 30 日日均 ${formatMoney(Math.round(past30Avg))}　·　偏低 -20%　偏高 +20%`
         : '基準：近 30 日無資料、暫不標記高低';
 
     // 渲染月曆
@@ -10934,7 +10936,7 @@ async function refreshDailyCalendar() {
       } else if (isToday && sales === 0) {
         salesText = '<span style="color: #BBB; font-size: 10px;">今日</span>';
       } else if (sales > 0) {
-        salesText = '$' + formatMoney(sales);
+        salesText = formatMoney(sales);
         if (past30Avg > 0) {
           if (sales < past30Avg * 0.8) cls += ' low';
           else if (sales > past30Avg * 1.2) cls += ' high';
@@ -11008,7 +11010,7 @@ function openCalendarPopup(dateStr, cellEl) {
     const upt = customers > 0 ? (items / customers).toFixed(1) : '—';
 
     const rows = [];
-    rows.push(`<div class="rv-cal-popup-row highlight"><span class="label">業績</span><span class="value">$ ${formatMoney(sales)}</span></div>`);
+    rows.push(`<div class="rv-cal-popup-row highlight"><span class="label">業績</span><span class="value">${formatMoney(sales)}</span></div>`);
     rows.push(`<div class="rv-cal-popup-row"><span class="label">件數</span><span class="value">${items} 件</span></div>`);
     if (customers > 0) {
       let visitorStr = `${customers} 位`;
@@ -11017,7 +11019,7 @@ function openCalendarPopup(dateStr, cellEl) {
       }
       rows.push(`<div class="rv-cal-popup-row"><span class="label">來客數</span><span class="value">${visitorStr}</span></div>`);
     }
-    rows.push(`<div class="rv-cal-popup-row"><span class="label">客單價</span><span class="value">$ ${formatMoney(avgTicket)}</span></div>`);
+    rows.push(`<div class="rv-cal-popup-row"><span class="label">客單價</span><span class="value">${formatMoney(avgTicket)}</span></div>`);
     rows.push(`<div class="rv-cal-popup-row"><span class="label">UPT</span><span class="value">${upt}</span></div>`);
 
     bodyHtml = rows.join('');
@@ -11178,15 +11180,15 @@ async function refreshBonusTiers() {
       if (achieved) {
         status = '<span class="rv-bonus-tier-status achieved">✓ 已達標</span>';
       } else if (daysRemaining <= 0) {
-        status = `<span class="rv-bonus-tier-status gap">差 $${formatMoney(gap)}</span>`;
+        status = `<span class="rv-bonus-tier-status gap">差 ${formatMoney(gap)}</span>`;
       } else {
-        status = `<span class="rv-bonus-tier-status gap">還差 $${formatMoney(gap)}　·　日均 $${formatMoney(dailyAvg)}</span>`;
+        status = `<span class="rv-bonus-tier-status gap">還差 ${formatMoney(gap)}　·　日均 ${formatMoney(dailyAvg)}</span>`;
       }
 
       return `
         <div class="rv-bonus-tier-row ${achieved ? 'achieved' : ''}">
           <div class="rv-bonus-tier-pct">${t.pct}%</div>
-          <div class="rv-bonus-tier-target">$${formatMoney(t.amount)}</div>
+          <div class="rv-bonus-tier-target">${formatMoney(t.amount)}</div>
           ${status}
         </div>
       `;
@@ -11276,7 +11278,7 @@ async function loadPettyCashAdmin() {
     const totalCount = rows.length;
     const totalAmount = rows.reduce((s, r) => s + r.amount, 0);
     document.getElementById('pcAdminCount').textContent = totalCount + ' 筆';
-    document.getElementById('pcAdminTotal').textContent = '$ ' + formatMoney(totalAmount);
+    document.getElementById('pcAdminTotal').textContent = formatMoney(totalAmount);
 
     if (rows.length === 0) {
       listEl.innerHTML = '<div class="su-empty" style="padding: 30px; text-align: center; color: var(--text-tertiary);">此月份沒有零用金支出紀錄</div>';
@@ -11300,7 +11302,7 @@ async function loadPettyCashAdmin() {
         <div style="display: grid; grid-template-columns: 110px 90px 90px 1fr 90px 90px; gap: 0; font-size: 12px; padding: 9px 14px; background: ${bg}; border-bottom: 1px solid var(--border-light);">
           <div>${escapeHtml(r.storeName)}</div>
           <div>${escapeHtml(r.date.substring(5))}</div>
-          <div style="text-align: right; font-weight: 700;">$${formatMoney(r.amount)}</div>
+          <div style="text-align: right; font-weight: 700;">${formatMoney(r.amount)}</div>
           <div style="padding-left: 8px;">${escapeHtml(r.note)}</div>
           <div>${escapeHtml(r.handler)}</div>
           <div style="color: var(--text-tertiary);">${escapeHtml(r.enteredBy)}</div>
@@ -11331,7 +11333,7 @@ function exportPettyCashExcel() {
   // 組 sheet data
   const sheetData = [
     ['零用金支出明細表'],
-    [`月份：${month}　店家：${storeName}　筆數：${pcAdminCurrentData.length}　總額：$${formatMoney(pcAdminCurrentData.reduce((s, r) => s + r.amount, 0))}`],
+    [`月份：${month}　店家：${storeName}　筆數：${pcAdminCurrentData.length}　總額：${formatMoney(pcAdminCurrentData.reduce((s, r) => s + r.amount, 0))}`],
     [], // 空行
     ['店家', '日期', '金額', '用途', '經手人', '填寫人']
   ];
@@ -13071,15 +13073,31 @@ async function loadSchedule() {
   if (!db) return;
   document.getElementById('scheduleMonth').textContent = formatYM(currentScheduleMonth);
   try {
-    const [scheduleSnap, staffSnap] = await Promise.all([
+    // ★ v30 修 bug：排班表員工要同時讀 /global/staff/（總部統一名冊）+ 本店舊路徑
+    const [scheduleSnap, localStaffSnap, globalStaffSnap] = await Promise.all([
       db.ref(`/stores/${currentScheduleStoreId}/schedule/${currentScheduleMonth}`).once('value'),
-      db.ref(`/stores/${currentScheduleStoreId}/staff`).once('value')
+      db.ref(`/stores/${currentScheduleStoreId}/staff`).once('value'),
+      db.ref('/global/staff').once('value')
     ]);
     scheduleData = scheduleSnap.val() || {};
-    const staffData = staffSnap.val() || {};
-    scheduleStaffList = Object.entries(staffData)
-      .filter(([_, s]) => s && s.active !== false)
-      .map(([id, s]) => ({ id, name: s.name, role: s.role || '店員' }));
+    const localData = localStaffSnap.val() || {};
+    const globalData = globalStaffSnap.val() || {};
+
+    // 合併：global 優先（含店長/幹部）、再補本店舊資料
+    const merged = {};
+    Object.entries(globalData).forEach(([id, s]) => {
+      if (!s || s.active === false) return;
+      const stores = Array.isArray(s.stores) ? s.stores : [];
+      if (stores.includes(currentScheduleStoreId)) {
+        merged[s.name] = { id, name: s.name, role: s.role || '店員' };
+      }
+    });
+    Object.entries(localData).forEach(([id, s]) => {
+      if (!s || s.active === false) return;
+      if (merged[s.name]) return;  // global 已有同名、不重複
+      merged[s.name] = { id, name: s.name, role: s.role || '店員' };
+    });
+    scheduleStaffList = Object.values(merged);
 
     renderScheduleGrid();
   } catch (err) {
@@ -14966,6 +14984,8 @@ function parseHqStats(reads, today, ym) {
     }
     let monthCustomers = 0;
     let monthItems = 0;
+    let monthMemberCount = 0;     // ★ v30: 會員人數總和
+    let monthNonMemberCount = 0;  // ★ v30: 非會員人數總和
     let customerSegments = { vip: 0, new: 0, regular: 0, tourist: 0, none: 0 };
 
     // 本月累積
@@ -14975,7 +14995,9 @@ function parseHqStats(reads, today, ym) {
         monthSales += Number(log.sales) || 0;
         monthCustomers += Number(log.customers) || 0;
         monthItems += Number(log.items) || 0;
-        // 客群（從 customerType 欄位）
+        monthMemberCount += Number(log.memberCount) || 0;
+        monthNonMemberCount += Number(log.nonMemberCount) || 0;
+        // 客群（從 customerType 欄位、店員主觀勾選、保留供其他用途）
         const ct = log.customerType;
         if (ct && customerSegments[ct] != null) customerSegments[ct]++;
         else customerSegments.none++;
@@ -15008,6 +15030,8 @@ function parseHqStats(reads, today, ym) {
       latestSalesDate,  // ★ 最近一筆有業績的日期（用於顯示「截至 X/X」）
       monthCustomers,
       monthItems,
+      monthMemberCount,       // ★ v30
+      monthNonMemberCount,    // ★ v30
       avgPrice: monthCustomers > 0 ? monthSales / monthCustomers : 0,
       upt: monthCustomers > 0 ? monthItems / monthCustomers : 0,
       monthlyTarget: Number(r.monthlyTarget) || 0,
@@ -15073,7 +15097,7 @@ function parseHqStats(reads, today, ym) {
 
 // ---------- 區塊 1：今日即時數據 ----------
 function renderHqTodayMetrics(stats) {
-  document.getElementById('hqTodaySales').textContent = '$' + formatMoney(Math.round(stats.totalTodaySales));
+  document.getElementById('hqTodaySales').textContent = formatMoney(Math.round(stats.totalTodaySales));
 
   // ★ 改版：在標題旁邊顯示「截至 X/X」（如果最新業績日期不是今天）
   const asOfEl = document.getElementById('hqTodayAsOf');
@@ -15134,7 +15158,7 @@ function renderHqTodayMetrics(stats) {
   const monthSalesEl = document.getElementById('hqMonthSales');
   const monthSalesDeltaEl = document.getElementById('hqMonthSalesDelta');
   if (monthSalesEl) {
-    monthSalesEl.textContent = '$' + formatMoney(Math.round(stats.totalMonthSales));
+    monthSalesEl.textContent = formatMoney(Math.round(stats.totalMonthSales));
   }
   if (monthSalesDeltaEl) {
     if (stats.totalMonthTarget > 0) {
@@ -15185,7 +15209,7 @@ function renderHqRanking(stats) {
       <div class="hq-rank-row ${idx === 0 ? 'top1' : ''}">
         <div class="hq-rank-num">${idx + 1}</div>
         <div class="hq-rank-store">${escapeHtml(s.name)}</div>
-        <div class="hq-rank-sales">$${formatMoney(Math.round(s.sales))}</div>
+        <div class="hq-rank-sales">${formatMoney(Math.round(s.sales))}</div>
         <div class="hq-rank-rate ${rateClass}">${Math.round(s.rate)}%</div>
         <div class="hq-rank-delta ${trendClass}">${trendText}</div>
       </div>
@@ -15268,7 +15292,7 @@ function renderHqQuality(stats) {
   document.getElementById('hqAvgPriceRanking').innerHTML = avgPriceRanked.slice(0, 7).map((s, i) => `
     <div class="hq-quality-row">
       <span><span class="hq-quality-row-rank">${i + 1}</span>${escapeHtml(s.name)}</span>
-      <span class="hq-quality-row-value">$${formatMoney(Math.round(s.value))}</span>
+      <span class="hq-quality-row-value">${formatMoney(Math.round(s.value))}</span>
     </div>
   `).join('') || '<div style="font-size:12px; color:#999;">尚無資料</div>';
 
@@ -15284,36 +15308,38 @@ function renderHqQuality(stats) {
     </div>
   `).join('') || '<div style="font-size:12px; color:#999;">尚無資料</div>';
 
-  // 客群結構（7 店合計、依「人潮類型」記錄數比例）
-  let totalSegments = { vip: 0, new: 0, regular: 0, tourist: 0, none: 0 };
+  // ★ v30：會員結構（7 店合計、抓會員 + 非會員 實際人數比例）
+  let totalMember = 0;
+  let totalNonMember = 0;
   for (const sid of STORE_ORDER) {
-    for (const k in stats.storeStats[sid].customerSegments) {
-      totalSegments[k] += stats.storeStats[sid].customerSegments[k] || 0;
-    }
+    totalMember += stats.storeStats[sid].monthMemberCount || 0;
+    totalNonMember += stats.storeStats[sid].monthNonMemberCount || 0;
   }
-  const totalRecords = totalSegments.vip + totalSegments.new + totalSegments.regular + totalSegments.tourist;
-  const segmentDefs = [
-    { key: 'vip', label: 'VIP', color: '#7F77DD' },
-    { key: 'new', label: '新客', color: '#5DCAA5' },
-    { key: 'regular', label: '回頭', color: '#FFD93D' },
-    { key: 'tourist', label: '遊客', color: '#F09975' }
-  ];
+  const totalVisitors = totalMember + totalNonMember;
 
-  if (totalRecords === 0) {
-    document.getElementById('hqCustomerStructure').innerHTML = '<div style="flex:1; background:#F5F5F5; display:flex; align-items:center; justify-content:center; font-size:11px; color:#999;">尚無客群資料</div>';
+  if (totalVisitors === 0) {
+    document.getElementById('hqCustomerStructure').innerHTML = '<div style="flex:1; background:#F5F5F5; display:flex; align-items:center; justify-content:center; font-size:11px; color:#999;">尚無會員資料</div>';
     document.getElementById('hqCustomerLegend').innerHTML = '';
   } else {
+    const memberPct = Math.round(totalMember / totalVisitors * 100);
+    const nonMemberPct = 100 - memberPct;
+    const memberColor = '#7F77DD';
+    const nonMemberColor = '#5DCAA5';
+
     let barsHtml = '';
-    let legendHtml = '';
-    for (const def of segmentDefs) {
-      const cnt = totalSegments[def.key];
-      const pct = Math.round(cnt / totalRecords * 100);
-      if (pct > 0) {
-        const isLight = def.color === '#FFD93D';
-        barsHtml += `<div class="hq-customer-segment" style="background:${def.color}; width:${pct}%; color:${isLight ? '#1A1A1A' : 'white'};">${def.label} ${pct}%</div>`;
-      }
-      legendHtml += `<span><span style="display:inline-block; width:10px; height:10px; background:${def.color}; vertical-align:middle; border-radius:2px; margin-right:4px;"></span>${def.label} ${cnt} 次</span>`;
+    if (memberPct > 0) {
+      barsHtml += `<div class="hq-customer-segment" style="background:${memberColor}; width:${memberPct}%; color:white;">會員 ${memberPct}%</div>`;
     }
+    if (nonMemberPct > 0) {
+      barsHtml += `<div class="hq-customer-segment" style="background:${nonMemberColor}; width:${nonMemberPct}%; color:white;">非會員 ${nonMemberPct}%</div>`;
+    }
+
+    const legendHtml = `
+      <span><span style="display:inline-block; width:10px; height:10px; background:${memberColor}; vertical-align:middle; border-radius:2px; margin-right:4px;"></span>會員 ${totalMember.toLocaleString()} 位</span>
+      <span><span style="display:inline-block; width:10px; height:10px; background:${nonMemberColor}; vertical-align:middle; border-radius:2px; margin-right:4px;"></span>非會員 ${totalNonMember.toLocaleString()} 位</span>
+      <span style="color: var(--text-tertiary);">本月共 ${totalVisitors.toLocaleString()} 位來客</span>
+    `;
+
     document.getElementById('hqCustomerStructure').innerHTML = barsHtml;
     document.getElementById('hqCustomerLegend').innerHTML = legendHtml;
   }
