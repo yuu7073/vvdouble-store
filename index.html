@@ -3726,6 +3726,22 @@ input, textarea, select { font-family: inherit; }
   cursor: pointer;
 }
 .td-pettycash-add:hover { background: var(--bg-gray-100); }
+.td-pettycash-summary {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: var(--bg-gray-50);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.td-pettycash-summary span {
+  font-weight: 800;
+  color: var(--primary-text-on-primary, #C9905A);
+}
 .td-pettycash-hint {
   margin-top: 8px;
   font-size: 11px;
@@ -3892,6 +3908,11 @@ input, textarea, select { font-family: inherit; }
   border-color: var(--primary, #FFD93D);
   border-width: 2px;
 }
+.rv-cal-cell.active {
+  outline: 2px solid #2C2825;
+  outline-offset: 1px;
+  z-index: 2;
+}
 .rv-cal-day {
   font-size: 10px;
   color: var(--text-tertiary);
@@ -3910,6 +3931,97 @@ input, textarea, select { font-family: inherit; }
   line-height: 1.4;
 }
 .rv-cal-cell.no-data .rv-cal-sales { color: var(--text-tertiary); font-weight: 400; font-size: 10px; }
+
+/* ★ 點格子彈出的浮窗 */
+.rv-cal-popup {
+  position: absolute;
+  z-index: 100;
+  background: #FFFFFF;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+  padding: 12px 14px;
+  min-width: 230px;
+  max-width: 280px;
+}
+.rv-cal-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 6px;
+}
+.rv-cal-popup-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+.rv-cal-popup-close {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  font-size: 18px;
+  padding: 0;
+  line-height: 1;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+.rv-cal-popup-close:hover {
+  background: var(--bg-gray-100);
+  color: var(--text-primary);
+}
+.rv-cal-popup-body {
+  font-size: 11.5px;
+  line-height: 1.7;
+}
+.rv-cal-popup-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.rv-cal-popup-row .label { color: var(--text-secondary); flex-shrink: 0; }
+.rv-cal-popup-row .value {
+  font-weight: 700;
+  color: var(--text-primary);
+  text-align: right;
+}
+.rv-cal-popup-row.highlight .value {
+  font-weight: 800;
+  font-size: 13px;
+}
+.rv-cal-popup-divider {
+  border-top: 1px solid var(--border-light);
+  margin: 5px 0;
+  padding-top: 5px;
+}
+.rv-cal-popup-note {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border-light);
+}
+.rv-cal-popup-note .label {
+  color: var(--text-secondary);
+  margin-bottom: 2px;
+}
+.rv-cal-popup-note .content {
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--text-primary);
+  word-wrap: break-word;
+}
+.rv-cal-popup-empty {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-align: center;
+  padding: 12px 0;
+}
+
 .rv-daily-calendar-foot {
   margin-top: 6px;
   font-size: 9.5px;
@@ -5546,7 +5658,11 @@ input, textarea, select { font-family: inherit; }
             <span class="rv-cal-legend-item"><span class="rv-cal-dot high"></span>偏高 +20%</span>
           </div>
         </div>
-        <div class="rv-daily-calendar-grid" id="dailyCalendarGrid"></div>
+        <div class="rv-daily-calendar-grid-wrap" style="position: relative;">
+          <div class="rv-daily-calendar-grid" id="dailyCalendarGrid"></div>
+          <!-- 點某天彈出的浮窗 -->
+          <div class="rv-cal-popup" id="dailyCalendarPopup" style="display: none;"></div>
+        </div>
         <div class="rv-daily-calendar-foot" id="dailyCalendarFoot">基準：近 30 日日均</div>
       </div>
 
@@ -6098,27 +6214,22 @@ input, textarea, select { font-family: inherit; }
         </div>
       </div>
 
-      <!-- ★ v30：零用金記錄（動態多筆）-->
+      <!-- ★ v30：零用金記錄（獨立、不影響業績計算）-->
       <div class="td-pettycash-card">
         <div class="td-section-label">▸ 零用金記錄（沒有就空著）</div>
         <div class="td-pettycash-list" id="pettyCashList"></div>
         <button type="button" class="td-pettycash-add" id="pettyCashAddBtn">+ 新增一筆</button>
-        <div class="td-pettycash-hint">日期、金額、用途、經手人都要填齊</div>
+        <div class="td-pettycash-summary">
+          本日零用金支出小計：<span id="pettyCashTotalText">$ 0</span>
+        </div>
+        <div class="td-pettycash-hint">零用金是另外備好的錢、不會從今日業績扣除</div>
       </div>
 
-      <!-- ★ v30：現金月結（基於業績拆款自動算）-->
+      <!-- ★ v30：現金月結（直接 = 今日現金業績、不扣零用金）-->
       <div class="td-cashclose-card">
         <div class="td-section-label">▸ 現金月結</div>
-        <div class="td-cashclose-row">
-          <div class="td-cashclose-label">今日現金業績</div>
-          <div class="td-cashclose-value" id="cashCloseToday">$ 0</div>
-        </div>
-        <div class="td-cashclose-row">
-          <div class="td-cashclose-label">減去零用金支出</div>
-          <div class="td-cashclose-value" id="cashClosePetty">- $ 0</div>
-        </div>
         <div class="td-cashclose-row total">
-          <div class="td-cashclose-label">應投庫金額</div>
+          <div class="td-cashclose-label">應投庫金額（= 今日現金業績）</div>
           <div class="td-cashclose-value" id="cashCloseDeposit">$ 0</div>
         </div>
         <div class="td-cashclose-extras">
@@ -10535,14 +10646,15 @@ function updateCashCloseSummary(cashSumOverride) {
       cashSum = parseFloat(document.getElementById('payCash').value) || 0;
     }
   }
-  const pettySum = pettyCashItems.reduce((s, it) => s + (Number(it.amount) || 0), 0);
-  const deposit = Math.max(0, cashSum - pettySum);
+  // ★ 修正：應投庫 = 今日現金業績、不扣零用金
+  const deposit = cashSum;
 
-  const todayEl = document.getElementById('cashCloseToday');
-  const pettyEl = document.getElementById('cashClosePetty');
+  // 零用金獨立顯示小計（不影響任何計算）
+  const pettySum = pettyCashItems.reduce((s, it) => s + (Number(it.amount) || 0), 0);
+  const pettyTotalEl = document.getElementById('pettyCashTotalText');
+  if (pettyTotalEl) pettyTotalEl.textContent = '$ ' + formatMoney(Math.round(pettySum));
+
   const depositEl = document.getElementById('cashCloseDeposit');
-  if (todayEl) todayEl.textContent = '$ ' + formatMoney(Math.round(cashSum));
-  if (pettyEl) pettyEl.textContent = '- $ ' + formatMoney(Math.round(pettySum));
   if (depositEl) depositEl.textContent = '$ ' + formatMoney(Math.round(deposit));
 
   // 盤溢盤損
@@ -10786,12 +10898,12 @@ async function refreshDailyCalendar() {
 
       let cls = 'rv-cal-cell';
       let salesText = '';
-      let clickAttr = `onclick="openDailyLogFromCalendar('${ds}')"`;
+      let clickable = true;
 
       if (isFuture) {
         cls += ' no-data';
         salesText = '';
-        clickAttr = '';
+        clickable = false;
       } else if (isToday && sales === 0) {
         salesText = '<span style="color: #BBB; font-size: 10px;">今日</span>';
       } else if (sales > 0) {
@@ -10802,17 +10914,22 @@ async function refreshDailyCalendar() {
         }
       } else {
         cls += ' no-data';
-        clickAttr = '';
+        clickable = false;
       }
       if (isToday) cls += ' today';
 
-      html += `<div class="${cls}" ${clickAttr}>
+      const attrs = clickable ? `data-cal-date="${ds}"` : '';
+      html += `<div class="${cls}" ${attrs}>
         <div class="rv-cal-day">${d}</div>
         <div class="rv-cal-sales">${salesText}</div>
       </div>`;
     }
 
     grid.innerHTML = html;
+    // 儲存 logMap 給 popup 顯示用
+    window._dailyCalLogMap = logMap;
+    // 隱藏舊的 popup
+    closeCalendarPopup();
   } catch (e) {
     console.error('refreshDailyCalendar', e);
   }
@@ -10825,12 +10942,146 @@ function formatMoneyShort(v) {
   return formatMoney(v);
 }
 
-function openDailyLogFromCalendar(dateStr) {
-  if (dateStr > getTodayString()) return; // 未來不能點
-  currentDailyLogDate = dateStr;
-  showScreen('dailyLog');
-  loadDailyLog(dateStr);
+// ★ 點月曆格子 → 彈浮窗（不跳頁）
+function openCalendarPopup(dateStr, cellEl) {
+  const popup = document.getElementById('dailyCalendarPopup');
+  if (!popup) return;
+
+  // 同一格再點 → 關閉（toggle）
+  if (cellEl && cellEl.classList.contains('active')) {
+    closeCalendarPopup();
+    return;
+  }
+
+  // 先清掉其他 active
+  document.querySelectorAll('.rv-cal-cell.active').forEach(c => c.classList.remove('active'));
+
+  const logMap = window._dailyCalLogMap || {};
+  const log = logMap[dateStr];
+
+  // 標題：5月5日（一）
+  const d = new Date(dateStr + 'T00:00:00');
+  const mm = d.getMonth() + 1;
+  const dd = d.getDate();
+  const wMap = ['日', '一', '二', '三', '四', '五', '六'];
+  const wday = wMap[d.getDay()];
+  const titleStr = `📅 ${mm}月${dd}日（${wday}）`;
+
+  let bodyHtml = '';
+
+  if (!log || Number(log.sales) === 0) {
+    bodyHtml = '<div class="rv-cal-popup-empty">這天沒有資料</div>';
+  } else {
+    const sales = Number(log.sales) || 0;
+    const customers = Number(log.customers) || 0;
+    const member = Number(log.memberCount) || 0;
+    const nonMember = Number(log.nonMemberCount) || 0;
+    const items = Number(log.items) || 0;
+    const avgTicket = customers > 0 ? Math.round(sales / customers) : 0;
+    const upt = customers > 0 ? (items / customers).toFixed(1) : '—';
+
+    const rows = [];
+    rows.push(`<div class="rv-cal-popup-row highlight"><span class="label">業績</span><span class="value">$ ${formatMoney(sales)}</span></div>`);
+    rows.push(`<div class="rv-cal-popup-row"><span class="label">件數</span><span class="value">${items} 件</span></div>`);
+    if (customers > 0) {
+      let visitorStr = `${customers} 位`;
+      if (member > 0 || nonMember > 0) {
+        visitorStr += `（會員 ${member} + 非 ${nonMember}）`;
+      }
+      rows.push(`<div class="rv-cal-popup-row"><span class="label">來客數</span><span class="value">${visitorStr}</span></div>`);
+    }
+    rows.push(`<div class="rv-cal-popup-row"><span class="label">客單價</span><span class="value">$ ${formatMoney(avgTicket)}</span></div>`);
+    rows.push(`<div class="rv-cal-popup-row"><span class="label">UPT</span><span class="value">${upt}</span></div>`);
+
+    bodyHtml = rows.join('');
+
+    // 天氣 / 人潮 / 客群（分隔線後）
+    const extra = [];
+    if (log.weather && (log.weather.text || log.weather.emoji)) {
+      const w = log.weather;
+      extra.push(`<div class="rv-cal-popup-row"><span class="label">天氣</span><span class="value">${w.emoji || ''} ${w.text || ''}</span></div>`);
+    }
+    if (log.crowd) {
+      const crowdMap = { quiet: '冷清', normal: '普通', busy: '熱絡', packed: '爆滿' };
+      extra.push(`<div class="rv-cal-popup-row"><span class="label">人潮</span><span class="value">${crowdMap[log.crowd] || log.crowd}</span></div>`);
+    }
+    if (log.customerType) {
+      const cMap = { vip: 'VIP 較多', new: '新客較多', regular: '回頭客多', tourist: '遊客較多' };
+      extra.push(`<div class="rv-cal-popup-row"><span class="label">客群</span><span class="value">${cMap[log.customerType] || log.customerType}</span></div>`);
+    }
+    if (extra.length > 0) {
+      bodyHtml += `<div class="rv-cal-popup-divider">${extra.join('')}</div>`;
+    }
+
+    if (log.specialNote && log.specialNote.trim()) {
+      bodyHtml += `<div class="rv-cal-popup-note">
+        <div class="label">特別狀況</div>
+        <div class="content">${escapeHtml(log.specialNote)}</div>
+      </div>`;
+    }
+  }
+
+  popup.innerHTML = `
+    <div class="rv-cal-popup-header">
+      <div class="rv-cal-popup-title">${titleStr}</div>
+      <button class="rv-cal-popup-close" type="button" aria-label="關閉">×</button>
+    </div>
+    <div class="rv-cal-popup-body">${bodyHtml}</div>
+  `;
+
+  // 定位：放在格子下方、置中對齊；如果超出右邊就靠右、超出左邊就靠左
+  popup.style.display = 'block';
+  if (cellEl) {
+    const wrap = popup.parentElement;
+    const wrapRect = wrap.getBoundingClientRect();
+    const cellRect = cellEl.getBoundingClientRect();
+    const popupRect = popup.getBoundingClientRect();
+
+    let leftPx = cellRect.left - wrapRect.left + (cellRect.width / 2) - (popupRect.width / 2);
+    const minLeft = 0;
+    const maxLeft = wrapRect.width - popupRect.width;
+    if (leftPx < minLeft) leftPx = minLeft;
+    if (leftPx > maxLeft) leftPx = Math.max(minLeft, maxLeft);
+
+    const topPx = cellRect.bottom - wrapRect.top + 6;
+    popup.style.left = leftPx + 'px';
+    popup.style.top = topPx + 'px';
+    cellEl.classList.add('active');
+  }
+
+  // 綁定關閉按鈕
+  popup.querySelector('.rv-cal-popup-close').addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeCalendarPopup();
+  });
 }
+
+function closeCalendarPopup() {
+  const popup = document.getElementById('dailyCalendarPopup');
+  if (popup) popup.style.display = 'none';
+  document.querySelectorAll('.rv-cal-cell.active').forEach(c => c.classList.remove('active'));
+}
+
+// 全域監聽：點月曆格子彈窗、點外面/Esc 關閉
+(function setupCalendarPopupHandlers() {
+  document.addEventListener('click', (e) => {
+    const cell = e.target.closest('[data-cal-date]');
+    if (cell) {
+      e.stopPropagation();
+      const date = cell.getAttribute('data-cal-date');
+      openCalendarPopup(date, cell);
+      return;
+    }
+    // 點到 popup 內部不關
+    const popup = document.getElementById('dailyCalendarPopup');
+    if (popup && popup.contains(e.target)) return;
+    // 其他地方 → 關
+    closeCalendarPopup();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeCalendarPopup();
+  });
+})();
 
 // ============================================
 // ★ v30：獎金門檻
