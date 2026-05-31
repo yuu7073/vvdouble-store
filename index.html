@@ -11208,8 +11208,11 @@ async function refreshDailyCalendar() {
     const logMap = {};
     reads.forEach(r => { logMap[r.date] = r.log; });
 
-    // 算近 30 日日均（只算有業績的）
-    const past30Sales = past30.map(d => Number(logMap[d]?.sales) || 0).filter(v => v > 0);
+    // 算近 30 日日均（只算有業績的；★ v30：需件數>0 或 來客數>0 才算真實業績、避免顯示污染資料）
+    const past30Sales = past30
+      .map(d => logMap[d])
+      .filter(log => log && Number(log.sales) > 0 && (Number(log.items) > 0 || Number(log.customers) > 0))
+      .map(log => Number(log.sales));
     const past30Avg = past30Sales.length > 0
       ? past30Sales.reduce((a, b) => a + b, 0) / past30Sales.length
       : 0;
@@ -11231,6 +11234,10 @@ async function refreshDailyCalendar() {
       const ds = `${yyyy}-${String(mm).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
       const log = logMap[ds];
       const sales = Number(log?.sales) || 0;
+      const items = Number(log?.items) || 0;
+      const customers = Number(log?.customers) || 0;
+      // ★ v30：判斷是否為真實業績紀錄（避免顯示只有 sales 沒件數的污染資料）
+      const hasValidData = sales > 0 && (items > 0 || customers > 0);
       const isToday = ds === today;
       const isFuture = ds > today;
 
@@ -11242,9 +11249,9 @@ async function refreshDailyCalendar() {
         cls += ' no-data';
         salesText = '';
         clickable = false;
-      } else if (isToday && sales === 0) {
+      } else if (isToday && !hasValidData) {
         salesText = '<span style="color: #BBB; font-size: 10px;">今日</span>';
-      } else if (sales > 0) {
+      } else if (hasValidData) {
         salesText = formatMoney(sales);
         if (past30Avg > 0) {
           if (sales < past30Avg * 0.8) cls += ' low';
