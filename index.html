@@ -9335,11 +9335,17 @@ async function refreshHomeKpiSummary() {
     document.getElementById('kpiHomeCountdownNum').textContent = daysLeft + ' 天';
     document.getElementById('kpiHomeCountdownLabel').textContent = daysLeft <= 0 ? '本月最後一天' : '距月底還有';
 
-    // ★ 計算本月累積資料
+    // ★ 計算本月累積資料（v30：只算「件數>0 或 來客>0」的真實業績、過濾污染資料）
     let monthSales = 0;
     let monthTargetSum = 0;
     Object.entries(allLogs).forEach(([date, l]) => {
-      if (date.startsWith(ym) && l && l.sales) monthSales += Number(l.sales);
+      if (!date.startsWith(ym) || !l) return;
+      const sales = Number(l.sales) || 0;
+      const items = Number(l.items) || 0;
+      const customers = Number(l.customers) || 0;
+      if (sales > 0 && (items > 0 || customers > 0)) {
+        monthSales += sales;
+      }
     });
     Object.entries(dailyTargets).forEach(([date, t]) => {
       if (date.startsWith(ym)) monthTargetSum += Number(t) || 0;
@@ -9500,7 +9506,13 @@ async function loadHqStoresOverview() {
 
       let monthSales = 0;
       Object.entries(logs).forEach(([date, l]) => {
-        if (date.startsWith(ym) && l && l.sales) monthSales += Number(l.sales);
+        if (!date.startsWith(ym) || !l) return;
+        const sales = Number(l.sales) || 0;
+        const items = Number(l.items) || 0;
+        const customers = Number(l.customers) || 0;
+        if (sales > 0 && (items > 0 || customers > 0)) {
+          monthSales += sales;
+        }
       });
 
       const pct = monthTarget > 0 ? Math.round(monthSales / monthTarget * 100) : 0;
@@ -15493,13 +15505,18 @@ function parseHqStats(reads, today, ym) {
     let monthNonMemberCount = 0;  // ★ v30: 非會員人數總和
     let customerSegments = { vip: 0, new: 0, regular: 0, tourist: 0, none: 0 };
 
-    // 本月累積
+    // 本月累積（★ v30：只算「件數>0 或 來客>0」的真實業績、過濾污染資料）
     for (const d of monthDates) {
       const log = r.logs[d];
-      if (log && log.sales) {
-        monthSales += Number(log.sales) || 0;
-        monthCustomers += Number(log.customers) || 0;
-        monthItems += Number(log.items) || 0;
+      if (!log) continue;
+      const sales = Number(log.sales) || 0;
+      const items = Number(log.items) || 0;
+      const customers = Number(log.customers) || 0;
+      // 必須要有業績 + 至少有件數或來客數才算
+      if (sales > 0 && (items > 0 || customers > 0)) {
+        monthSales += sales;
+        monthCustomers += customers;
+        monthItems += items;
         monthMemberCount += Number(log.memberCount) || 0;
         monthNonMemberCount += Number(log.nonMemberCount) || 0;
         // 客群（從 customerType 欄位、店員主觀勾選、保留供其他用途）
