@@ -5908,7 +5908,7 @@ input, textarea, select { font-family: inherit; }
           <div class="subscreen-subtitle" id="dailyTargetSubtitle">—</div>
         </div>
         <div style="display: flex; gap: 6px; align-items: center;">
-          <button class="btn-back" data-screen="home">‹ 返回</button>
+          <button class="btn-back" id="dailyTargetBackBtn">‹ 返回</button>
           <button class="btn-back" id="dailyTargetPrevBtn">‹</button>
           <span style="font-size: 13px; font-weight: 800;" id="dailyTargetMonth">—</span>
           <button class="btn-back" id="dailyTargetNextBtn">›</button>
@@ -5933,6 +5933,9 @@ input, textarea, select { font-family: inherit; }
       <div id="dailyTargetReadonlyBanner" style="display: none; background: #FFF8E0; border-left: 3px solid #FFD93D; padding: 10px 14px; border-radius: 8px; margin-bottom: 12px; font-size: 12px; color: #5C4A1A; line-height: 1.6;">
         🔒 只有店長／副店長可以調整業績目標分配、你目前是查看模式
       </div>
+
+      <!-- ★ v30：月鎖提示（6 月起每月 6 號起鎖）-->
+      <div id="dailyTargetMonthLockedBanner" style="display: none; background: #FBE5E5; border-left: 3px solid #E24B4A; padding: 10px 14px; border-radius: 8px; margin-bottom: 12px; font-size: 12px; color: #8B2C2C; line-height: 1.6;"></div>
 
       <!-- ★ v30：基本 + 衝刺 並列 -->
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
@@ -7099,6 +7102,25 @@ input, textarea, select { font-family: inherit; }
         </div>
         <div id="pcAdminList" style="background: var(--bg-white); border-radius: 8px; overflow: hidden;">
           <div class="su-empty" style="padding: 30px; text-align: center; color: var(--text-tertiary);">選擇月份後查詢</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ★ v30：V 端全店業績目標管理 -->
+    <div id="targetsAdminScreen" class="subscreen" style="display: none;">
+      <div class="subscreen-header">
+        <div class="subscreen-title-block">
+          <div class="subscreen-title">🎯 全店業績目標管理</div>
+          <div class="subscreen-subtitle">公司總部 · 7 店所有月份的目標總覽、可幫店長修改</div>
+        </div>
+        <button class="btn-back" data-screen="home">‹ 返回</button>
+      </div>
+      <div class="subscreen-body">
+        <div style="background: #FFF8E0; border-left: 3px solid #FFD93D; padding: 10px 14px; border-radius: 8px; margin-bottom: 14px; font-size: 12px; color: #5C4A1A; line-height: 1.6;">
+          💡 6 月起每月 6 號起鎖、店長改不了；總部隨時可改任何月份任何天
+        </div>
+        <div id="targetsAdminGrid" style="background: var(--bg-white); border-radius: 8px; overflow-x: auto;">
+          <div class="su-empty" style="padding: 30px; text-align: center; color: var(--text-tertiary);">載入中...</div>
         </div>
       </div>
     </div>
@@ -8523,7 +8545,8 @@ const SCREENS = {
   hqStoreDetail: 'hqStoreDetailScreen',
   teamsNotify: 'teamsNotifyScreen',
   staffUnified: 'staffUnifiedScreen',
-  pettyCashAdmin: 'pettyCashAdminScreen'
+  pettyCashAdmin: 'pettyCashAdminScreen',
+  targetsAdmin: 'targetsAdminScreen'
 };
 
 function showScreen(screenName) {
@@ -8536,6 +8559,8 @@ function showScreen(screenName) {
 
   // 切到 home 時，刷新功能卡片狀態
   if (screenName === 'home') {
+    // ★ v30：V 端從 targetsAdmin 編輯回來時、恢復 storeId
+    if (typeof restoreOriginalStoreId === 'function') restoreOriginalStoreId();
     renderFeatureGrid();
     refreshHomeKpiSummary();
     refreshHomeTodos();  // ★ Mockup 1: 載入首頁待辦摘要
@@ -8667,6 +8692,13 @@ const featureGridHTML = {
       title: '零用金管理',
       desc: '撈 7 店零用金、一鍵匯出 Excel',
       action: () => openPettyCashAdmin()
+    },
+    {
+      key: 'targetsAdmin',
+      icon: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+      title: '全店業績目標管理',
+      desc: '7 店所有月份的目標總覽',
+      action: () => openTargetsAdmin()
     }
   ]
 };
@@ -9961,6 +9993,31 @@ async function loadDailyTargetForMonth(ym) {
   if (readonlyBanner) readonlyBanner.style.display = readonly ? 'block' : 'none';
   applyDailyTargetReadonly(readonly);
 
+  // ★ v30：月鎖提示（6 月起的月份、過了 6 號就鎖）
+  const monthLockedBanner = document.getElementById('dailyTargetMonthLockedBanner');
+  if (monthLockedBanner) {
+    const [y, m] = ym.split('-').map(Number);
+    const isAfterMay2026 = (y > 2026) || (y === 2026 && m >= 6);
+    if (!state.isHQ && isAfterMay2026) {
+      const todayDate = new Date();
+      const lockStart = new Date(y, m - 1, 6, 0, 0, 0);
+      if (todayDate >= lockStart) {
+        monthLockedBanner.innerHTML = `🔒 ${y}年 ${m} 月 已於 ${m}/6 鎖定、店長無法再調整、如需修改請聯絡公司總部`;
+        monthLockedBanner.style.display = 'block';
+      } else {
+        // 在 1-5 號內：提示截止日
+        const remainDays = 6 - todayDate.getDate();
+        monthLockedBanner.innerHTML = `⚠️ ${m} 月目標分配將於 ${m}/6 00:00 鎖定（剩 ${remainDays} 天可調整）`;
+        monthLockedBanner.style.background = '#FFF8E0';
+        monthLockedBanner.style.borderLeftColor = '#FFD93D';
+        monthLockedBanner.style.color = '#5C4A1A';
+        monthLockedBanner.style.display = 'block';
+      }
+    } else {
+      monthLockedBanner.style.display = 'none';
+    }
+  }
+
   try {
     const [monthlySnap, dailySnap] = await Promise.all([
       db.ref(`/global/monthlyTargets/${ym}/${state.storeId}`).once('value'),
@@ -10073,11 +10130,23 @@ async function renderDailyTargetGrid(ym) {
     const weekday = getWeekday(year, month, d);
     const isWeekend = (weekday === 0 || weekday === 6);
     const isToday = dateStr === today;
-    // 鎖定邏輯：
+    // ★ v30 鎖定邏輯（重寫）：
     // 1. V 端永遠不鎖
-    // 2. 系統上線日之前的日期永遠不鎖（初始化期）
-    // 3. 系統上線日當天/之後的「過去日期」才鎖（保護真實業績期歷史）
-    const isPast = !state.isHQ && dateStr < today && dateStr >= SYSTEM_START_DATE;
+    // 2. 2026 年 5 月（含）之前：永遠不鎖（補登期）
+    // 3. 2026 年 6 月起：每月 1-5 號為「可調整期」、6 號 00:00 起該月所有天鎖定
+    let isPast = false;
+    if (!state.isHQ) {
+      // 排除 2026/5 之前（含 5 月）
+      const isAfterMay2026 = (year > 2026) || (year === 2026 && month >= 6);
+      if (isAfterMay2026) {
+        // 當前日期是否已過該月「6 號 00:00」
+        const todayDate = new Date();
+        const lockStart = new Date(year, month - 1, 6, 0, 0, 0); // 該月 6 號 00:00
+        if (todayDate >= lockStart) {
+          isPast = true; // 整個月鎖
+        }
+      }
+    }
     const value = dailyTargetData[dateStr] || '';
 
     const classes = ['dtm-cell'];
@@ -10254,6 +10323,20 @@ async function saveDailyTarget() {
 }
 
 function setupDailyTargetScreen() {
+  // ★ v30：返回按鈕 — V 端從 targetsAdmin 進來的話、返回 targetsAdmin
+  const backBtn = document.getElementById('dailyTargetBackBtn');
+  if (backBtn) {
+    backBtn.addEventListener('click', () => {
+      if (_originalStoreId && state.isHQ) {
+        // V 端從 targetsAdmin 來、返回那邊
+        restoreOriginalStoreId();
+        showScreen('targetsAdmin');
+        loadTargetsAdminGrid();
+      } else {
+        showScreen('home');
+      }
+    });
+  }
   document.getElementById('dailyTargetPrevBtn').addEventListener('click', async () => {
     currentDailyTargetMonth = prevMonth(currentDailyTargetMonth);
     await loadDailyTargetForMonth(currentDailyTargetMonth);
@@ -11598,6 +11681,158 @@ function setupPettyCashAdmin() {
   const exportBtn = document.getElementById('pcAdminExportBtn');
   if (loadBtn) loadBtn.addEventListener('click', loadPettyCashAdmin);
   if (exportBtn) exportBtn.addEventListener('click', exportPettyCashExcel);
+}
+
+// ============================================
+// ★ v30：V 端全店業績目標管理（7 店 × 月份總覽）
+// ============================================
+async function openTargetsAdmin() {
+  if (!state.isHQ) {
+    showToast('只有公司總部可使用此功能', 'error');
+    return;
+  }
+  showScreen('targetsAdmin');
+  await loadTargetsAdminGrid();
+}
+
+async function loadTargetsAdminGrid() {
+  const gridEl = document.getElementById('targetsAdminGrid');
+  if (!gridEl) return;
+
+  gridEl.innerHTML = '<div class="su-empty" style="padding: 30px; text-align: center;">載入中...</div>';
+
+  try {
+    // 撈 7 店所有月份（從 2026/5 到當前月 + 1）
+    const now = new Date();
+    const currentYM = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    const startYM = '2026-05';
+
+    // 列出要顯示的月份
+    const monthList = [];
+    let [sy, sm] = startYM.split('-').map(Number);
+    const [ey, em] = currentYM.split('-').map(Number);
+    let curY = sy, curM = sm;
+    while (curY < ey || (curY === ey && curM <= em + 1)) {  // 多包含下個月
+      monthList.push(`${curY}-${String(curM).padStart(2, '0')}`);
+      curM++;
+      if (curM > 12) { curM = 1; curY++; }
+    }
+
+    // 撈 7 店 × 月份 的目標總額（基本目標、不含逐日）
+    const reads = [];
+    for (const sid of STORE_ORDER) {
+      for (const ym of monthList) {
+        reads.push(
+          db.ref(`/global/monthlyTargets/${ym}/${sid}`).once('value').then(s => ({ sid, ym, monthly: s.val() || 0 }))
+        );
+        reads.push(
+          db.ref(`/stores/${sid}/targets/${ym}`).once('value').then(s => ({ sid, ym, daily: s.val() || {} }))
+        );
+      }
+    }
+    const results = await Promise.all(reads);
+
+    // 整理成 {sid: {ym: { monthly, dailyAssigned, sprintPct }}}
+    const data = {};
+    STORE_ORDER.forEach(sid => {
+      data[sid] = {};
+      monthList.forEach(ym => {
+        data[sid][ym] = { monthly: 0, dailyAssigned: 0, sprintPct: 0 };
+      });
+    });
+    results.forEach(r => {
+      if ('monthly' in r) {
+        data[r.sid][r.ym].monthly = Number(r.monthly) || 0;
+      } else if ('daily' in r) {
+        let assigned = 0;
+        let sprintPct = 0;
+        Object.entries(r.daily).forEach(([k, v]) => {
+          if (k === '_sprintPct') sprintPct = Number(v) || 0;
+          else if (!k.startsWith('_')) assigned += Number(v) || 0;
+        });
+        data[r.sid][r.ym].dailyAssigned = assigned;
+        data[r.sid][r.ym].sprintPct = sprintPct;
+      }
+    });
+
+    // 渲染表格
+    let html = `
+      <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+        <thead>
+          <tr style="background: var(--bg-gray-50); position: sticky; top: 0;">
+            <th style="padding: 10px 12px; text-align: left; border-bottom: 2px solid var(--border-light); white-space: nowrap;">店家</th>
+            ${monthList.map(ym => {
+              const [yy, mm] = ym.split('-').map(Number);
+              const lockStart = new Date(yy, mm - 1, 6, 0, 0, 0);
+              const todayDate = new Date();
+              const isAfterMay = (yy > 2026) || (yy === 2026 && mm >= 6);
+              const locked = isAfterMay && todayDate >= lockStart;
+              return `<th style="padding: 10px 12px; text-align: center; border-bottom: 2px solid var(--border-light); white-space: nowrap;">
+                ${yy} / ${mm} ${locked ? '<span style="color: var(--danger); font-size: 10px;">🔒</span>' : ''}
+              </th>`;
+            }).join('')}
+          </tr>
+        </thead>
+        <tbody>
+    `;
+    STORE_ORDER.forEach((sid, i) => {
+      const bg = i % 2 === 0 ? 'var(--bg-white)' : 'var(--bg-gray-50)';
+      html += `<tr style="background: ${bg};">
+        <td style="padding: 10px 12px; font-weight: 700; white-space: nowrap; border-bottom: 1px solid var(--border-light);">${STORE_NAMES[sid]}</td>
+      `;
+      monthList.forEach(ym => {
+        const cell = data[sid][ym];
+        let badge = '';
+        if (cell.sprintPct > 0) {
+          badge = `<span style="background: #C9905A; color: #FFF; padding: 1px 5px; border-radius: 3px; font-size: 9px; margin-left: 4px;">🚀${cell.sprintPct}%</span>`;
+        }
+        let body = '';
+        if (cell.monthly > 0) {
+          const pct = Math.round(cell.dailyAssigned / cell.monthly * 100);
+          const color = pct === 100 ? '#2EA855' : pct > 100 ? '#E24B4A' : '#888';
+          body = `
+            <div style="font-weight: 700; color: var(--text-primary);">${formatMoney(cell.monthly)}</div>
+            <div style="font-size: 10px; color: ${color};">分配 ${pct}%${badge}</div>
+          `;
+        } else {
+          body = '<div style="color: var(--text-tertiary); font-size: 10px;">未設定</div>';
+        }
+        html += `<td style="padding: 8px 12px; text-align: center; border-bottom: 1px solid var(--border-light); cursor: pointer;"
+          onclick="openTargetsAdminEdit('${sid}', '${ym}')"
+          onmouseover="this.style.background='var(--bg-gray-100)'"
+          onmouseout="this.style.background=''">${body}</td>`;
+      });
+      html += `</tr>`;
+    });
+    html += `</tbody></table>
+      <div style="padding: 12px; font-size: 11px; color: var(--text-tertiary); border-top: 1px solid var(--border-light);">
+        💡 點某店某月格子 → 進入該店該月的每日目標頁面（總部視角、不受月鎖限制）
+      </div>
+    `;
+    gridEl.innerHTML = html;
+  } catch (e) {
+    console.error(e);
+    gridEl.innerHTML = `<div class="su-empty" style="padding: 30px; text-align: center; color: var(--danger);">載入失敗：${e.message}</div>`;
+  }
+}
+
+// 點某店某月 → 進入該店的 dailyTarget 頁（總部視角）
+let _originalStoreId = null;
+function openTargetsAdminEdit(storeId, ym) {
+  // 暫存原 state.storeId（V 端原本是 'V'）
+  if (!_originalStoreId) _originalStoreId = state.storeId;
+  state.storeId = storeId;
+  currentDailyTargetMonth = ym;
+  showScreen('dailyTarget');
+  loadDailyTargetForMonth(ym);
+}
+
+// 返回時恢復原 storeId（V 端）
+function restoreOriginalStoreId() {
+  if (_originalStoreId) {
+    state.storeId = _originalStoreId;
+    _originalStoreId = null;
+  }
 }
 
 // ★ Mockup 3: 組裝打烊回報文字（門市名 / 日期 / 業績 / 來客數明細 / 平均客單）
