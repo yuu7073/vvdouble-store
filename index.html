@@ -7634,7 +7634,7 @@ const SEED_MANAGERS = [
     name: '美儒',
     role: '店長',
     stores: ['xintiandi', 'xinjuejiang'],
-    pin: '990810'
+    pin: '141319'
   },
   {
     seedId: 'seed_weiqi',
@@ -16741,14 +16741,34 @@ async function syncSeedManagers() {
   try {
     const snap = await db.ref('/global/staff').once('value');
     const existing = snap.val() || {};
-    // 看哪些 seed 已經寫過
-    const existingSeedIds = new Set();
-    Object.values(existing).forEach(s => {
-      if (s && s.seedId) existingSeedIds.add(s.seedId);
+    // 找出已存在的 seed（用 seedId 索引）
+    const existingMap = {}; // seedId → { key, data }
+    Object.entries(existing).forEach(([key, s]) => {
+      if (s && s.seedId) existingMap[s.seedId] = { key, data: s };
     });
 
     for (const seed of SEED_MANAGERS) {
-      if (existingSeedIds.has(seed.seedId)) continue;
+      const found = existingMap[seed.seedId];
+      if (found) {
+        // ★ v30：已存在 → 比對 PIN / role / stores、有差異就更新
+        const old = found.data;
+        const needUpdate = old.pin !== seed.pin
+          || old.role !== seed.role
+          || JSON.stringify(old.stores || []) !== JSON.stringify(seed.stores);
+        if (needUpdate) {
+          await db.ref(`/global/staff/${found.key}`).update({
+            pin: seed.pin,
+            role: seed.role,
+            stores: seed.stores,
+            name: seed.name,
+            updatedAt: Date.now(),
+            updatedBy: 'seed-sync'
+          });
+          console.log(`✓ seed manager 已同步更新：${seed.name}（PIN: ${seed.pin}）`);
+        }
+        continue;
+      }
+      // 不存在 → 建立新的
       const newRef = db.ref('/global/staff').push();
       await newRef.set({
         seedId: seed.seedId,
