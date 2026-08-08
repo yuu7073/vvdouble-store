@@ -3960,6 +3960,191 @@ input, textarea, select { font-family: inherit; }
 }
 
 /* ★ 點格子彈出的浮窗 */
+/* ★ v31：行銷排程甘特 */
+.mkt-schedule-card {
+  background: var(--bg-white);
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+.mkt-schedule-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.mkt-schedule-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+.mkt-schedule-nav { display: flex; gap: 4px; }
+.mkt-nav-btn {
+  background: var(--bg-gray-50);
+  border: 1px solid var(--border-light);
+  border-radius: 5px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--text-primary);
+}
+.mkt-nav-btn:hover { background: var(--bg-gray-100); }
+.mkt-gantt-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-bottom: 2px;
+}
+.mkt-gantt-days.admin { grid-template-columns: repeat(14, 1fr); }
+.mkt-day-cell {
+  text-align: center;
+  padding: 5px 2px;
+  background: var(--bg-gray-50);
+  border-radius: 6px 6px 0 0;
+  cursor: pointer;
+}
+.mkt-day-cell:hover { background: var(--bg-gray-100); }
+.mkt-day-cell.weekend { background: #F1EFE8; }
+.mkt-day-cell.today {
+  background: #2C2825;
+  outline: 2px solid var(--primary, #FFD93D);
+  outline-offset: -1px;
+}
+.mkt-day-num { font-size: 13px; font-weight: 700; color: var(--text-secondary); line-height: 1.2; }
+.mkt-day-wd { font-size: 9px; color: var(--text-tertiary); }
+.mkt-day-cell.today .mkt-day-num { color: var(--primary, #FFD93D); }
+.mkt-day-cell.today .mkt-day-wd { color: #FFF; }
+.mkt-gantt-bars {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  position: relative;
+  min-height: 12px;
+}
+.mkt-gantt-bars.admin { grid-template-columns: repeat(14, 1fr); }
+.mkt-bar {
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #FFF;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+}
+.mkt-bar.p-activity { background: #D85A30; }
+.mkt-bar.p-newitem { background: #639922; }
+.mkt-bar.cont-left { border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.mkt-bar.cont-right { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.mkt-schedule-foot {
+  margin-top: 6px;
+  font-size: 9.5px;
+  color: var(--text-tertiary);
+  text-align: center;
+}
+.mkt-add-btn {
+  background: var(--text-primary);
+  color: var(--primary, #FFD93D);
+  border: none;
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+/* 浮窗（沿用 rv-cal-popup 風格） */
+.mkt-popup {
+  position: absolute;
+  z-index: 100;
+  background: #FFFFFF;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+  padding: 12px 14px;
+  min-width: 260px;
+  max-width: 320px;
+}
+.mkt-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 6px;
+}
+.mkt-popup-title { font-size: 13px; font-weight: 800; color: var(--text-primary); }
+.mkt-popup-close {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  font-size: 18px;
+  padding: 0;
+  line-height: 1;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+.mkt-popup-close:hover { background: var(--bg-gray-100); color: var(--text-primary); }
+.mkt-popup-item {
+  border-left: 3px solid #D85A30;
+  background: #FAECE7;
+  border-radius: 0 6px 6px 0;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+}
+.mkt-popup-item.p-newitem { border-left-color: #639922; background: #EAF3DE; }
+.mkt-popup-item:last-child { margin-bottom: 0; }
+.mkt-popup-item-name { font-size: 12.5px; font-weight: 800; color: var(--text-primary); }
+.mkt-popup-item-meta { font-size: 11px; color: var(--text-secondary); margin-top: 3px; line-height: 1.55; }
+.mkt-popup-item-warning {
+  background: #FCEBEB;
+  color: #A32D2D;
+  font-size: 10.5px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-top: 5px;
+  font-weight: 700;
+}
+.mkt-popup-empty { font-size: 11px; color: var(--text-tertiary); text-align: center; padding: 12px 0; }
+.mkt-badge {
+  font-size: 9px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-weight: 700;
+  margin-left: 5px;
+  vertical-align: 1px;
+}
+.mkt-badge.high { background: #F09595; color: #501313; }
+.mkt-badge.mid { background: #FAC775; color: #412402; }
+.mkt-badge.low { background: #D3D1C7; color: #2C2C2A; }
+/* chip 選擇器 */
+.mkt-chip {
+  background: var(--bg-gray-50);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-light);
+  padding: 5px 12px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+}
+.mkt-chip.active {
+  background: var(--text-primary);
+  color: #FFF;
+  border-color: var(--text-primary);
+}
+
 .rv-cal-popup {
   position: absolute;
   z-index: 100;
@@ -5538,6 +5723,25 @@ input, textarea, select { font-family: inherit; }
         <div class="welcome-text" id="welcomeText">
           歡迎，<strong>—</strong> ✿
         </div>
+      </div>
+
+      <!-- ★ v31：行銷排程（今天置中的 7 天甘特、有活動才顯示） -->
+      <div class="mkt-schedule-card" id="mktScheduleCard" style="display: none;">
+        <div class="mkt-schedule-header">
+          <div class="mkt-schedule-title">📣 行銷排程</div>
+          <div class="mkt-schedule-nav">
+            <button type="button" class="mkt-nav-btn" id="mktPrevBtn">‹</button>
+            <button type="button" class="mkt-nav-btn" id="mktTodayBtn">今天</button>
+            <button type="button" class="mkt-nav-btn" id="mktNextBtn">›</button>
+          </div>
+        </div>
+        <div class="mkt-gantt-wrap" style="position: relative;">
+          <div id="mktGanttDays" class="mkt-gantt-days"></div>
+          <div id="mktGanttBars" class="mkt-gantt-bars"></div>
+          <!-- 點日期彈出的浮窗 -->
+          <div class="mkt-popup" id="mktPopup" style="display: none;"></div>
+        </div>
+        <div class="mkt-schedule-foot">點任一天可看當日活動明細</div>
       </div>
 
       <!-- ★★★ V 端進階儀表板（4 個區塊、只有 V 看得到）★★★ -->
@@ -7125,6 +7329,111 @@ input, textarea, select { font-family: inherit; }
       </div>
     </div>
 
+    <!-- ★ v31：V 端行銷排程管理 -->
+    <div id="mktAdminScreen" class="subscreen" style="display: none;">
+      <div class="subscreen-header">
+        <div class="subscreen-title-block">
+          <div class="subscreen-title">📣 行銷排程管理</div>
+          <div class="subscreen-subtitle">公司總部 · 設定活動後、門市首頁自動顯示</div>
+        </div>
+        <div style="display: flex; gap: 6px; align-items: center;">
+          <button class="btn-back" data-screen="home">‹ 返回</button>
+          <button type="button" class="mkt-add-btn" id="mktAddBtn">＋ 新增活動</button>
+        </div>
+      </div>
+      <div class="subscreen-body">
+        <div class="mkt-schedule-card" style="margin-bottom: 14px;">
+          <div class="mkt-schedule-header">
+            <div class="mkt-schedule-title">14 天排程總覽</div>
+            <div class="mkt-schedule-nav">
+              <button type="button" class="mkt-nav-btn" id="mktAdminPrevBtn">‹</button>
+              <button type="button" class="mkt-nav-btn" id="mktAdminTodayBtn">今天</button>
+              <button type="button" class="mkt-nav-btn" id="mktAdminNextBtn">›</button>
+            </div>
+          </div>
+          <div class="mkt-gantt-wrap" style="position: relative;">
+            <div id="mktAdminGanttDays" class="mkt-gantt-days admin"></div>
+            <div id="mktAdminGanttBars" class="mkt-gantt-bars admin"></div>
+            <div class="mkt-popup" id="mktAdminPopup" style="display: none;"></div>
+          </div>
+          <div class="mkt-schedule-foot">點活動條可編輯 · 點日期看當日明細</div>
+        </div>
+        <div style="font-size: 12px; font-weight: 800; margin-bottom: 8px; color: var(--text-primary);">所有活動</div>
+        <div id="mktAdminList" style="background: var(--bg-white); border-radius: 8px; overflow: hidden; border: 1px solid var(--border-light);">
+          <div class="su-empty" style="padding: 30px; text-align: center; color: var(--text-tertiary);">載入中...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ★ v31：行銷活動 新增/編輯 modal -->
+    <div class="modal-overlay" id="mktEditModal">
+      <div class="modal-box" style="max-width: 460px;">
+        <div class="modal-header">
+          <div class="modal-title" id="mktEditModalTitle">新增行銷活動</div>
+          <button class="modal-close" id="mktEditCloseBtn">
+            <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+            <div>
+              <label class="form-label">優先 <span class="form-required">*</span></label>
+              <div style="display: flex; gap: 5px;" id="mktPriorityRow">
+                <span class="mkt-chip" data-val="high">高</span>
+                <span class="mkt-chip active" data-val="mid">中</span>
+                <span class="mkt-chip" data-val="low">低</span>
+              </div>
+            </div>
+            <div>
+              <label class="form-label">類型 <span class="form-required">*</span></label>
+              <div style="display: flex; gap: 5px;" id="mktTypeRow">
+                <span class="mkt-chip active" data-val="活動">活動</span>
+                <span class="mkt-chip" data-val="新品">新品</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">活動 / 新品名稱 <span class="form-required">*</span></label>
+            <input type="text" class="form-input" id="mktNameInput" placeholder="例：Summer Sale 新品限時95折">
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="form-group">
+              <label class="form-label">開始 <span class="form-required">*</span></label>
+              <input type="datetime-local" class="form-input" id="mktStartInput">
+            </div>
+            <div class="form-group">
+              <label class="form-label">結束</label>
+              <input type="datetime-local" class="form-input" id="mktEndInput">
+              <label style="font-size: 11px; color: var(--text-secondary); display: flex; align-items: center; gap: 5px; margin-top: 5px; cursor: pointer;">
+                <input type="checkbox" id="mktNoEndCheck" style="width: 14px; height: 14px;"> 售完為止（無固定結束日）
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">通路 <span class="form-required">*</span></label>
+            <div style="display: flex; gap: 5px; flex-wrap: wrap;" id="mktChannelRow">
+              <span class="mkt-chip active" data-val="官網＋門市">官網＋門市</span>
+              <span class="mkt-chip" data-val="僅官網">僅官網</span>
+              <span class="mkt-chip" data-val="僅門市">僅門市</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">優惠機制 / 價格 <span class="form-required">*</span></label>
+            <textarea class="form-input" id="mktMechanismInput" rows="2" placeholder="例：一般95折 / VIP 9折 / VVIP 85折"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" style="color: var(--danger);">⚠ 注意標籤（門市要特別注意的、可空）</label>
+            <input type="text" class="form-input" id="mktWarningInput" placeholder="例：組合價不可列入計算" style="border-color: #F09595; background: #FDF3F3;">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" id="mktEditCancelBtn">取消</button>
+          <button class="btn-danger" id="mktDeleteBtn" style="display: none; margin-right: auto;">🗑️ 刪除</button>
+          <button class="btn-primary" id="mktSaveBtn">儲存</button>
+        </div>
+      </div>
+    </div>
+
     <!-- 新增/編輯員工 modal -->
     <div class="modal-overlay" id="suEditModal">
       <div class="modal-box" style="max-width: 420px;">
@@ -8546,7 +8855,8 @@ const SCREENS = {
   teamsNotify: 'teamsNotifyScreen',
   staffUnified: 'staffUnifiedScreen',
   pettyCashAdmin: 'pettyCashAdminScreen',
-  targetsAdmin: 'targetsAdminScreen'
+  targetsAdmin: 'targetsAdminScreen',
+  mktAdmin: 'mktAdminScreen'
 };
 
 function showScreen(screenName) {
@@ -8699,6 +9009,13 @@ const featureGridHTML = {
       title: '全店業績目標管理',
       desc: '7 店所有月份的目標總覽',
       action: () => openTargetsAdmin()
+    },
+    {
+      key: 'mktAdmin',
+      icon: '<svg viewBox="0 0 24 24"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 11-5.8-1.6"/></svg>',
+      title: '行銷排程管理',
+      desc: '設定檔期活動、門市首頁自動顯示',
+      action: () => openMktAdmin()
     }
   ]
 };
@@ -11851,6 +12168,448 @@ function restoreOriginalStoreId() {
     state.storeId = _originalStoreId;
     _originalStoreId = null;
   }
+}
+
+// ============================================
+// ★ v31：行銷排程（甘特 + 浮窗 + V 端管理）
+// ============================================
+let mktEvents = {};              // {id: event}
+let mktListenerRef = null;
+let mktHomeOffset = 0;           // 首頁甘特起始偏移（0 = 今天置中）
+let mktAdminOffset = 0;          // V 端甘特偏移（0 = 今天起）
+let mktEditingId = null;         // 編輯中的活動 id
+
+function mktDateStr(d) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+// 即時監聽 /global/marketingEvents
+function listenMarketingEvents() {
+  if (!db) return;
+  if (mktListenerRef) { try { mktListenerRef.off(); } catch (e) {} }
+  mktListenerRef = db.ref('/global/marketingEvents');
+  mktListenerRef.on('value', (snap) => {
+    mktEvents = snap.val() || {};
+    renderMktHomeGantt();
+    if (state.isHQ) {
+      renderMktAdminGantt();
+      renderMktAdminList();
+    }
+  });
+}
+
+// 判斷活動在某天是否進行中（用日期字串比、忽略時分）
+function mktActiveOnDay(ev, dayStr) {
+  const start = (ev.startDate || '').substring(0, 10);
+  if (!start || dayStr < start) return false;
+  if (ev.noEnd) return true;               // 售完為止
+  const end = (ev.endDate || '').substring(0, 10);
+  if (!end) return true;
+  return dayStr <= end;
+}
+
+// ---------- 首頁甘特（7 天、今天置中） ----------
+function renderMktHomeGantt() {
+  const card = document.getElementById('mktScheduleCard');
+  const daysEl = document.getElementById('mktGanttDays');
+  const barsEl = document.getElementById('mktGanttBars');
+  if (!card || !daysEl || !barsEl) return;
+
+  const today = new Date();
+  const days = [];
+  for (let i = -3; i <= 3; i++) {
+    const d = new Date(today);
+    d.setDate(d.getDate() + i + mktHomeOffset);
+    days.push(d);
+  }
+  const dayStrs = days.map(mktDateStr);
+  const todayStr = mktDateStr(today);
+
+  // 視窗內有活動的清單
+  const visible = Object.entries(mktEvents).filter(([id, ev]) =>
+    dayStrs.some(ds => mktActiveOnDay(ev, ds))
+  );
+
+  // 沒任何活動（整體、不只視窗）→ 整卡隱藏
+  const anyActiveNow = Object.values(mktEvents).some(ev => mktActiveOnDay(ev, todayStr) || (ev.startDate || '').substring(0, 10) > todayStr);
+  if (Object.keys(mktEvents).length === 0 || !anyActiveNow) {
+    card.style.display = 'none';
+    return;
+  }
+  card.style.display = 'block';
+
+  renderMktGanttInto(daysEl, barsEl, days, dayStrs, todayStr, visible, 7, false);
+}
+
+// ---------- V 端甘特（14 天、今天起） ----------
+function renderMktAdminGantt() {
+  const daysEl = document.getElementById('mktAdminGanttDays');
+  const barsEl = document.getElementById('mktAdminGanttBars');
+  if (!daysEl || !barsEl) return;
+
+  const today = new Date();
+  const days = [];
+  for (let i = 0; i < 14; i++) {
+    const d = new Date(today);
+    d.setDate(d.getDate() + i + mktAdminOffset);
+    days.push(d);
+  }
+  const dayStrs = days.map(mktDateStr);
+  const todayStr = mktDateStr(today);
+  const visible = Object.entries(mktEvents).filter(([id, ev]) =>
+    dayStrs.some(ds => mktActiveOnDay(ev, ds))
+  );
+  renderMktGanttInto(daysEl, barsEl, days, dayStrs, todayStr, visible, 14, true);
+}
+
+// 共用甘特渲染
+function renderMktGanttInto(daysEl, barsEl, days, dayStrs, todayStr, visible, cols, isAdmin) {
+  const wdMap = ['日', '一', '二', '三', '四', '五', '六'];
+  daysEl.innerHTML = days.map((d, i) => {
+    const ds = dayStrs[i];
+    const wd = d.getDay();
+    let cls = 'mkt-day-cell';
+    if (wd === 0 || wd === 6) cls += ' weekend';
+    if (ds === todayStr) cls += ' today';
+    const wdLabel = ds === todayStr ? wdMap[wd] + ' · 今天' : wdMap[wd];
+    return `<div class="${cls}" data-mkt-day="${ds}">
+      <div class="mkt-day-num">${d.getDate()}</div>
+      <div class="mkt-day-wd">${wdLabel}</div>
+    </div>`;
+  }).join('');
+
+  // 活動橫條：算每個活動在視窗內的起訖 column
+  let barsHtml = '';
+  visible.forEach(([id, ev]) => {
+    let startIdx = -1, endIdx = -1;
+    dayStrs.forEach((ds, i) => {
+      if (mktActiveOnDay(ev, ds)) {
+        if (startIdx === -1) startIdx = i;
+        endIdx = i;
+      }
+    });
+    if (startIdx === -1) return;
+    const contLeft = mktActiveOnDay(ev, mktDateStr(new Date(days[0].getTime() - 86400000)));
+    const contRight = ev.noEnd || mktActiveOnDay(ev, mktDateStr(new Date(days[days.length - 1].getTime() + 86400000)));
+    const typeCls = ev.type === '新品' ? 'p-newitem' : 'p-activity';
+    let cls = 'mkt-bar ' + typeCls;
+    if (contLeft) cls += ' cont-left';
+    if (contRight) cls += ' cont-right';
+    const clickAttr = isAdmin ? `data-mkt-edit="${id}"` : `data-mkt-bar="${id}"`;
+    barsHtml += `<div class="${cls}" style="grid-column: ${startIdx + 1} / ${endIdx + 2};" ${clickAttr} title="${escapeHtml(ev.name || '')}">${escapeHtml(ev.name || '')}</div>`;
+  });
+  barsEl.innerHTML = barsHtml || '<div style="grid-column: 1 / -1; font-size: 10.5px; color: var(--text-tertiary); text-align: center; padding: 8px 0;">這幾天沒有排程活動</div>';
+}
+
+// ---------- 浮窗：某天的活動明細 ----------
+function openMktPopup(dayStr, cellEl, popupId) {
+  const popup = document.getElementById(popupId);
+  if (!popup) return;
+
+  const d = new Date(dayStr + 'T00:00:00');
+  const wdMap = ['日', '一', '二', '三', '四', '五', '六'];
+  const titleStr = `${d.getMonth() + 1}月${d.getDate()}日（${wdMap[d.getDay()]}）`;
+  const todayStr = mktDateStr(new Date());
+
+  const dayEvents = Object.entries(mktEvents).filter(([id, ev]) => mktActiveOnDay(ev, dayStr));
+
+  let bodyHtml = '';
+  if (dayEvents.length === 0) {
+    bodyHtml = '<div class="mkt-popup-empty">這天沒有活動</div>';
+  } else {
+    dayEvents.forEach(([id, ev]) => {
+      const typeCls = ev.type === '新品' ? 'p-newitem' : '';
+      const pBadge = ev.priority === 'high' ? '<span class="mkt-badge high">優先：高</span>'
+        : ev.priority === 'low' ? '<span class="mkt-badge low">優先：低</span>'
+        : '<span class="mkt-badge mid">優先：中</span>';
+      // 檔期字串
+      const startD = (ev.startDate || '').substring(0, 10);
+      const startT = (ev.startDate || '').substring(11, 16);
+      const endD = (ev.endDate || '').substring(0, 10);
+      const endT = (ev.endDate || '').substring(11, 16);
+      const fmtD = s => s ? `${parseInt(s.substring(5, 7))}/${parseInt(s.substring(8, 10))}` : '';
+      let periodStr = fmtD(startD) + (startT && startT !== '00:00' ? ' ' + startT : '');
+      periodStr += ev.noEnd ? ' 起 · 售完為止' : (endD ? ` – ${fmtD(endD)}${endT && endT !== '23:59' && endT !== '00:00' ? ' ' + endT : ''}` : '');
+      // 狀態提示
+      let statusHint = '';
+      if (startD === dayStr && dayStr === todayStr) statusHint = '今天開始';
+      else if (!ev.noEnd && endD === dayStr && dayStr === todayStr) statusHint = '今天最後一天' + (endT && endT !== '23:59' ? `、${endT} 收檔` : '');
+      bodyHtml += `<div class="mkt-popup-item ${typeCls}">
+        <div class="mkt-popup-item-name">${escapeHtml(ev.name || '')}${pBadge}</div>
+        <div class="mkt-popup-item-meta">
+          ${periodStr} · ${escapeHtml(ev.channel || '')}<br>
+          ${escapeHtml(ev.mechanism || '')}
+        </div>
+        ${ev.warning ? `<div class="mkt-popup-item-warning">⚠ ${escapeHtml(ev.warning)}</div>` : ''}
+        ${statusHint ? `<div style="font-size: 10px; color: var(--text-tertiary); margin-top: 4px;">${statusHint}</div>` : ''}
+      </div>`;
+    });
+  }
+
+  popup.innerHTML = `
+    <div class="mkt-popup-header">
+      <div class="mkt-popup-title">${titleStr} · ${dayEvents.length} 檔活動</div>
+      <button class="mkt-popup-close" type="button" aria-label="關閉">×</button>
+    </div>
+    <div>${bodyHtml}</div>
+  `;
+
+  popup.style.display = 'block';
+  if (cellEl) {
+    const wrap = popup.parentElement;
+    const wrapRect = wrap.getBoundingClientRect();
+    const cellRect = cellEl.getBoundingClientRect();
+    const popupRect = popup.getBoundingClientRect();
+    let leftPx = cellRect.left - wrapRect.left + (cellRect.width / 2) - (popupRect.width / 2);
+    const maxLeft = wrapRect.width - popupRect.width;
+    if (leftPx < 0) leftPx = 0;
+    if (leftPx > maxLeft) leftPx = Math.max(0, maxLeft);
+    popup.style.left = leftPx + 'px';
+    popup.style.top = (cellRect.bottom - wrapRect.top + 6) + 'px';
+  }
+  popup.querySelector('.mkt-popup-close').addEventListener('click', (e) => {
+    e.stopPropagation();
+    popup.style.display = 'none';
+  });
+}
+
+function closeMktPopups() {
+  ['mktPopup', 'mktAdminPopup'].forEach(id => {
+    const p = document.getElementById(id);
+    if (p) p.style.display = 'none';
+  });
+}
+
+// ---------- V 端：開啟管理頁 ----------
+function openMktAdmin() {
+  if (!state.isHQ) {
+    showToast('只有公司總部可使用此功能', 'error');
+    return;
+  }
+  mktAdminOffset = 0;
+  showScreen('mktAdmin');
+  renderMktAdminGantt();
+  renderMktAdminList();
+}
+
+// V 端活動清單（表格式）
+function renderMktAdminList() {
+  const listEl = document.getElementById('mktAdminList');
+  if (!listEl) return;
+  const todayStr = mktDateStr(new Date());
+  const entries = Object.entries(mktEvents);
+  if (entries.length === 0) {
+    listEl.innerHTML = '<div class="su-empty" style="padding: 30px; text-align: center; color: var(--text-tertiary);">還沒有活動、點右上「＋ 新增活動」建立第一檔</div>';
+    return;
+  }
+  // 排序：進行中 → 未開始 → 已結束、同組依開始日
+  const statusOf = (ev) => {
+    const start = (ev.startDate || '').substring(0, 10);
+    if (start > todayStr) return 1; // 未開始
+    if (mktActiveOnDay(ev, todayStr)) return 0; // 進行中
+    return 2; // 已結束
+  };
+  entries.sort((a, b) => {
+    const sa = statusOf(a[1]), sb = statusOf(b[1]);
+    if (sa !== sb) return sa - sb;
+    return (a[1].startDate || '').localeCompare(b[1].startDate || '');
+  });
+
+  const fmtD = s => s ? `${parseInt(s.substring(5, 7))}/${parseInt(s.substring(8, 10))}` : '';
+  let html = `<div style="display: grid; grid-template-columns: 1fr 130px 90px 80px; gap: 0; font-size: 11px; background: var(--bg-gray-50); padding: 8px 12px; font-weight: 800; color: var(--text-secondary); border-bottom: 1px solid var(--border-light);">
+    <div>活動名稱</div><div>檔期</div><div>狀態</div><div style="text-align: right;">操作</div>
+  </div>`;
+  entries.forEach(([id, ev], i) => {
+    const st = statusOf(ev);
+    const stBadge = st === 0 ? '<span style="background: #FAECE7; color: #993C1D; font-size: 10px; padding: 2px 8px; border-radius: 3px; font-weight: 700;">進行中</span>'
+      : st === 1 ? '<span style="background: #F1EFE8; color: #5F5E5A; font-size: 10px; padding: 2px 8px; border-radius: 3px; font-weight: 700;">未開始</span>'
+      : '<span style="background: #F1EFE8; color: #B4B2A9; font-size: 10px; padding: 2px 8px; border-radius: 3px;">已結束</span>';
+    const period = fmtD((ev.startDate || '').substring(0, 10)) + (ev.noEnd ? ' 起·售完止' : ' – ' + fmtD((ev.endDate || '').substring(0, 10)));
+    const typeTag = ev.type === '新品' ? '<span style="color: #3B6D11; font-size: 10px; margin-right: 4px;">[新品]</span>' : '';
+    html += `<div style="display: grid; grid-template-columns: 1fr 130px 90px 80px; gap: 0; font-size: 12px; padding: 10px 12px; border-bottom: 1px solid var(--border-light); align-items: center; ${st === 2 ? 'opacity: 0.55;' : ''}">
+      <div style="font-weight: 700;">${typeTag}${escapeHtml(ev.name || '')}</div>
+      <div style="color: var(--text-secondary); font-size: 11px;">${period}</div>
+      <div>${stBadge}</div>
+      <div style="text-align: right;"><button type="button" class="mkt-nav-btn" data-mkt-edit="${id}">編輯</button></div>
+    </div>`;
+  });
+  listEl.innerHTML = html;
+}
+
+// ---------- 新增/編輯 modal ----------
+function openMktEditModal(eventId) {
+  mktEditingId = eventId || null;
+  const modal = document.getElementById('mktEditModal');
+  const titleEl = document.getElementById('mktEditModalTitle');
+  const delBtn = document.getElementById('mktDeleteBtn');
+  const ev = eventId ? mktEvents[eventId] : null;
+
+  titleEl.textContent = ev ? '編輯行銷活動' : '新增行銷活動';
+  delBtn.style.display = ev ? 'inline-block' : 'none';
+
+  // 填值
+  document.getElementById('mktNameInput').value = ev?.name || '';
+  document.getElementById('mktStartInput').value = ev?.startDate || '';
+  document.getElementById('mktEndInput').value = ev?.endDate || '';
+  document.getElementById('mktNoEndCheck').checked = !!ev?.noEnd;
+  document.getElementById('mktEndInput').disabled = !!ev?.noEnd;
+  document.getElementById('mktMechanismInput').value = ev?.mechanism || '';
+  document.getElementById('mktWarningInput').value = ev?.warning || '';
+  // chips
+  const setChips = (rowId, val, fallback) => {
+    document.querySelectorAll(`#${rowId} .mkt-chip`).forEach(c => {
+      c.classList.toggle('active', c.dataset.val === (val || fallback));
+    });
+  };
+  setChips('mktPriorityRow', ev?.priority, 'mid');
+  setChips('mktTypeRow', ev?.type, '活動');
+  setChips('mktChannelRow', ev?.channel, '官網＋門市');
+
+  modal.classList.add('show');
+}
+
+function closeMktEditModal() {
+  document.getElementById('mktEditModal').classList.remove('show');
+  mktEditingId = null;
+}
+
+async function saveMktEvent() {
+  const name = document.getElementById('mktNameInput').value.trim();
+  const startDate = document.getElementById('mktStartInput').value;
+  const noEnd = document.getElementById('mktNoEndCheck').checked;
+  const endDate = noEnd ? null : document.getElementById('mktEndInput').value;
+  const mechanism = document.getElementById('mktMechanismInput').value.trim();
+  const warning = document.getElementById('mktWarningInput').value.trim();
+  const priority = document.querySelector('#mktPriorityRow .mkt-chip.active')?.dataset.val || 'mid';
+  const type = document.querySelector('#mktTypeRow .mkt-chip.active')?.dataset.val || '活動';
+  const channel = document.querySelector('#mktChannelRow .mkt-chip.active')?.dataset.val || '官網＋門市';
+
+  if (!name) { showToast('請填活動名稱', 'error'); return; }
+  if (!startDate) { showToast('請填開始日期', 'error'); return; }
+  if (!noEnd && !endDate) { showToast('請填結束日期、或勾「售完為止」', 'error'); return; }
+  if (!noEnd && endDate < startDate) { showToast('結束不能早於開始', 'error'); return; }
+  if (!mechanism) { showToast('請填優惠機制 / 價格', 'error'); return; }
+  if (!db) return;
+
+  const data = {
+    name, startDate, endDate: endDate || null, noEnd,
+    mechanism, warning: warning || null,
+    priority, type, channel,
+    updatedAt: Date.now(),
+    updatedBy: state.currentStaff || 'V'
+  };
+
+  setLoading(true);
+  try {
+    if (mktEditingId) {
+      await db.ref(`/global/marketingEvents/${mktEditingId}`).update(data);
+      showToast('✓ 已更新活動', 'success');
+    } else {
+      data.createdAt = Date.now();
+      data.createdBy = state.currentStaff || 'V';
+      await db.ref('/global/marketingEvents').push().set(data);
+      showToast('✓ 已新增活動', 'success');
+    }
+    closeMktEditModal();
+  } catch (e) {
+    showToast('儲存失敗：' + e.message, 'error');
+  } finally {
+    setLoading(false);
+  }
+}
+
+async function deleteMktEvent() {
+  if (!mktEditingId || !db) return;
+  const ev = mktEvents[mktEditingId];
+  if (!confirm(`確定要刪除「${ev?.name || ''}」嗎？此動作無法復原。`)) return;
+  setLoading(true);
+  try {
+    await db.ref(`/global/marketingEvents/${mktEditingId}`).remove();
+    showToast('✓ 已刪除活動', 'success');
+    closeMktEditModal();
+  } catch (e) {
+    showToast('刪除失敗：' + e.message, 'error');
+  } finally {
+    setLoading(false);
+  }
+}
+
+// ---------- 事件綁定 ----------
+function setupMktSchedule() {
+  // 首頁導航
+  const bind = (id, fn) => { const el = document.getElementById(id); if (el) el.addEventListener('click', fn); };
+  bind('mktPrevBtn', () => { mktHomeOffset -= 7; closeMktPopups(); renderMktHomeGantt(); });
+  bind('mktNextBtn', () => { mktHomeOffset += 7; closeMktPopups(); renderMktHomeGantt(); });
+  bind('mktTodayBtn', () => { mktHomeOffset = 0; closeMktPopups(); renderMktHomeGantt(); });
+  // V 端導航
+  bind('mktAdminPrevBtn', () => { mktAdminOffset -= 14; closeMktPopups(); renderMktAdminGantt(); });
+  bind('mktAdminNextBtn', () => { mktAdminOffset += 14; closeMktPopups(); renderMktAdminGantt(); });
+  bind('mktAdminTodayBtn', () => { mktAdminOffset = 0; closeMktPopups(); renderMktAdminGantt(); });
+  // 新增 / modal
+  bind('mktAddBtn', () => openMktEditModal(null));
+  bind('mktEditCloseBtn', closeMktEditModal);
+  bind('mktEditCancelBtn', closeMktEditModal);
+  bind('mktSaveBtn', saveMktEvent);
+  bind('mktDeleteBtn', deleteMktEvent);
+  // 售完為止勾選 → 結束日 disable
+  const noEndCheck = document.getElementById('mktNoEndCheck');
+  if (noEndCheck) {
+    noEndCheck.addEventListener('change', () => {
+      const endInput = document.getElementById('mktEndInput');
+      endInput.disabled = noEndCheck.checked;
+      if (noEndCheck.checked) endInput.value = '';
+    });
+  }
+  // chip 選擇（modal 內三組）
+  ['mktPriorityRow', 'mktTypeRow', 'mktChannelRow'].forEach(rowId => {
+    const row = document.getElementById(rowId);
+    if (row) {
+      row.addEventListener('click', (e) => {
+        const chip = e.target.closest('.mkt-chip');
+        if (!chip) return;
+        row.querySelectorAll('.mkt-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+      });
+    }
+  });
+  // 全域點擊：日期格 → 浮窗；活動條（V 端）→ 編輯；點外面 → 關浮窗
+  document.addEventListener('click', (e) => {
+    const dayCell = e.target.closest('[data-mkt-day]');
+    if (dayCell) {
+      e.stopPropagation();
+      const ds = dayCell.getAttribute('data-mkt-day');
+      const isAdmin = !!dayCell.closest('#mktAdminScreen');
+      openMktPopup(ds, dayCell, isAdmin ? 'mktAdminPopup' : 'mktPopup');
+      return;
+    }
+    const editBar = e.target.closest('[data-mkt-edit]');
+    if (editBar) {
+      e.stopPropagation();
+      openMktEditModal(editBar.getAttribute('data-mkt-edit'));
+      return;
+    }
+    const homeBar = e.target.closest('[data-mkt-bar]');
+    if (homeBar) {
+      e.stopPropagation();
+      // 店端點活動條 → 顯示今天（或活動開始日）的浮窗
+      const id = homeBar.getAttribute('data-mkt-bar');
+      const ev = mktEvents[id];
+      if (ev) {
+        const todayStr = mktDateStr(new Date());
+        const ds = mktActiveOnDay(ev, todayStr) ? todayStr : (ev.startDate || '').substring(0, 10);
+        openMktPopup(ds, homeBar, 'mktPopup');
+      }
+      return;
+    }
+    // 點浮窗內部不關
+    const p1 = document.getElementById('mktPopup');
+    const p2 = document.getElementById('mktAdminPopup');
+    if ((p1 && p1.contains(e.target)) || (p2 && p2.contains(e.target))) return;
+    closeMktPopups();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMktPopups();
+  });
 }
 
 // ★ Mockup 3: 組裝打烊回報文字（門市名 / 日期 / 業績 / 來客數明細 / 平均客單）
@@ -16721,6 +17480,9 @@ function initPhase1D() {
   syncSeedManagers();
   // ★ 跑馬燈即時監聽
   listenMarqueeConfig();
+  // ★ v31：行銷排程
+  setupMktSchedule();
+  listenMarketingEvents();
 }
 
 // ============================================
