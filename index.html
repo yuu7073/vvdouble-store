@@ -4038,8 +4038,12 @@ input, textarea, select { font-family: inherit; }
   position: relative;
   z-index: 1;
 }
-.mkt-bar.p-activity { background: #D85A30; }
-.mkt-bar.p-newitem { background: #639922; }
+.mkt-bar.p-activity.pr-high { background: #C0392B; }
+.mkt-bar.p-activity.pr-mid { background: #E07B3A; }
+.mkt-bar.p-activity.pr-low { background: #EDBB5F; color: #4A2E05; }
+.mkt-bar.p-newitem.pr-high { background: #3E6B10; }
+.mkt-bar.p-newitem.pr-mid { background: #639922; }
+.mkt-bar.p-newitem.pr-low { background: #A3C46F; color: #24380B; }
 .mkt-bar.cont-left { border-top-left-radius: 0; border-bottom-left-radius: 0; }
 .mkt-bar.cont-right { border-top-right-radius: 0; border-bottom-right-radius: 0; }
 .mkt-schedule-foot {
@@ -5741,7 +5745,7 @@ input, textarea, select { font-family: inherit; }
           <!-- 點日期彈出的浮窗 -->
           <div class="mkt-popup" id="mktPopup" style="display: none;"></div>
         </div>
-        <div class="mkt-schedule-foot">點任一天可看當日活動明細</div>
+        <div class="mkt-schedule-foot">點任一天可看當日活動明細 · 橘紅=活動 綠=新品 · 顏色越深優先度越高</div>
       </div>
 
       <!-- ★★★ V 端進階儀表板（4 個區塊、只有 V 看得到）★★★ -->
@@ -7356,7 +7360,7 @@ input, textarea, select { font-family: inherit; }
             <div id="mktAdminGanttBars" class="mkt-gantt-bars admin"></div>
             <div class="mkt-popup" id="mktAdminPopup" style="display: none;"></div>
           </div>
-          <div class="mkt-schedule-foot">點活動條可編輯 · 點日期看當日明細</div>
+          <div class="mkt-schedule-foot">點活動條可編輯 · 點日期看當日明細 · 橘紅=活動 綠=新品 · 顏色越深優先度越高</div>
         </div>
         <div style="font-size: 12px; font-weight: 800; margin-bottom: 8px; color: var(--text-primary);">所有活動</div>
         <div id="mktAdminList" style="background: var(--bg-white); border-radius: 8px; overflow: hidden; border: 1px solid var(--border-light);">
@@ -12292,7 +12296,8 @@ function renderMktGanttInto(daysEl, barsEl, days, dayStrs, todayStr, visible, co
     const contLeft = mktActiveOnDay(ev, mktDateStr(new Date(days[0].getTime() - 86400000)));
     const contRight = ev.noEnd || mktActiveOnDay(ev, mktDateStr(new Date(days[days.length - 1].getTime() + 86400000)));
     const typeCls = ev.type === '新品' ? 'p-newitem' : 'p-activity';
-    let cls = 'mkt-bar ' + typeCls;
+    const prCls = ev.priority === 'high' ? 'pr-high' : ev.priority === 'low' ? 'pr-low' : 'pr-mid';
+    let cls = 'mkt-bar ' + typeCls + ' ' + prCls;
     if (contLeft) cls += ' cont-left';
     if (contRight) cls += ' cont-right';
     const clickAttr = isAdmin ? `data-mkt-edit="${id}"` : `data-mkt-bar="${id}"`;
