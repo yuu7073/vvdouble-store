@@ -6277,6 +6277,12 @@ input, textarea, select { font-family: inherit; }
             <input type="number" class="td-kpi-input payment-input" id="payCard" data-pay-key="card" placeholder="0" min="0">
           </div>
         </div>
+        <div class="td-kpi-row">
+          <div class="td-kpi-label">LINE Pay（含稅）</div>
+          <div class="td-kpi-input-wrap">
+            <input type="number" class="td-kpi-input payment-input" id="payLinePay" data-pay-key="linePay" placeholder="0" min="0">
+          </div>
+        </div>
       </div>
 
       <!-- 百貨店版（3 家）-->
@@ -11253,8 +11259,9 @@ function updateSalesAutoTotal() {
   } else {
     const cash = parseFloat(document.getElementById('payCash').value) || 0;
     const card = parseFloat(document.getElementById('payCard').value) || 0;
+    const linePay = parseFloat(document.getElementById('payLinePay').value) || 0;
     cashSum = cash;
-    total = cash + card;
+    total = cash + card + linePay;
   }
 
   document.getElementById('kpiSalesAutoTotal').textContent = formatMoney(Math.round(total));
@@ -11359,7 +11366,7 @@ function loadPaymentBreakdownFromLog(log) {
 
   if (!log) {
     // 全部歸零顯示
-    const ids = ['payCash', 'payCard', 'payCashDept', 'payCardDept', 'payVoucherE', 'payVoucherG', 'cashCloseActualInput'];
+    const ids = ['payCash', 'payCard', 'payLinePay', 'payCashDept', 'payCardDept', 'payVoucherE', 'payVoucherG', 'cashCloseActualInput'];
     ids.forEach(id => {
       const el = document.getElementById(id);
       if (el) el.value = '';
@@ -11382,6 +11389,7 @@ function loadPaymentBreakdownFromLog(log) {
   } else {
     if (document.getElementById('payCash')) document.getElementById('payCash').value = p.cash || '';
     if (document.getElementById('payCard')) document.getElementById('payCard').value = p.card || '';
+    if (document.getElementById('payLinePay')) document.getElementById('payLinePay').value = p.linePay || '';
   }
 
   pettyCashItems = Array.isArray(log.pettyCash) ? log.pettyCash.map(x => ({ ...x })) : [];
@@ -11411,7 +11419,8 @@ function collectPaymentBreakdown() {
   } else {
     return {
       cash: parseFloat(document.getElementById('payCash').value) || 0,
-      card: parseFloat(document.getElementById('payCard').value) || 0
+      card: parseFloat(document.getElementById('payCard').value) || 0,
+      linePay: parseFloat(document.getElementById('payLinePay').value) || 0
     };
   }
 }
@@ -11460,6 +11469,7 @@ function showSubmitConfirmModal(callback) {
   } else {
     items.push(['現金', payment.cash]);
     items.push(['刷卡', payment.card]);
+    items.push(['LINE Pay', payment.linePay || 0]);
   }
 
   const rowsHtml = items.map(([k, v]) =>
@@ -12629,9 +12639,25 @@ function buildClosingReportText() {
   const nonMember = parseFloat(document.getElementById('kpiNonMemberInput').value) || 0;
   const avgTicket = customers > 0 ? Math.round(sales / customers) : 0;
 
+  // ★ v31.2：拆項（街邊：現金/刷卡/LINE Pay；百貨：現金/刷卡/行動支付/其他）
+  const p = collectPaymentBreakdown();
+  let breakdown = '';
+  if (isDepartmentStore(state.storeId)) {
+    const ms = (p.mobile || []).reduce((s, x) => s + (Number(x.amount) || 0), 0);
+    const os = (p.other || []).reduce((s, x) => s + (Number(x.amount) || 0), 0);
+    const parts = [`現金 ${Math.round(p.cash || 0)}`, `刷卡 ${Math.round(p.card || 0)}`];
+    if ((p.voucherE || 0) > 0) parts.push(`電子券 ${Math.round(p.voucherE)}`);
+    if ((p.voucherG || 0) > 0) parts.push(`商品券 ${Math.round(p.voucherG)}`);
+    if (ms > 0) parts.push(`行動支付 ${Math.round(ms)}`);
+    if (os > 0) parts.push(`其他 ${Math.round(os)}`);
+    breakdown = `（${parts.join(' / ')}）`;
+  } else {
+    breakdown = `（現金 ${Math.round(p.cash || 0)} / 刷卡 ${Math.round(p.card || 0)} / LINE Pay ${Math.round(p.linePay || 0)}）`;
+  }
+
   return `${storeName}
 日期：${dateStr}
-總業績：$${sales}
+總業績：$${sales}${breakdown}
 來客數${customers} 會員${member} 非會員${nonMember}
 平均客單：$${avgTicket}`;
 }
@@ -12807,7 +12833,7 @@ function setupDailyLogScreen() {
   });
 
   // ★ v30：業績拆款 input 觸發自動加總
-  ['payCash', 'payCard', 'payCashDept', 'payCardDept', 'payVoucherE', 'payVoucherG'].forEach(id => {
+  ['payCash', 'payCard', 'payLinePay', 'payCashDept', 'payCardDept', 'payVoucherE', 'payVoucherG'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.addEventListener('input', updateSalesAutoTotal);
   });
