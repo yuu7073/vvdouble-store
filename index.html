@@ -15339,6 +15339,15 @@ async function saveWeeklyReport(submit) {
       }
     }
 
+    // 提交週報 → 通知後端把全文推到總部 LINE（內容由後端自己讀資料庫，這裡只帶店別與週別）
+    if (submit) {
+      try {
+        fetch('https://asia-east1-vvdouble-shopline.cloudfunctions.net/reels?op=weekly&store=' +
+          encodeURIComponent(state.storeId) + '&week=' + encodeURIComponent(currentWeeklyMonday),
+          { mode: 'no-cors', keepalive: true }).catch(() => {});
+      } catch (e) {}
+    }
+
     if (submit) {
       setTimeout(() => showScreen('home'), 800);
     } else {
