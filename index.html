@@ -7331,7 +7331,7 @@ input, textarea, select { font-family: inherit; }
       </div>
       <div class="subscreen-body">
         <div style="background: #FFF8E0; border-left: 3px solid #FFD93D; padding: 10px 14px; border-radius: 8px; margin-bottom: 14px; font-size: 12px; color: #5C4A1A; line-height: 1.6;">
-          💡 店長只能改當月目標（過去月/未來月鎖）、總部隨時可改任何月份任何天
+          💡 店長與總部都可以改任何月份的每日目標
         </div>
         <div id="targetsAdminGrid" style="background: var(--bg-white); border-radius: 8px; overflow-x: auto;">
           <div class="su-empty" style="padding: 30px; text-align: center; color: var(--text-tertiary);">載入中...</div>
@@ -10343,13 +10343,13 @@ async function loadDailyTargetForMonth(ym) {
     const isPastMonth = (y < currentY) || (y === currentY && m < currentM);
     const isFutureMonth = (y > currentY) || (y === currentY && m > currentM);
 
-    if (!state.isHQ && isPastMonth) {
+    if (false && !state.isHQ && isPastMonth) {
       monthLockedBanner.innerHTML = `🔒 ${y}年 ${m} 月 為過去月份、店長無法調整、如需修改請聯絡公司總部`;
       monthLockedBanner.style.background = '#FBE5E5';
       monthLockedBanner.style.borderLeftColor = '#E24B4A';
       monthLockedBanner.style.color = '#8B2C2C';
       monthLockedBanner.style.display = 'block';
-    } else if (!state.isHQ && isFutureMonth) {
+    } else if (false && !state.isHQ && isFutureMonth) {
       monthLockedBanner.innerHTML = `🔒 ${y}年 ${m} 月 為未來月份、店長無法預先調整、如需修改請聯絡公司總部`;
       monthLockedBanner.style.background = '#FBE5E5';
       monthLockedBanner.style.borderLeftColor = '#E24B4A';
@@ -10481,9 +10481,8 @@ async function renderDailyTargetGrid(ym) {
       const currentY = todayDate.getFullYear();
       const currentM = todayDate.getMonth() + 1;
       const isCurrentMonth = (year === currentY && month === currentM);
-      if (!isCurrentMonth) {
-        isPast = true; // 非本月都鎖
-      }
+      // 2026-11-21 改：店長任何月份都能改，不再鎖過去月／未來月
+      void isCurrentMonth;
     }
     const value = dailyTargetData[dateStr] || '';
 
@@ -12115,7 +12114,7 @@ async function loadTargetsAdminGrid() {
               const todayDate = new Date();
               const currentY = todayDate.getFullYear();
               const currentM = todayDate.getMonth() + 1;
-              const locked = !(yy === currentY && mm === currentM);  // 非本月 = 店長角度是鎖的
+              const locked = false;  // 2026-11-21 改：店長任何月份都能改
               return `<th style="padding: 10px 12px; text-align: center; border-bottom: 2px solid var(--border-light); white-space: nowrap;">
                 ${yy} / ${mm} ${locked ? '<span style="color: var(--danger); font-size: 10px;">🔒</span>' : ''}
               </th>`;
@@ -12155,7 +12154,7 @@ async function loadTargetsAdminGrid() {
     });
     html += `</tbody></table>
       <div style="padding: 12px; font-size: 11px; color: var(--text-tertiary); border-top: 1px solid var(--border-light);">
-        💡 點某店某月格子 → 進入該店該月的每日目標頁面（總部視角、不受月鎖限制）
+        💡 點某店某月格子 → 進入該店該月的每日目標頁面
       </div>
     `;
     gridEl.innerHTML = html;
